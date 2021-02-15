@@ -1,5 +1,7 @@
 #include <SDL.h>
 
+#include <math.h>
+
 #include "simple_logger.h"
 
 #include "gf2d_graphics.h"
@@ -13,6 +15,8 @@ int main(int argc, char * argv[])
     int done = 0;
     const Uint8 * keys;
     Sprite *sprite;
+	Entity *ent;
+	Sprite *test_ent_spr;
     
     int mx,my;
     float mf = 0;
@@ -38,6 +42,11 @@ int main(int argc, char * argv[])
     /*demo setup*/
     sprite = gf2d_sprite_load_image("images/backgrounds/bg_flat.png");
     mouse = gf2d_sprite_load_all("images/pointer.png",32,32,16);
+
+	ent = entity_new();
+	test_ent_spr = gf2d_sprite_load_all("images/ed210_top.png", 128, 128, 16);
+	ent->sprite = test_ent_spr;
+
     /*main game loop*/
     while(!done)
     {
@@ -48,12 +57,16 @@ int main(int argc, char * argv[])
         mf+=0.1;
         if (mf >= 16.0)mf = 0;
         
+		ent->frame += 0.1;
+		if (ent->frame >= 16) ent->frame = 0;
         
         gf2d_graphics_clear_screen();// clears drawing buffers
         // all drawing should happen betweem clear_screen and next_frame
             //backgrounds drawn first
             gf2d_sprite_draw_image(sprite,vector2d(0,0));
             
+			entity_draw(ent);
+
             //UI elements last
             gf2d_sprite_draw(
                 mouse,
@@ -69,6 +82,7 @@ int main(int argc, char * argv[])
         if (keys[SDL_SCANCODE_ESCAPE])done = 1; // exit condition
         slog("Rendering at %f FPS",gf2d_graphics_get_frames_per_second());
     }
+	entity_free(ent);
     slog("---==== END ====---");
     return 0;
 }

@@ -10,6 +10,7 @@ typedef struct
 	Bool _inuse;
 	Sprite *sprite;
 	Vector2D position;
+	float frame;
 }Entity;
 
 /**
