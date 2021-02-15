@@ -44,6 +44,79 @@ void entity_manager_free()
 	memset(&entity_manager, 0, sizeof(EntityManager));
 }
 
+void entity_update(Entity *self)
+{
+	if (!self) return;
+	//Generic updates
+	vector2d_add(self->position, self->position, self->velocity);
+	self->frame += self->frameRate;
+	if (self->frame >= self->frameCount) self->frame = 0;
+	//Specific updates
+	if (self->update == NULL) return;
+	self->update(self);
+}
+
+void entity_manager_update_entities()
+{
+	int i;
+	if (entity_manager.entity_list == NULL)
+	{
+		slog("Entity manager not initialized");
+		return;
+	}
+	for (i = 0; i < entity_manager.max_entities; ++i)
+	{
+		if (entity_manager.entity_list[i]._inuse == 0) continue;
+		entity_update(&entity_manager.entity_list[i]);
+	}
+}
+
+void entity_draw(Entity *ent)
+{
+	if (ent == NULL)
+	{
+		slog("CAnnot draw a NULL entity");
+		return;
+	}
+
+	//If specialized draw, do it, otherwise do generic
+	if (ent->draw)
+	{
+		ent->draw(ent);
+	}
+	else
+	{
+		if (ent->sprite == NULL)
+		{
+			return; //Nothing to draw
+		}
+		gf2d_sprite_draw(
+			ent->sprite,
+			ent->position,
+			NULL,
+			NULL,
+			NULL,
+			NULL,
+			NULL,
+			(Uint32)ent->frame);
+	}
+}
+
+void entity_manager_draw_entities()
+{
+	int i;
+	if (entity_manager.entity_list == NULL)
+	{
+		slog("Entity manager not initialized");
+		return;
+	}
+	for (i = 0; i < entity_manager.max_entities; ++i)
+	{
+		if (entity_manager.entity_list[i]._inuse == 0) continue;
+		entity_draw(&entity_manager.entity_list[i]);
+	}
+}
+
 Entity *entity_new()
 {
 	int i;
@@ -73,28 +146,6 @@ void entity_free(Entity *ent)
 	gf2d_sprite_free(ent->sprite);
 	ent->sprite = NULL;
 	ent->_inuse = 0;
-}
-
-void entity_draw(Entity *ent)
-{
-	if (ent == NULL)
-	{
-		slog("CAnnot draw a NULL entity");
-		return;
-	}
-	if (ent->sprite == NULL)
-	{
-		return; //Nothing to draw
-	}
-	gf2d_sprite_draw(
-		ent->sprite,
-		ent->position,
-		NULL,
-		NULL,
-		NULL,
-		NULL,
-		NULL,
-		(Uint32) ent->frame);
 }
 
 
