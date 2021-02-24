@@ -23,6 +23,9 @@ typedef struct
 	Uint32		tileFramesPerLine;	//How many pizels tall the tiles are
 	Uint32		levelWidth;			//How many tiles per row the level has
 	Uint32		levelHeight;		//How many tiles per column the level has
+	float		scaleAmount;
+	Vector2D	scaleVec;
+	Vector2D	scalePos;
 }Level;
 
 /**

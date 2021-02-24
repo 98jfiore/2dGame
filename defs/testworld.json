@@ -16,6 +16,7 @@
         ],
         "tileWidth": 16,
         "tileHeight": 16,
-        "tileFramesPerLine": 30
+        "tileFramesPerLine": 30,
+		"scale": 4
     }
 }

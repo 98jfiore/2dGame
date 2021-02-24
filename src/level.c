@@ -71,12 +71,16 @@ Level *level_load(const char *filename)
 		sj_get_integer_value(sj_object_get_value(leveljs, "tileWidth"), &level->tileWidth);
 		sj_get_integer_value(sj_object_get_value(leveljs, "tileHeight"), &level->tileHeight);
 		sj_get_integer_value(sj_object_get_value(leveljs, "tileFramesPerLine"), &level->tileFramesPerLine);
+		sj_get_float_value(sj_object_get_value(leveljs, "scale"), &level->scaleAmount);
 
 		level->tileSet = gf2d_sprite_load_all(
 			(char *)string,
 			level->tileWidth,
 			level->tileHeight,
 			level->tileFramesPerLine);
+
+		level->scaleVec = vector2d(level->scaleAmount, level->scaleAmount);
+		level->scalePos = vector2d(0, 0);
 	}
 
 	tileMap = sj_object_get_value(leveljs, "tileMap");
@@ -172,11 +176,12 @@ void level_draw(Level *level)
 	for (i = 0; i < level->levelWidth * level->levelHeight; i++)
 	{
 		if (level->tileMap[i] == 0) continue;
+		//slog("%i: x is %i, y is %i\n", i, i % level->levelWidth, i / level->levelHeight);
 		gf2d_sprite_draw(
 			level->tileSet,
-			vector2d((i % level->levelWidth) * level->tileSet->frame_w, (i / level->levelHeight) * level->tileSet->frame_h),
-			NULL,
-			NULL,
+			vector2d((i % level->levelWidth) * level->tileSet->frame_w * level->scaleAmount, (i / level->levelWidth) * level->tileSet->frame_h * level->scaleAmount),
+			&level->scaleVec,
+			&level->scalePos,
 			NULL,
 			NULL,
 			NULL,
