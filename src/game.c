@@ -9,13 +9,16 @@
 
 #include "entity.h"
 #include "player.h"
+#include "ent_npc.h"
+#include "ent_environ.h"
+#include "level.h"
 
 int main(int argc, char * argv[])
 {
     /*variable declarations*/
     int done = 0;
     const Uint8 * keys;
-    Sprite *sprite;
+	Level *level;
     
     int mx,my;
     float mf = 0;
@@ -37,12 +40,16 @@ int main(int argc, char * argv[])
     gf2d_sprite_init(1024);
 	entity_manager_init(100);
     SDL_ShowCursor(SDL_DISABLE);
+
+	level = level_load("defs/testworld.json");
     
     /*demo setup*/
-    sprite = gf2d_sprite_load_image("images/backgrounds/bg_flat.png");
     mouse = gf2d_sprite_load_all("images/pointer.png",32,32,16);
 
 	player_spawn(vector2d(100, 100));
+	npc_spawn(vector2d(500, 500));
+	//environment_spawn(vector2d(200,100));
+
 
     /*main game loop*/
     while(!done)
@@ -58,9 +65,8 @@ int main(int argc, char * argv[])
         
         gf2d_graphics_clear_screen();// clears drawing buffers
         // all drawing should happen betweem clear_screen and next_frame
-            //backgrounds drawn first
-            gf2d_sprite_draw_image(sprite,vector2d(0,0));
-            
+			level_draw(level);
+
 			entity_manager_draw_entities();
 
             //UI elements last
@@ -76,7 +82,7 @@ int main(int argc, char * argv[])
         gf2d_grahics_next_frame();// render current draw frame and skip to the next frame
         
         if (keys[SDL_SCANCODE_ESCAPE])done = 1; // exit condition
-        slog("Rendering at %f FPS",gf2d_graphics_get_frames_per_second());
+        //slog("Rendering at %f FPS",gf2d_graphics_get_frames_per_second());
     }
     slog("---==== END ====---");
     return 0;
