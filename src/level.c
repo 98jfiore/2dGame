@@ -6,6 +6,7 @@
 #include "gf2d_sprite.h"
 
 #include "level.h"
+#include "ent_environ.h"
 
 Level *level_new()
 {
@@ -27,6 +28,8 @@ Level *level_load(const char *filename)
 	const char *string;
 	int rows, columns;
 	int i, j, count, tileIndex;
+	int wallCode, tileType;
+	Vector2D position;
 
 	if (filename == NULL)
 	{
@@ -71,6 +74,7 @@ Level *level_load(const char *filename)
 		sj_get_integer_value(sj_object_get_value(leveljs, "tileWidth"), &level->tileWidth);
 		sj_get_integer_value(sj_object_get_value(leveljs, "tileHeight"), &level->tileHeight);
 		sj_get_integer_value(sj_object_get_value(leveljs, "tileFramesPerLine"), &level->tileFramesPerLine);
+		sj_get_integer_value(sj_object_get_value(leveljs, "wallCode"), &wallCode);
 		sj_get_float_value(sj_object_get_value(leveljs, "scale"), &level->scaleAmount);
 
 		level->tileSet = gf2d_sprite_load_all(
@@ -123,7 +127,18 @@ Level *level_load(const char *filename)
 		
 		for (i = 0; i < columns; ++i)
 		{
-			sj_get_integer_value(sj_array_get_nth(row, i), &level->tileMap[tileIndex++]);
+			sj_get_integer_value(sj_array_get_nth(row, i), &tileType);
+			if (tileType == wallCode)
+			{
+				slog("DRAW %i: %i, %i", tileIndex, tileIndex % columns, tileIndex / columns);
+				position = vector2d((tileIndex % level->levelWidth) * level->tileSet->frame_w * level->scaleAmount, (tileIndex / level->levelWidth) * level->tileSet->frame_h * level->scaleAmount);
+				environment_spawn(position, (char *)string, wallCode, level->tileWidth, level->tileHeight, level->tileFramesPerLine, level->scaleAmount);
+				level->tileMap[tileIndex++] = 0;
+			}
+			else
+			{
+				level->tileMap[tileIndex++] = tileType;
+			}
 		}
 	}
 

@@ -11,6 +11,7 @@ typedef struct Entity_s
 	Sprite		*sprite;
 	Vector2D	position;
 	Vector2D	velocity;
+	Vector2D	scale;
 	float		frame;
 	float		frameRate;
 	int			frameCount;

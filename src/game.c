@@ -38,7 +38,7 @@ int main(int argc, char * argv[])
         0);
     gf2d_graphics_set_frame_delay(16);
     gf2d_sprite_init(1024);
-	entity_manager_init(100);
+	entity_manager_init(1000);
     SDL_ShowCursor(SDL_DISABLE);
 
 	level = level_load("defs/testworld.json");
@@ -48,7 +48,6 @@ int main(int argc, char * argv[])
 
 	player_spawn(vector2d(100, 100));
 	npc_spawn(vector2d(500, 500));
-	//environment_spawn(vector2d(200,100));
 
 
     /*main game loop*/

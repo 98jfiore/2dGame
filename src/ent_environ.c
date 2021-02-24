@@ -5,7 +5,7 @@
 
 #include "ent_environ.h"
 
-Environ *environment_spawn(Vector2D position)
+Environ *environment_spawn(Vector2D position, char *spriteSheet, int frameNum, int spriteWidth, int spriteHeight, int fpl, int scale)
 {
 	Entity *ent;
 	Environ *env;
@@ -21,12 +21,18 @@ Environ *environment_spawn(Vector2D position)
 
 	vector2d_copy(ent->position, position);
 
-	ent->sprite = gf2d_sprite_load_all("images/perlin-grey.png", 512, 512, 1);
-	ent->frameCount = 1;
-	ent->frameRate = 0.1;
+	ent->sprite = gf2d_sprite_load_all(spriteSheet, spriteWidth, spriteHeight, fpl);
+	if (ent->sprite == NULL)
+	{
+		slog("Sprite couldn't be loaded");
+	}
+	ent->frame = frameNum;
+	ent->frameCount = frameNum+3;
+	ent->frameRate = 0;
 
 	env->ent = ent;
 	env->flags = ENV_HITTABLE;
+	ent->scale = vector2d(scale, scale);
 
 	ent->draw = environment_draw;
 
@@ -35,8 +41,6 @@ Environ *environment_spawn(Vector2D position)
 
 void environment_draw(Entity *ent)
 {
-	Vector2D scale;
-
 	if (ent == NULL)
 	{
 		slog("CAnnot draw a NULL entity");
@@ -48,12 +52,11 @@ void environment_draw(Entity *ent)
 	{
 		return; //Nothing to draw
 	}
-	scale = vector2d(.25, .25);
 	gf2d_sprite_draw(
 		ent->sprite,
 		ent->position,
-		&scale,
-		&ent->position,
+		&ent->scale,
+		&ent->scale,
 		NULL,
 		NULL,
 		NULL,
