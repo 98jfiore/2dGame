@@ -33,6 +33,8 @@ void npc_update(Entity *self)
 	Vector2D new_vel;
 	int rand_move;
 
+	vector2d_add(self->position, self->position, self->velocity);
+
 	//Move in a direction based on random
 	rand_move = ((int)(gfc_random() * 4.0)) % 4;
 	if (rand_move == 0) new_vel = vector2d(10, 0);

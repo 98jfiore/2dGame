@@ -130,7 +130,6 @@ Level *level_load(const char *filename)
 			sj_get_integer_value(sj_array_get_nth(row, i), &tileType);
 			if (tileType == wallCode)
 			{
-				slog("DRAW %i: %i, %i", tileIndex, tileIndex % columns, tileIndex / columns);
 				position = vector2d((tileIndex % level->levelWidth) * level->tileSet->frame_w * level->scaleAmount, (tileIndex / level->levelWidth) * level->tileSet->frame_h * level->scaleAmount);
 				environment_spawn(position, (char *)string, wallCode, level->tileWidth, level->tileHeight, level->tileFramesPerLine, level->scaleAmount);
 				level->tileMap[tileIndex++] = 0;

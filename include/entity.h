@@ -1,17 +1,30 @@
 #ifndef __ENTITY_H__
 #define __ENTITY_H__
 
+#include "SDL_rect.h"
+
 #include "gfc_types.h"
 #include "gfc_vector.h"
 #include "gf2d_sprite.h"
 
+#include "shapes.h"
+
+
+enum entity_flags {
+	ENT_SOLID = 0x1,
+	ENT_DEADLY = 0x2,
+	ENT_DESTRUCTABLE = 0x4,
+};
+
 typedef struct Entity_s
 {
 	Bool		_inuse;
+	Uint8		flags;
 	Sprite		*sprite;
 	Vector2D	position;
 	Vector2D	velocity;
 	Vector2D	scale;
+	Rect		*hitbox;
 	float		frame;
 	float		frameRate;
 	int			frameCount;
@@ -42,6 +55,13 @@ void entity_manager_update_entities();
 * @brief Draw all entities in the system
 */
 void entity_manager_draw_entities();
+
+/**
+* @brief Checks to see if entity collided with another entity
+* @param self The entity to check collision against.
+* @return NULL on no collision or error, or a pointer to an entity self collides with.
+*/
+Entity *check_collision(Entity *self);
 
 /**
  * @brief Allocate an entity in the entity list and return a pointer to it.

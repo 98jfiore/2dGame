@@ -4,13 +4,12 @@
 #include "gf2d_sprite.h"
 
 #include "ent_environ.h"
+#include "shapes.h"
 
-Environ *environment_spawn(Vector2D position, char *spriteSheet, int frameNum, int spriteWidth, int spriteHeight, int fpl, int scale)
+Entity *environment_spawn(Vector2D position, char *spriteSheet, int frameNum, int spriteWidth, int spriteHeight, int fpl, int scale)
 {
 	Entity *ent;
-	Environ *env;
-
-	env = malloc(sizeof(Environ));
+	Rect *hitbox;
 
 	ent = entity_new();
 	if (ent == NULL)
@@ -30,13 +29,20 @@ Environ *environment_spawn(Vector2D position, char *spriteSheet, int frameNum, i
 	ent->frameCount = frameNum+3;
 	ent->frameRate = 0;
 
-	env->ent = ent;
-	env->flags = ENV_HITTABLE;
+	hitbox = (Rect *)malloc(sizeof(Rect));
+
+	hitbox->x = position.x;
+	hitbox->y = position.y;
+	hitbox->width = ent->sprite->frame_w;
+	hitbox->height = ent->sprite->frame_w;
+	ent->hitbox = hitbox;
+
+	ent->flags = ENT_SOLID;
 	ent->scale = vector2d(scale, scale);
 
 	ent->draw = environment_draw;
 
-	return env;
+	return ent;
 }
 
 void environment_draw(Entity *ent)

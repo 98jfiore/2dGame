@@ -6,10 +6,12 @@
 #include "gfc_vector.h"
 
 #include "player.h"
+#include "entity.h"
 
 Entity *player_spawn(Vector2D position)
 {
 	Entity *ent;
+	Rect *hitbox;
 
 	ent = entity_new();
 	if (ent == NULL)
@@ -24,12 +26,20 @@ Entity *player_spawn(Vector2D position)
 	ent->frameCount = 16;
 	ent->frameRate = 0.1;
 
+	hitbox = (Rect *)malloc(sizeof(Rect));
+
+	hitbox->x = position.x;
+	hitbox->y = position.y;
+	hitbox->width = ent->sprite->frame_w;
+	hitbox->height = ent->sprite->frame_h;
+	ent->hitbox = hitbox;
+
 	ent->update = player_update;
 
 	return ent;
 }
 
-void player_update(Entity *self)
+void player_think(Entity *self)
 {
 	Uint8 *state;
 	Vector2D new_vel;
@@ -43,4 +53,26 @@ void player_update(Entity *self)
 	if (state[SDL_SCANCODE_S]) new_vel.y += 10;
 
 	self->velocity = new_vel;
+
+}
+
+void player_update(Entity *self)
+{
+	Entity *collided;
+
+	if (self->hitbox != NULL)
+	{
+		self->hitbox->x += self->velocity.x;
+		self->hitbox->y += self->velocity.y;
+		//Check if player is coliding with something, find out what it is, and do something about it.
+		collided = check_collision(self);
+		if (collided)
+		{
+			printf("COLLIDED");
+		}
+	}
+
+
+	vector2d_add(self->position, self->position, self->velocity);
+	player_think(self);
 }

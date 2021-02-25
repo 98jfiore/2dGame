@@ -48,7 +48,6 @@ void entity_update(Entity *self)
 {
 	if (!self) return;
 	//Generic updates
-	vector2d_add(self->position, self->position, self->velocity);
 	self->frame += self->frameRate;
 	if (self->frame >= self->frameCount) self->frame = 0;
 	//Specific updates
@@ -115,6 +114,43 @@ void entity_manager_draw_entities()
 		if (entity_manager.entity_list[i]._inuse == 0) continue;
 		entity_draw(&entity_manager.entity_list[i]);
 	}
+}
+
+Entity *check_collision(Entity *self)
+{
+	int i;
+	SDL_bool intersection;
+
+	if (self == NULL)
+	{
+		slog("Cannot check colision against nonexistent entity");
+		return NULL;
+	}
+
+	if (self->hitbox == NULL)
+	{
+		slog("Entity has no hitbox, cannot check collision against it");
+		return NULL;
+	}
+
+	if (entity_manager.entity_list == NULL)
+	{
+		slog("Entity manager not initialized");
+		return NULL;
+	}
+
+	for (i = 0; i < entity_manager.max_entities; ++i)
+	{
+		if (&entity_manager.entity_list[i] == self) continue;
+		if (entity_manager.entity_list[i]._inuse == 0 || entity_manager.entity_list[i].hitbox == NULL) continue;
+		intersection = IntersectRect(self->hitbox, entity_manager.entity_list[i].hitbox);
+		if (intersection == SDL_TRUE)
+		{
+			return &entity_manager.entity_list[i];
+		}
+	}
+
+	return NULL;
 }
 
 Entity *entity_new()

@@ -2,6 +2,7 @@
 #define __PLAYER_H__
 
 #include "entity.h"
+#include "shapes.h"
 
 /**
  * @brief Spawn a player entity
@@ -9,6 +10,12 @@
  * @return NULL on error, or a pointer to a new player entity.
  */
 Entity *player_spawn(Vector2D position);
+
+/**
+* @brief Process all the thinking the player has to do
+* @param self A pointer to the player entity.
+*/
+void player_think(Entity *self);
 
 /**
 * @brief Update the player entity
