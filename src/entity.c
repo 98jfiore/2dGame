@@ -72,6 +72,8 @@ void entity_manager_update_entities()
 
 void entity_draw(Entity *ent)
 {
+	Vector2D upperLeft;
+
 	if (ent == NULL)
 	{
 		slog("CAnnot draw a NULL entity");
@@ -91,11 +93,12 @@ void entity_draw(Entity *ent)
 		}
 		if (ent->scale.x != 0 || ent->scale.y != 0)
 		{
+			upperLeft = vector2d(0, 0);
 			gf2d_sprite_draw(
 				ent->sprite,
 				ent->position,
 				&ent->scale,
-				&ent->scale,
+				&upperLeft,
 				NULL,
 				NULL,
 				NULL,

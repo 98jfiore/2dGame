@@ -28,7 +28,7 @@ Level *level_load(const char *filename)
 	const char *string;
 	int rows, columns;
 	int i, j, count, tileIndex;
-	int wallCode, tileType;
+	int wallCode, pitCode, tileType;
 	Vector2D position;
 
 	if (filename == NULL)
@@ -75,6 +75,7 @@ Level *level_load(const char *filename)
 		sj_get_integer_value(sj_object_get_value(leveljs, "tileHeight"), &level->tileHeight);
 		sj_get_integer_value(sj_object_get_value(leveljs, "tileFramesPerLine"), &level->tileFramesPerLine);
 		sj_get_integer_value(sj_object_get_value(leveljs, "wallCode"), &wallCode);
+		sj_get_integer_value(sj_object_get_value(leveljs, "pitCode"), &pitCode);
 		sj_get_float_value(sj_object_get_value(leveljs, "scale"), &level->scaleAmount);
 
 		level->tileSet = gf2d_sprite_load_all(
@@ -132,6 +133,12 @@ Level *level_load(const char *filename)
 			{
 				position = vector2d((tileIndex % level->levelWidth) * level->tileSet->frame_w * level->scaleAmount, (tileIndex / level->levelWidth) * level->tileSet->frame_h * level->scaleAmount);
 				environment_spawn(position, (char *)string, wallCode, level->tileWidth, level->tileHeight, level->tileFramesPerLine, level->scaleAmount);
+				level->tileMap[tileIndex++] = 0;
+			}
+			else if (tileType == pitCode)
+			{
+				position = vector2d((tileIndex % level->levelWidth) * level->tileSet->frame_w * level->scaleAmount, (tileIndex / level->levelWidth) * level->tileSet->frame_h * level->scaleAmount);
+				pit_spawn(position, (char *)string, pitCode, level->tileWidth, level->tileHeight, level->tileFramesPerLine, level->scaleAmount);
 				level->tileMap[tileIndex++] = 0;
 			}
 			else
