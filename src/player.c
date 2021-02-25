@@ -22,16 +22,17 @@ Entity *player_spawn(Vector2D position)
 
 	vector2d_copy(ent->position, position);
 
-	ent->sprite = gf2d_sprite_load_all("images/ed210_top.png", 128, 128, 16);
-	ent->frameCount = 16;
-	ent->frameRate = 0.1;
+	ent->sprite = gf2d_sprite_load_all("images/player.png", 16, 16, 2);
+	ent->frameCount = 2;
+	ent->frameRate = 0.05;
+	ent->scale = vector2d(2,2);
 
 	hitbox = (Rect *)malloc(sizeof(Rect));
 
 	hitbox->x = position.x;
 	hitbox->y = position.y;
-	hitbox->width = ent->sprite->frame_w;
-	hitbox->height = ent->sprite->frame_h;
+	hitbox->width = ent->sprite->frame_w * 2;
+	hitbox->height = ent->sprite->frame_h * 2;
 	ent->hitbox = hitbox;
 
 	ent->update = player_update;

@@ -89,19 +89,29 @@ void entity_draw(Entity *ent)
 		{
 			return; //Nothing to draw
 		}
-		gf2d_sprite_draw(
-			ent->sprite,
-			ent->position,
-			NULL,
-			NULL,
-			NULL,
-			NULL,
-			NULL,
-			(Uint32)ent->frame);
-		if (ent->hitbox != NULL)
+		if (ent->scale.x != 0 || ent->scale.y != 0)
 		{
-			
-			gf2d_sprite_draw_image(ent->sprite, vector2d(ent->hitbox->x, ent->hitbox->y));
+			gf2d_sprite_draw(
+				ent->sprite,
+				ent->position,
+				&ent->scale,
+				&ent->scale,
+				NULL,
+				NULL,
+				NULL,
+				(Uint32)ent->frame);
+		}
+		else
+		{
+			gf2d_sprite_draw(
+				ent->sprite,
+				ent->position,
+				NULL,
+				NULL,
+				NULL,
+				NULL,
+				NULL,
+				(Uint32)ent->frame);
 		}
 	}
 }

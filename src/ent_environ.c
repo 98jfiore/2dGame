@@ -33,8 +33,8 @@ Entity *environment_spawn(Vector2D position, char *spriteSheet, int frameNum, in
 
 	hitbox->x = position.x;
 	hitbox->y = position.y;
-	hitbox->width = spriteWidth;
-	hitbox->height = spriteHeight;
+	hitbox->width = spriteWidth * scale;
+	hitbox->height = spriteHeight * scale;
 	ent->hitbox = hitbox;
 
 	ent->flags = ENT_SOLID;
