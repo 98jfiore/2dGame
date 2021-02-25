@@ -98,6 +98,11 @@ void entity_draw(Entity *ent)
 			NULL,
 			NULL,
 			(Uint32)ent->frame);
+		if (ent->hitbox != NULL)
+		{
+			
+			gf2d_sprite_draw_image(ent->sprite, vector2d(ent->hitbox->x, ent->hitbox->y));
+		}
 	}
 }
 
