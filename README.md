@@ -29,8 +29,8 @@ Once each submodule has been made you can go into the base project src folder an
 
 You should now have a `gf2d` binary within the root of your git repository. Executing this will start your game.
 
-#Knockback Game
+# Knockback Game
 
-##How to play:
+## How to play:
 
 Use WASD to move, walls will stop you, pits will kill you, enemies move and will kill you
