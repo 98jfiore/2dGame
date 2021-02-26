@@ -3,6 +3,31 @@
 
 #include "entity.h"
 
+enum npc_flags {
+	NPC_NORTH = 0x1,
+	NPC_EAST = 0x2,
+	NPC_SOUTH = 0x4,
+	NPC_WEST = 0x8,
+};
+
+typedef struct
+{
+	Uint8		movementFlags;
+}NPC;
+
+/**
+* @brief Spawn a robot entity
+* @param position The screen position to spawn the robot at.
+* @return NULL on error, or a pointer to a new robot entity.
+*/
+Entity *robot_spawn(Vector2D position);
+
+/**
+* @brief Update the robot entity
+* @param self A pointer to the robot entity.
+*/
+void robot_think(Entity *self);
+
 /**
 * @brief Spawn an npc entity
 * @param position The screen position to spawn the npc at.

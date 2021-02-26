@@ -69,6 +69,14 @@ void player_update(Entity *self)
 		collided = check_collision(self);
 		if (collided)
 		{
+			if (collided->flags & ENT_DEADLY)
+			{
+				entity_free(self);
+				slog("You DIED");
+				return;
+				//printf("%.6f, %.6f vs %.6f, %.6f\n", self->hitbox->x, self->hitbox->y, self->position.x, self->position.y);
+				//printf("%.6f, %.6f vs %.6f, %.6f\n", collided->hitbox->x, collided->hitbox->y, collided->position.x, collided->position.y);
+			}
 			if (collided->flags & ENT_SOLID)
 			{
 				self->hitbox->x -= self->velocity.x;

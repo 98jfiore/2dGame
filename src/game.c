@@ -47,7 +47,7 @@ int main(int argc, char * argv[])
     mouse = gf2d_sprite_load_all("images/pointer.png",32,32,16);
 
 	player_spawn(vector2d(100, 100));
-	npc_spawn(vector2d(500, 500));
+	robot_spawn(vector2d(300, 300));
 
 
     /*main game loop*/
