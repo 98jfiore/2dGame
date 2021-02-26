@@ -38,7 +38,7 @@ int main(int argc, char * argv[])
         0);
     gf2d_graphics_set_frame_delay(16);
     gf2d_sprite_init(1024);
-	entity_manager_init(1000);
+	entity_manager_init(500);
     SDL_ShowCursor(SDL_DISABLE);
 
 	level = level_load("defs/testworld.json");
@@ -47,7 +47,7 @@ int main(int argc, char * argv[])
     mouse = gf2d_sprite_load_all("images/pointer.png",32,32,16);
 
 	player_spawn(vector2d(100, 100));
-	robot_spawn(vector2d(300, 300));
+	//robot_spawn(vector2d(300, 300), NPC_NORTH);
 
 
     /*main game loop*/

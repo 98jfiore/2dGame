@@ -7,6 +7,7 @@
 
 #include "level.h"
 #include "ent_environ.h"
+#include "ent_npc.h"
 
 Level *level_new()
 {
@@ -28,7 +29,12 @@ Level *level_load(const char *filename)
 	const char *string;
 	int rows, columns;
 	int i, j, count, tileIndex;
-	int wallCode, pitCode, tileType;
+	int wallCode, pitCode, spikeCode, tileType;
+	SJson *enemiesjs, *enemyjs;
+	int enemyCount;
+	int enemyx, enemyy;
+	const char *enemyType, *enemyStartDir;
+
 	Vector2D position;
 
 	if (filename == NULL)
@@ -76,6 +82,7 @@ Level *level_load(const char *filename)
 		sj_get_integer_value(sj_object_get_value(leveljs, "tileFramesPerLine"), &level->tileFramesPerLine);
 		sj_get_integer_value(sj_object_get_value(leveljs, "wallCode"), &wallCode);
 		sj_get_integer_value(sj_object_get_value(leveljs, "pitCode"), &pitCode);
+		sj_get_integer_value(sj_object_get_value(leveljs, "spikeCode"), &spikeCode);
 		sj_get_float_value(sj_object_get_value(leveljs, "scale"), &level->scaleAmount);
 
 		level->tileSet = gf2d_sprite_load_all(
@@ -132,18 +139,67 @@ Level *level_load(const char *filename)
 			if (tileType == wallCode)
 			{
 				position = vector2d((tileIndex % level->levelWidth) * level->tileSet->frame_w * level->scaleAmount, (tileIndex / level->levelWidth) * level->tileSet->frame_h * level->scaleAmount);
-				environment_spawn(position, (char *)string, wallCode, level->tileWidth, level->tileHeight, level->tileFramesPerLine, level->scaleAmount);
+				wall_spawn(position, (char *)string, wallCode - 1, level->tileWidth, level->tileHeight, level->tileFramesPerLine, level->scaleAmount);
 				level->tileMap[tileIndex++] = 0;
 			}
 			else if (tileType == pitCode)
 			{
 				position = vector2d((tileIndex % level->levelWidth) * level->tileSet->frame_w * level->scaleAmount, (tileIndex / level->levelWidth) * level->tileSet->frame_h * level->scaleAmount);
-				pit_spawn(position, (char *)string, pitCode, level->tileWidth, level->tileHeight, level->tileFramesPerLine, level->scaleAmount);
+				pit_spawn(position, (char *)string, pitCode - 1, level->tileWidth, level->tileHeight, level->tileFramesPerLine, level->scaleAmount);
+				level->tileMap[tileIndex++] = 0;
+			}
+			else if (tileType == spikeCode)
+			{
+				position = vector2d((tileIndex % level->levelWidth) * level->tileSet->frame_w * level->scaleAmount, (tileIndex / level->levelWidth) * level->tileSet->frame_h * level->scaleAmount);
+				spike_spawn(position, (char *)string, spikeCode - 1, level->tileWidth, level->tileHeight, level->tileFramesPerLine, level->scaleAmount);
 				level->tileMap[tileIndex++] = 0;
 			}
 			else
 			{
 				level->tileMap[tileIndex++] = tileType;
+			}
+		}
+	}
+
+	enemiesjs = sj_object_get_value(leveljs, "enemies");
+	if (enemiesjs != NULL)
+	{
+		enemyCount = sj_array_get_count(enemiesjs);
+		for (i = 0; i < enemyCount; i++)
+		{
+			enemyjs = sj_array_get_nth(enemiesjs, i);
+			if (enemyjs == NULL)
+			{
+				slog("ENEMY Not found");
+				continue;
+			}
+			enemyType = sj_get_string_value(sj_object_get_value(enemyjs, "type"));
+			sj_get_integer_value(sj_object_get_value(enemyjs, "x"), &enemyx);
+			sj_get_integer_value(sj_object_get_value(enemyjs, "y"), &enemyy);
+			enemyStartDir = sj_get_string_value(sj_object_get_value(enemyjs, "startDir"));
+			
+			//printf("%s %i,%i %s\n", enemyType, enemyx, enemyy, enemyStartDir);
+
+			position = vector2d(enemyx * level->tileSet->frame_w * level->scaleAmount, enemyy * level->tileSet->frame_h * level->scaleAmount);
+
+			if (strcmp(enemyType, "robot") == 0)
+			{
+				if (strcmp(enemyStartDir, "north") == 0)
+				{
+					robot_spawn(position, NPC_NORTH);
+				}
+				else if (strcmp(enemyStartDir, "south") == 0)
+				{
+					robot_spawn(position, NPC_SOUTH);
+				}
+				else if (strcmp(enemyStartDir, "east") == 0)
+				{
+					robot_spawn(position, NPC_EAST);
+				}
+				else if (strcmp(enemyStartDir, "west") == 0)
+				{
+					robot_spawn(position, NPC_WEST);
+				}
 			}
 		}
 	}

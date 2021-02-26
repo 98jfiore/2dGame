@@ -7,7 +7,7 @@
 #include "ent_npc.h"
 #include "shapes.h"
 
-Entity *robot_spawn(Vector2D position)
+Entity *robot_spawn(Vector2D position, npc_flag startDir)
 {
 	Entity *ent;
 	NPC *npc;
@@ -37,7 +37,7 @@ Entity *robot_spawn(Vector2D position)
 	ent->hitbox = hitbox;
 
 	npc = malloc(sizeof(NPC));
-	npc->movementFlags = NPC_NORTH;
+	npc->movementFlags = startDir;
 
 	ent->data = npc;
 	ent->update = npc_update;
@@ -139,7 +139,10 @@ Entity *npc_spawn(Vector2D position)
 
 void npc_update(Entity *self)
 {
-	self->think(self);
+	if (self->think)
+	{
+		self->think(self);
+	}
 
 	vector2d_add(self->position, self->position, self->velocity);
 	//Move in a direction based on random

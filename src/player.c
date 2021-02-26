@@ -48,10 +48,10 @@ void player_think(Entity *self)
 	//Move in a direction based on WASD
 	new_vel = vector2d(0, 0);
 	state = SDL_GetKeyboardState(NULL);
-	if (state[SDL_SCANCODE_A]) new_vel.x -= 10;
-	if (state[SDL_SCANCODE_D]) new_vel.x += 10;
-	if (state[SDL_SCANCODE_W]) new_vel.y -= 10;
-	if (state[SDL_SCANCODE_S]) new_vel.y += 10;
+	if (state[SDL_SCANCODE_A]) new_vel.x -= 5;
+	if (state[SDL_SCANCODE_D]) new_vel.x += 5;
+	if (state[SDL_SCANCODE_W]) new_vel.y -= 5;
+	if (state[SDL_SCANCODE_S]) new_vel.y += 5;
 
 	self->velocity = new_vel;
 

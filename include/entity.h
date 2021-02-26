@@ -14,6 +14,7 @@ enum entity_flags {
 	ENT_SOLID = 0x1,
 	ENT_DEADLY = 0x2,
 	ENT_DESTRUCTABLE = 0x4,
+	ENT_HITTABLE = 0x8,
 };
 
 typedef struct Entity_s
