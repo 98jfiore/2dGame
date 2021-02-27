@@ -57,6 +57,12 @@ Entity *moving_wall_spawn(Vector2D position, char *spriteSheet, int frameNum, in
 void moving_wall_update(Entity *self);
 
 /**
+* @brief Free a moving wall entity
+* @param self The wall that is to be updated.
+*/
+void moving_wall_free(Entity *self);
+
+/**
 * @brief Spawn a pit entity
 * @param position The screen position to spawn the environmental object at.
 * @param spriteSheet The name of the file the sprite we are looking for can be found at.

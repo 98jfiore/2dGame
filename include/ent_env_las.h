@@ -53,8 +53,14 @@ void laser_update(Entity *self);
 
 /**
 * @brief Draw a laser entity
-* @param self The laser that is to be updated.
+* @param self The laser that is to be drawn.
 */
 void laser_draw(Entity *self);
+
+/**
+* @brief Free a laser entity
+* @param self The laser that is to be freed.
+*/
+void laser_free(Entity *self);
 
 #endif

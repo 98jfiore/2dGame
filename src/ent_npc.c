@@ -13,7 +13,7 @@ Entity *robot_spawn(Vector2D position, ent_movement_flags startDir)
 	NPC *npc;
 	Rect *hitbox;
 
-	ent = entity_new();
+	ent = npc_spawn(position);
 	if (ent == NULL)
 	{
 		slog("Failed to create entity");
@@ -40,8 +40,8 @@ Entity *robot_spawn(Vector2D position, ent_movement_flags startDir)
 	npc->movementFlags = startDir;
 
 	ent->data = npc;
-	ent->update = npc_update;
 	ent->think = robot_think;
+	ent->free = robot_free;
 
 	return ent;
 }
@@ -116,6 +116,11 @@ void robot_think(Entity *self)
 
 }
 
+void robot_free(Entity *self)
+{
+	free(self->data);
+}
+
 Entity *npc_spawn(Vector2D position)
 {
 	Entity *ent;
@@ -128,10 +133,6 @@ Entity *npc_spawn(Vector2D position)
 	}
 
 	vector2d_copy(ent->position, position);
-
-	ent->sprite = gf2d_sprite_load_all("images/ed210_top.png", 128, 128, 16);
-	ent->frameCount = 16;
-	ent->frameRate = 0.1;
 
 	ent->update = npc_update;
 

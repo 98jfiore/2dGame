@@ -206,4 +206,13 @@ void laser_update(Entity *self)
 	}
 }
 
+void laser_free(Entity *self)
+{
+	Laser *laser;
+
+	laser = (Laser *)self->data;
+	free(laser->hitbox);
+	free(self->data);
+}
+
 /*eol@eof*/

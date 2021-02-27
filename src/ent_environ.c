@@ -90,8 +90,14 @@ Entity *moving_wall_spawn(Vector2D position, char *spriteSheet, int frameNum, in
 	ent->flags = ENT_SOLID | ENT_HITTABLE;
 
 	ent->update = moving_wall_update;
+	ent->free = moving_wall_free;
 
 	return ent;
+}
+
+void moving_wall_free(Entity *self)
+{
+	free(self->data);
 }
 
 void moving_wall_update(Entity *self)
