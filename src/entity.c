@@ -49,7 +49,7 @@ void entity_update(Entity *self)
 	if (!self) return;
 	//Generic updates
 	self->frame += self->frameRate;
-	if (self->frame >= self->frameCount) self->frame = 0;
+	if (self->frame >= self->frameCount + self->baseFrame) self->frame = self->baseFrame;
 	//Specific updates
 	if (self->update == NULL) return;
 	self->update(self);
@@ -197,8 +197,14 @@ void entity_free(Entity *ent)
 		slog("Cannot free a NULL entity");
 		return;
 	}
+	if (ent->free != NULL)
+	{
+		ent->free(ent);
+	}
 	gf2d_sprite_free(ent->sprite);
 	ent->sprite = NULL;
+	free(ent->hitbox);
+	ent->hitbox = NULL;
 	ent->_inuse = 0;
 }
 

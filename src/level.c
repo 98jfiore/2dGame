@@ -7,6 +7,7 @@
 
 #include "level.h"
 #include "ent_environ.h"
+#include "ent_env_las.h"
 #include "ent_npc.h"
 
 Level *level_new()
@@ -29,11 +30,11 @@ Level *level_load(const char *filename)
 	const char *string;
 	int rows, columns;
 	int i, j, count, tileIndex;
-	int wallCode, pitCode, spikeCode, tileType;
+	int wallCode, pitCode, spikeCode, laserCode, laserBaseCode, tileType;
 	SJson *objectsjs, *objjs;
 	int objCount;
 	int objx, objy;
-	int objSpeed;
+	int objSpeed, objCycle, objRange;
 	const char *objType, *objStartDir;
 
 	Vector2D position;
@@ -84,6 +85,8 @@ Level *level_load(const char *filename)
 		sj_get_integer_value(sj_object_get_value(leveljs, "wallCode"), &wallCode);
 		sj_get_integer_value(sj_object_get_value(leveljs, "pitCode"), &pitCode);
 		sj_get_integer_value(sj_object_get_value(leveljs, "spikeCode"), &spikeCode);
+		sj_get_integer_value(sj_object_get_value(leveljs, "laserCode"), &laserCode);
+		sj_get_integer_value(sj_object_get_value(leveljs, "laserBaseCode"), &laserBaseCode);
 		sj_get_float_value(sj_object_get_value(leveljs, "scale"), &level->scaleAmount);
 
 		level->tileSet = gf2d_sprite_load_all(
@@ -121,7 +124,7 @@ Level *level_load(const char *filename)
 		return NULL;
 	}
 
-
+	//Load in plain tiles and basic environment entities
 	tileIndex = 0;
 	for (j = 0; j < rows; ++j)
 	{
@@ -223,7 +226,6 @@ Level *level_load(const char *filename)
 			sj_get_integer_value(sj_object_get_value(objjs, "x"), &objx);
 			sj_get_integer_value(sj_object_get_value(objjs, "y"), &objy);
 			objStartDir = sj_get_string_value(sj_object_get_value(objjs, "startDir"));
-			sj_get_integer_value(sj_object_get_value(objjs, "speed"), &objSpeed);
 
 			//printf("%s %i,%i %s\n", enemyType, enemyx, enemyy, enemyStartDir);
 
@@ -231,6 +233,7 @@ Level *level_load(const char *filename)
 
 			if (strcmp(objType, "moving wall") == 0)
 			{
+				sj_get_integer_value(sj_object_get_value(objjs, "speed"), &objSpeed);
 				if (strcmp(objStartDir, "north") == 0)
 				{
 					moving_wall_spawn(position, (char *)string, wallCode - 1, level->tileWidth, level->tileHeight, level->tileFramesPerLine, level->scaleAmount, objSpeed, MOV_NORTH);
@@ -246,6 +249,28 @@ Level *level_load(const char *filename)
 				else if (strcmp(objStartDir, "west") == 0)
 				{
 					moving_wall_spawn(position, (char *)string, wallCode - 1, level->tileWidth, level->tileHeight, level->tileFramesPerLine, level->scaleAmount, objSpeed, MOV_WEST);
+				}
+			}
+
+			else if (strcmp(objType, "laser") == 0)
+			{
+				sj_get_integer_value(sj_object_get_value(objjs, "cycle"), &objCycle);
+				sj_get_integer_value(sj_object_get_value(objjs, "range"), &objRange);
+				if (strcmp(objStartDir, "north") == 0)
+				{
+					laserBase_spawn(position, (char *)string, laserBaseCode - 1, laserCode - 1, level->tileWidth, level->tileHeight, level->tileFramesPerLine, level->scaleAmount, objCycle, objRange, MOV_NORTH);
+				}
+				else if (strcmp(objStartDir, "south") == 0)
+				{
+					laserBase_spawn(position, (char *)string, laserBaseCode - 1, laserCode - 1, level->tileWidth, level->tileHeight, level->tileFramesPerLine, level->scaleAmount, objCycle, objRange, MOV_SOUTH);
+				}
+				else if (strcmp(objStartDir, "east") == 0)
+				{
+					laserBase_spawn(position, (char *)string, laserBaseCode - 1, laserCode - 1, level->tileWidth, level->tileHeight, level->tileFramesPerLine, level->scaleAmount, objCycle, objRange, MOV_EAST);
+				}
+				else if (strcmp(objStartDir, "west") == 0)
+				{
+					laserBase_spawn(position, (char *)string, laserBaseCode - 1, laserCode - 1, level->tileWidth, level->tileHeight, level->tileFramesPerLine, level->scaleAmount, objCycle, objRange, MOV_WEST);
 				}
 			}
 		}

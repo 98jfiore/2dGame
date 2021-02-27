@@ -89,6 +89,7 @@ void robot_think(Entity *self)
 				newVel.x = 0;
 				newVel.y = 0;
 
+				//printf("%i\n", collided->flags);
 
 				if (npc_self->movementFlags & MOV_NORTH)
 				{

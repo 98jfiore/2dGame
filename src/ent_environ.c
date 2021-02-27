@@ -247,3 +247,4 @@ void environment_draw(Entity *ent)
 		NULL,
 		(Uint32)ent->frame);
 }
+/*eol@eof*/

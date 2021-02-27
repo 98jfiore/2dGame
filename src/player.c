@@ -25,6 +25,7 @@ Entity *player_spawn(Vector2D position)
 	ent->sprite = gf2d_sprite_load_all("images/player.png", 16, 16, 2);
 	ent->frameCount = 2;
 	ent->frameRate = 0.05;
+	ent->baseFrame = 0;
 	ent->scale = vector2d(2,2);
 
 	ent->flags = ENT_PLAYER;
@@ -71,19 +72,19 @@ void player_update(Entity *self)
 		collided = check_collision(self);
 		if (collided)
 		{
-			if (collided->flags & ENT_DEADLY)
-			{
-				entity_free(self);
-				slog("You DIED");
-				return;
-				//printf("%.6f, %.6f vs %.6f, %.6f\n", self->hitbox->x, self->hitbox->y, self->position.x, self->position.y);
-				//printf("%.6f, %.6f vs %.6f, %.6f\n", collided->hitbox->x, collided->hitbox->y, collided->position.x, collided->position.y);
-			}
 			if (collided->flags & ENT_SOLID)
 			{
 				self->hitbox->x -= self->velocity.x;
 				self->hitbox->y -= self->velocity.y;
 				self->velocity = vector2d(0, 0);
+				//printf("%.6f, %.6f vs %.6f, %.6f\n", self->hitbox->x, self->hitbox->y, self->position.x, self->position.y);
+				//printf("%.6f, %.6f vs %.6f, %.6f\n", collided->hitbox->x, collided->hitbox->y, collided->position.x, collided->position.y);
+			}
+			else if (collided->flags & ENT_DEADLY)
+			{
+				entity_free(self);
+				slog("You DIED");
+				return;
 				//printf("%.6f, %.6f vs %.6f, %.6f\n", self->hitbox->x, self->hitbox->y, self->position.x, self->position.y);
 				//printf("%.6f, %.6f vs %.6f, %.6f\n", collided->hitbox->x, collided->hitbox->y, collided->position.x, collided->position.y);
 			}

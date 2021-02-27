@@ -11,11 +11,11 @@
 
 
 enum entity_flags {
-	ENT_SOLID = 0x1,
-	ENT_DEADLY = 0x2,
-	ENT_DESTRUCTABLE = 0x4,
-	ENT_HITTABLE = 0x8,
-	ENT_PLAYER = 0x16,
+	ENT_SOLID = 1,
+	ENT_DEADLY = 2,
+	ENT_DESTRUCTABLE = 4,
+	ENT_HITTABLE = 8,
+	ENT_PLAYER = 16,
 };
 
 typedef enum{
@@ -37,6 +37,7 @@ typedef struct Entity_s
 	float		frame;
 	float		frameRate;
 	int			frameCount;
+	int			baseFrame;
 	void		(*update)(struct Entity_s *self);
 	void		(*think)(struct Entity_s *self);
 	void		(*draw)(struct Entity_s *self);

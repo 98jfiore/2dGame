@@ -53,17 +53,35 @@
 				"speed" : 2
 			},
 			{
-					"type": "moving wall",
-					"x" : 27,
-					"y" : 15,
-					"startDir" : "south",
-					"speed" : 2
-				}
+				"type": "moving wall",
+				"x" : 27,
+				"y" : 15,
+				"startDir" : "south",
+				"speed" : 2
+			},
+			{
+				"type": "laser",
+				"x" : 13,
+				"y" : 11,
+				"startDir" : "north",
+				"range" : 5,
+				"cycle" : 60
+			},
+			{
+				"type": "laser",
+				"x" : 13,
+				"y" : 15,
+				"startDir" : "east",
+				"range" : 5,
+				"cycle" : 60
+			}
 		],
+		"floorCode" : 1,
 		"wallCode": 2,
 		"pitCode" : 3,
 		"spikeCode" : 4,
-		"floorCode" : 1,
+		"laserCode" : 5,
+		"laserBaseCode" : 7,
         "tileWidth": 16,
         "tileHeight": 16,
         "tileFramesPerLine": 30,
