@@ -3,13 +3,6 @@
 
 #include "entity.h"
 
-typedef enum{
-	NPC_NORTH = 0x1,
-	NPC_EAST = 0x2,
-	NPC_SOUTH = 0x4,
-	NPC_WEST = 0x8,
-} npc_flag;
-
 typedef struct
 {
 	Uint8		movementFlags;
@@ -21,7 +14,7 @@ typedef struct
 * @param startDir The direction the robot initially moves in.
 * @return NULL on error, or a pointer to a new robot entity.
 */
-Entity *robot_spawn(Vector2D position, npc_flag startDir);
+Entity *robot_spawn(Vector2D position, ent_movement_flags startDir);
 
 /**
 * @brief Update the robot entity

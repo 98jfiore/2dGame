@@ -27,6 +27,8 @@ Entity *player_spawn(Vector2D position)
 	ent->frameRate = 0.05;
 	ent->scale = vector2d(2,2);
 
+	ent->flags = ENT_PLAYER;
+
 	hitbox = (Rect *)malloc(sizeof(Rect));
 
 	hitbox->x = position.x;

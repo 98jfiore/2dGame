@@ -15,7 +15,15 @@ enum entity_flags {
 	ENT_DEADLY = 0x2,
 	ENT_DESTRUCTABLE = 0x4,
 	ENT_HITTABLE = 0x8,
+	ENT_PLAYER = 0x16,
 };
+
+typedef enum{
+	MOV_NORTH = 0x1,
+	MOV_EAST = 0x2,
+	MOV_SOUTH = 0x4,
+	MOV_WEST = 0x8,
+} ent_movement_flags;
 
 typedef struct Entity_s
 {

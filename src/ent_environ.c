@@ -49,15 +49,120 @@ Entity *wall_spawn(Vector2D position, char *spriteSheet, int frameNum, int sprit
 
 	hitbox = (Rect *)malloc(sizeof(Rect));
 
-	hitbox->x = position.x;
-	hitbox->y = position.y;
-	hitbox->width = spriteWidth * scale;
-	hitbox->height = spriteHeight * scale;
+	hitbox->x = position.x + 2.5;
+	hitbox->y = position.y + 2.5;
+	hitbox->width = spriteWidth * scale - 5;
+	hitbox->height = spriteHeight * scale -5;
 	ent->hitbox = hitbox;
 
 	ent->flags = ENT_SOLID | ENT_HITTABLE;
 
 	return ent;
+}
+
+Entity *moving_wall_spawn(Vector2D position, char *spriteSheet, int frameNum, int spriteWidth, int spriteHeight, int fpl, int scale, int speed, ent_movement_flags direction)
+{
+	Entity *ent;
+	Rect *hitbox;
+	MovingEnv *moving;
+
+	ent = environment_spawn(position, spriteSheet, frameNum, spriteWidth, spriteHeight, fpl, scale);
+	if (ent == NULL)
+	{
+		slog("Failed to create entity");
+		return NULL;
+	}
+
+	moving = malloc(sizeof(MovingEnv));
+	moving->movementFlags = direction;
+	moving->speed = speed;
+
+	ent->data = moving;
+
+	hitbox = (Rect *)malloc(sizeof(Rect));
+
+	hitbox->x = position.x + 2.5;
+	hitbox->y = position.y + 2.5;
+	hitbox->width = spriteWidth * scale - 5;
+	hitbox->height = spriteHeight * scale - 5;
+	ent->hitbox = hitbox;
+
+	ent->flags = ENT_SOLID | ENT_HITTABLE;
+
+	ent->update = moving_wall_update;
+
+	return ent;
+}
+
+void moving_wall_update(Entity *self)
+{
+	Entity *collided;
+	MovingEnv *moving_self;
+	Vector2D newVel;
+
+	moving_self = (MovingEnv *)self->data;
+
+	newVel = vector2d(0, 0);
+
+	if (moving_self->movementFlags & MOV_NORTH)
+	{
+		newVel.y = -1 * moving_self->speed;
+	}
+	else if (moving_self->movementFlags & MOV_EAST)
+	{
+		newVel.x = moving_self->speed;
+	}
+	else if (moving_self->movementFlags & MOV_SOUTH)
+	{
+		newVel.y = moving_self->speed;
+	}
+	else if (moving_self->movementFlags & MOV_WEST)
+	{
+		newVel.x = -1 * moving_self->speed;
+	}
+
+
+	if (self->hitbox != NULL)
+	{
+		self->hitbox->x += self->velocity.x;
+		self->hitbox->y += self->velocity.y;
+		//Check if npc is coliding with something, find out what it is, and do something about it.
+		collided = check_collision(self);
+		if (collided)
+		{
+			if (collided->flags & ENT_SOLID || collided->flags & ENT_PLAYER)
+			{
+				self->hitbox->x -= self->velocity.x;
+				self->hitbox->y -= self->velocity.y;
+				newVel.x = 0;
+				newVel.y = 0;
+
+
+				if (moving_self->movementFlags & MOV_NORTH)
+				{
+					moving_self->movementFlags = MOV_SOUTH;
+				}
+				else if (moving_self->movementFlags & MOV_EAST)
+				{
+					moving_self->movementFlags = MOV_WEST;
+				}
+				else if (moving_self->movementFlags & MOV_SOUTH)
+				{
+					moving_self->movementFlags = MOV_NORTH;
+				}
+				else if (moving_self->movementFlags & MOV_WEST)
+				{
+					moving_self->movementFlags = MOV_EAST;
+				}
+				//printf("%.6f, %.6f vs %.6f, %.6f\n", self->hitbox->x, self->hitbox->y, self->position.x, self->position.y);
+				//printf("%.6f, %.6f vs %.6f, %.6f\n", collided->hitbox->x, collided->hitbox->y, collided->position.x, collided->position.y);
+			}
+		}
+	}
+	self->velocity = newVel;
+	
+	vector2d_add(self->position, self->position, self->velocity);
+
 }
 
 Entity *pit_spawn(Vector2D position, char *spriteSheet, int frameNum, int spriteWidth, int spriteHeight, int fpl, int scale)

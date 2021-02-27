@@ -30,10 +30,11 @@ Level *level_load(const char *filename)
 	int rows, columns;
 	int i, j, count, tileIndex;
 	int wallCode, pitCode, spikeCode, tileType;
-	SJson *enemiesjs, *enemyjs;
-	int enemyCount;
-	int enemyx, enemyy;
-	const char *enemyType, *enemyStartDir;
+	SJson *objectsjs, *objjs;
+	int objCount;
+	int objx, objy;
+	int objSpeed;
+	const char *objType, *objStartDir;
 
 	Vector2D position;
 
@@ -161,44 +162,90 @@ Level *level_load(const char *filename)
 		}
 	}
 
-	enemiesjs = sj_object_get_value(leveljs, "enemies");
-	if (enemiesjs != NULL)
+	//Load in enemies
+	objectsjs = sj_object_get_value(leveljs, "enemies");
+	if (objectsjs != NULL)
 	{
-		enemyCount = sj_array_get_count(enemiesjs);
-		for (i = 0; i < enemyCount; i++)
+		objCount = sj_array_get_count(objectsjs);
+		for (i = 0; i < objCount; i++)
 		{
-			enemyjs = sj_array_get_nth(enemiesjs, i);
-			if (enemyjs == NULL)
+			objjs = sj_array_get_nth(objectsjs, i);
+			if (objjs == NULL)
 			{
 				slog("ENEMY Not found");
 				continue;
 			}
-			enemyType = sj_get_string_value(sj_object_get_value(enemyjs, "type"));
-			sj_get_integer_value(sj_object_get_value(enemyjs, "x"), &enemyx);
-			sj_get_integer_value(sj_object_get_value(enemyjs, "y"), &enemyy);
-			enemyStartDir = sj_get_string_value(sj_object_get_value(enemyjs, "startDir"));
+			objType = sj_get_string_value(sj_object_get_value(objjs, "type"));
+			sj_get_integer_value(sj_object_get_value(objjs, "x"), &objx);
+			sj_get_integer_value(sj_object_get_value(objjs, "y"), &objy);
+			objStartDir = sj_get_string_value(sj_object_get_value(objjs, "startDir"));
 			
 			//printf("%s %i,%i %s\n", enemyType, enemyx, enemyy, enemyStartDir);
 
-			position = vector2d(enemyx * level->tileSet->frame_w * level->scaleAmount, enemyy * level->tileSet->frame_h * level->scaleAmount);
+			position = vector2d(objx * level->tileSet->frame_w * level->scaleAmount, objy * level->tileSet->frame_h * level->scaleAmount);
 
-			if (strcmp(enemyType, "robot") == 0)
+			if (strcmp(objType, "robot") == 0)
 			{
-				if (strcmp(enemyStartDir, "north") == 0)
+				if (strcmp(objStartDir, "north") == 0)
 				{
-					robot_spawn(position, NPC_NORTH);
+					robot_spawn(position, MOV_NORTH);
 				}
-				else if (strcmp(enemyStartDir, "south") == 0)
+				else if (strcmp(objStartDir, "south") == 0)
 				{
-					robot_spawn(position, NPC_SOUTH);
+					robot_spawn(position, MOV_SOUTH);
 				}
-				else if (strcmp(enemyStartDir, "east") == 0)
+				else if (strcmp(objStartDir, "east") == 0)
 				{
-					robot_spawn(position, NPC_EAST);
+					robot_spawn(position, MOV_EAST);
 				}
-				else if (strcmp(enemyStartDir, "west") == 0)
+				else if (strcmp(objStartDir, "west") == 0)
 				{
-					robot_spawn(position, NPC_WEST);
+					robot_spawn(position, MOV_WEST);
+				}
+			}
+		}
+	}
+
+	//Load in obstacles
+	objectsjs = sj_object_get_value(leveljs, "obstacles");
+	if (objectsjs != NULL)
+	{
+		objCount = sj_array_get_count(objectsjs);
+		for (i = 0; i < objCount; i++)
+		{
+			objjs = sj_array_get_nth(objectsjs, i);
+			if (objjs == NULL)
+			{
+				slog("ENEMY Not found");
+				continue;
+			}
+			objType = sj_get_string_value(sj_object_get_value(objjs, "type"));
+			sj_get_integer_value(sj_object_get_value(objjs, "x"), &objx);
+			sj_get_integer_value(sj_object_get_value(objjs, "y"), &objy);
+			objStartDir = sj_get_string_value(sj_object_get_value(objjs, "startDir"));
+			sj_get_integer_value(sj_object_get_value(objjs, "speed"), &objSpeed);
+
+			//printf("%s %i,%i %s\n", enemyType, enemyx, enemyy, enemyStartDir);
+
+			position = vector2d(objx * level->tileSet->frame_w * level->scaleAmount, objy * level->tileSet->frame_h * level->scaleAmount);
+
+			if (strcmp(objType, "moving wall") == 0)
+			{
+				if (strcmp(objStartDir, "north") == 0)
+				{
+					moving_wall_spawn(position, (char *)string, wallCode - 1, level->tileWidth, level->tileHeight, level->tileFramesPerLine, level->scaleAmount, objSpeed, MOV_NORTH);
+				}
+				else if (strcmp(objStartDir, "south") == 0)
+				{
+					moving_wall_spawn(position, (char *)string, wallCode - 1, level->tileWidth, level->tileHeight, level->tileFramesPerLine, level->scaleAmount, objSpeed, MOV_SOUTH);
+				}
+				else if (strcmp(objStartDir, "east") == 0)
+				{
+					moving_wall_spawn(position, (char *)string, wallCode - 1, level->tileWidth, level->tileHeight, level->tileFramesPerLine, level->scaleAmount, objSpeed, MOV_EAST);
+				}
+				else if (strcmp(objStartDir, "west") == 0)
+				{
+					moving_wall_spawn(position, (char *)string, wallCode - 1, level->tileWidth, level->tileHeight, level->tileFramesPerLine, level->scaleAmount, objSpeed, MOV_WEST);
 				}
 			}
 		}

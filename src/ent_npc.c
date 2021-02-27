@@ -7,7 +7,7 @@
 #include "ent_npc.h"
 #include "shapes.h"
 
-Entity *robot_spawn(Vector2D position, npc_flag startDir)
+Entity *robot_spawn(Vector2D position, ent_movement_flags startDir)
 {
 	Entity *ent;
 	NPC *npc;
@@ -56,19 +56,19 @@ void robot_think(Entity *self)
 
 	newVel = vector2d(0, 0);
 
-	if (npc_self->movementFlags & NPC_NORTH)
+	if (npc_self->movementFlags & MOV_NORTH)
 	{
 		newVel.y = -5;
 	}
-	else if (npc_self->movementFlags & NPC_EAST)
+	else if (npc_self->movementFlags & MOV_EAST)
 	{
 		newVel.x = 5;
 	}
-	else if (npc_self->movementFlags & NPC_SOUTH)
+	else if (npc_self->movementFlags & MOV_SOUTH)
 	{
 		newVel.y = 5;
 	}
-	else if (npc_self->movementFlags & NPC_WEST)
+	else if (npc_self->movementFlags & MOV_WEST)
 	{
 		newVel.x = -5;
 	}
@@ -90,21 +90,21 @@ void robot_think(Entity *self)
 				newVel.y = 0;
 
 
-				if (npc_self->movementFlags & NPC_NORTH)
+				if (npc_self->movementFlags & MOV_NORTH)
 				{
-					npc_self->movementFlags = NPC_SOUTH;
+					npc_self->movementFlags = MOV_SOUTH;
 				}
-				else if (npc_self->movementFlags & NPC_EAST)
+				else if (npc_self->movementFlags & MOV_EAST)
 				{
-					npc_self->movementFlags = NPC_WEST;
+					npc_self->movementFlags = MOV_WEST;
 				}
-				else if (npc_self->movementFlags & NPC_SOUTH)
+				else if (npc_self->movementFlags & MOV_SOUTH)
 				{
-					npc_self->movementFlags = NPC_NORTH;
+					npc_self->movementFlags = MOV_NORTH;
 				}
-				else if (npc_self->movementFlags & NPC_WEST)
+				else if (npc_self->movementFlags & MOV_WEST)
 				{
-					npc_self->movementFlags = NPC_EAST;
+					npc_self->movementFlags = MOV_EAST;
 				}
 				//printf("%.6f, %.6f vs %.6f, %.6f\n", self->hitbox->x, self->hitbox->y, self->position.x, self->position.y);
 				//printf("%.6f, %.6f vs %.6f, %.6f\n", collided->hitbox->x, collided->hitbox->y, collided->position.x, collided->position.y);
