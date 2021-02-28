@@ -9,6 +9,7 @@
 #include "ent_environ.h"
 #include "ent_env_las.h"
 #include "ent_npc.h"
+#include "ent_npc_robot.h"
 
 Level *level_new()
 {
