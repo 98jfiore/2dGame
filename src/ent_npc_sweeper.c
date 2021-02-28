@@ -23,18 +23,18 @@ Entity *sweeper_spawn(Vector2D position, ent_movement_flags startDir, int cycle)
 
 	vector2d_copy(ent->position, position);
 
-	ent->sprite = gf2d_sprite_load_all("images/robot.png", 16, 16, 4);
+	ent->sprite = gf2d_sprite_load_all("images/sweeper.png", 16, 16, 4);
 	ent->frameCount = 4;
-	ent->frameRate = 0.05;
+	ent->frameRate = 0.1;
 	ent->scale = vector2d(2, 2);
 	ent->flags = ENT_DEADLY | ENT_DESTRUCTABLE;
 
 	hitbox = (Rect *)malloc(sizeof(Rect));
 
-	hitbox->x = position.x - 1;
-	hitbox->y = position.y - 1;
-	hitbox->width = ent->sprite->frame_w * 2 - 2;
-	hitbox->height = ent->sprite->frame_h * 2 - 2;
+	hitbox->x = position.x - 0.5;
+	hitbox->y = position.y - 0.5;
+	hitbox->width = ent->sprite->frame_w * 2 - 1;
+	hitbox->height = ent->sprite->frame_h * 2 - 1;
 	ent->hitbox = hitbox;
 
 	sweeper = malloc(sizeof(Sweeper));
@@ -62,19 +62,19 @@ void sweeper_think(Entity *self)
 
 	if (sweeper_self->movementFlags & MOV_NORTH)
 	{
-		newVel.y = -5;
+		newVel.y = -2;
 	}
 	else if (sweeper_self->movementFlags & MOV_EAST)
 	{
-		newVel.x = 5;
+		newVel.x = 2;
 	}
 	else if (sweeper_self->movementFlags & MOV_SOUTH)
 	{
-		newVel.y = 5;
+		newVel.y = 2;
 	}
 	else if (sweeper_self->movementFlags & MOV_WEST)
 	{
-		newVel.x = -5;
+		newVel.x = -2;
 	}
 
 
