@@ -11,6 +11,7 @@
 #include "ent_npc.h"
 #include "ent_npc_robot.h"
 #include "ent_npc_drone.h"
+#include "ent_npc_sweeper.h"
 
 Level *level_new()
 {
@@ -209,24 +210,44 @@ Level *level_load(const char *filename)
 				}
 			}
 			else if (strcmp(objType, "drone") == 0)
+			{
+				if (strcmp(objStartDir, "north") == 0)
 				{
-					if (strcmp(objStartDir, "north") == 0)
-					{
-						drone_spawn(position, MOV_NORTH);
-					}
-					else if (strcmp(objStartDir, "south") == 0)
-					{
-						drone_spawn(position, MOV_SOUTH);
-					}
-					else if (strcmp(objStartDir, "east") == 0)
-					{
-						drone_spawn(position, MOV_EAST);
-					}
-					else if (strcmp(objStartDir, "west") == 0)
-					{
-						drone_spawn(position, MOV_WEST);
-					}
+					drone_spawn(position, MOV_NORTH);
 				}
+				else if (strcmp(objStartDir, "south") == 0)
+				{
+					drone_spawn(position, MOV_SOUTH);
+				}
+				else if (strcmp(objStartDir, "east") == 0)
+				{
+					drone_spawn(position, MOV_EAST);
+				}
+				else if (strcmp(objStartDir, "west") == 0)
+				{
+					drone_spawn(position, MOV_WEST);
+				}
+			}
+			else if (strcmp(objType, "sweeper") == 0)
+			{
+				sj_get_integer_value(sj_object_get_value(objjs, "cycle"), &objCycle);
+				if (strcmp(objStartDir, "north") == 0)
+				{
+					sweeper_spawn(position, MOV_NORTH, objCycle);
+				}
+				else if (strcmp(objStartDir, "south") == 0)
+				{
+					sweeper_spawn(position, MOV_SOUTH, objCycle);
+				}
+				else if (strcmp(objStartDir, "east") == 0)
+				{
+					sweeper_spawn(position, MOV_EAST, objCycle);
+				}
+				else if (strcmp(objStartDir, "west") == 0)
+				{
+					sweeper_spawn(position, MOV_WEST, objCycle);
+				}
+			}
 		}
 	}
 

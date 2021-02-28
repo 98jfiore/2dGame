@@ -41,6 +41,13 @@
 				"x" : 24,
 				"y" : 7,
 				"startDir" : "north"
+			},
+			{
+				"type": "sweeper",
+				"x" : 15,
+				"y" : 10,
+				"startDir" : "north",
+				"cycle" : 80
 			}
 		],
 		"obstacles": [
