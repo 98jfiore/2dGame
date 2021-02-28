@@ -59,6 +59,13 @@
 				"y" : 15,
 				"startDir" : "west",
 				"cycle" : 80
+			},
+			{
+				"type": "orb",
+				"x" : 16,
+				"y" : 4,
+				"startDir" : "east",
+				"cycle" : 180
 			}
 		],
 		"obstacles": [

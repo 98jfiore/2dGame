@@ -15,6 +15,7 @@
 #include "ent_npc_drone.h"
 #include "ent_npc_sweeper.h"
 #include "ent_npc_automata.h"
+#include "ent_npc_orb.h"
 
 Level *level_new()
 {
@@ -269,6 +270,26 @@ Level *level_load(const char *filename)
 				else if (strcmp(objStartDir, "west") == 0)
 				{
 					automata_spawn(position, MOV_WEST, objCycle);
+				}
+			}
+			else if (strcmp(objType, "orb") == 0)
+			{
+				sj_get_integer_value(sj_object_get_value(objjs, "cycle"), &objCycle);
+				if (strcmp(objStartDir, "north") == 0)
+				{
+					orb_spawn(position, MOV_NORTH, objCycle);
+				}
+				else if (strcmp(objStartDir, "south") == 0)
+				{
+					orb_spawn(position, MOV_SOUTH, objCycle);
+				}
+				else if (strcmp(objStartDir, "east") == 0)
+				{
+					orb_spawn(position, MOV_EAST, objCycle);
+				}
+				else if (strcmp(objStartDir, "west") == 0)
+				{
+					orb_spawn(position, MOV_WEST, objCycle);
 				}
 			}
 		}
