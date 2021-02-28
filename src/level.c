@@ -10,6 +10,7 @@
 #include "ent_env_las.h"
 #include "ent_npc.h"
 #include "ent_npc_robot.h"
+#include "ent_npc_drone.h"
 
 Level *level_new()
 {
@@ -207,6 +208,25 @@ Level *level_load(const char *filename)
 					robot_spawn(position, MOV_WEST);
 				}
 			}
+			else if (strcmp(objType, "drone") == 0)
+				{
+					if (strcmp(objStartDir, "north") == 0)
+					{
+						drone_spawn(position, MOV_NORTH);
+					}
+					else if (strcmp(objStartDir, "south") == 0)
+					{
+						drone_spawn(position, MOV_SOUTH);
+					}
+					else if (strcmp(objStartDir, "east") == 0)
+					{
+						drone_spawn(position, MOV_EAST);
+					}
+					else if (strcmp(objStartDir, "west") == 0)
+					{
+						drone_spawn(position, MOV_WEST);
+					}
+				}
 		}
 	}
 

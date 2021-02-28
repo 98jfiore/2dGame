@@ -26,7 +26,7 @@
 		"enemies": [
 			{
 				"type": "robot",
-				"x": 10,
+				"x": 23,
 				"y": 6,
 				"startDir": "north"
 			},
@@ -35,6 +35,12 @@
 				"x" : 7,
 				"y" : 11,
 				"startDir" : "east"
+			},
+			{
+				"type": "drone",
+				"x" : 24,
+				"y" : 7,
+				"startDir" : "north"
 			}
 		],
 		"obstacles": [

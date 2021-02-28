@@ -4,11 +4,11 @@
 #include "gfc_types.h"
 #include "gfc_vector.h"
 
-#include "ent_npc_robot.h"
+#include "ent_npc_drone.h"
 #include "ent_npc.h"
 #include "shapes.h"
 
-Entity *robot_spawn(Vector2D position, ent_movement_flags startDir)
+Entity *drone_spawn(Vector2D position, ent_movement_flags startDir)
 {
 	Entity *ent;
 	NPC *npc;
@@ -23,9 +23,9 @@ Entity *robot_spawn(Vector2D position, ent_movement_flags startDir)
 
 	vector2d_copy(ent->position, position);
 
-	ent->sprite = gf2d_sprite_load_all("images/robot.png", 16, 16, 4);
+	ent->sprite = gf2d_sprite_load_all("images/drone.png", 16, 16, 4);
 	ent->frameCount = 4;
-	ent->frameRate = 0.05;
+	ent->frameRate = 0.1;
 	ent->scale = vector2d(2, 2);
 	ent->flags = ENT_DEADLY | ENT_DESTRUCTABLE;
 
@@ -41,13 +41,13 @@ Entity *robot_spawn(Vector2D position, ent_movement_flags startDir)
 	npc->movementFlags = startDir;
 
 	ent->data = npc;
-	ent->think = robot_think;
-	ent->free = robot_free;
+	ent->think = drone_think;
+	ent->free = drone_free;
 
 	return ent;
 }
 
-void robot_think(Entity *self)
+void drone_think(Entity *self)
 {
 	Entity *collided;
 	NPC *npc_self;
@@ -59,19 +59,19 @@ void robot_think(Entity *self)
 
 	if (npc_self->movementFlags & MOV_NORTH)
 	{
-		newVel.y = -5;
+		newVel.y = -1;
 	}
 	else if (npc_self->movementFlags & MOV_EAST)
 	{
-		newVel.x = 5;
+		newVel.x = 1;
 	}
 	else if (npc_self->movementFlags & MOV_SOUTH)
 	{
-		newVel.y = 5;
+		newVel.y = 1;
 	}
 	else if (npc_self->movementFlags & MOV_WEST)
 	{
-		newVel.x = -5;
+		newVel.x = -1;
 	}
 
 
@@ -83,7 +83,7 @@ void robot_think(Entity *self)
 		collided = check_collision(self);
 		if (collided)
 		{
-			if (collided->flags & ENT_DEADLY || collided->flags & ENT_SOLID)
+			if (collided->flags & ENT_SOLID)
 			{
 				self->hitbox->x -= self->velocity.x;
 				self->hitbox->y -= self->velocity.y;
@@ -117,7 +117,7 @@ void robot_think(Entity *self)
 
 }
 
-void robot_free(Entity *self)
+void drone_free(Entity *self)
 {
 	free(self->data);
 }
