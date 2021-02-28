@@ -24,7 +24,7 @@ Entity *orb_spawn(Vector2D position, ent_movement_flags startDir, int cycle)
 
 	vector2d_copy(ent->position, position);
 
-	ent->sprite = gf2d_sprite_load_all("images/automata.png", 16, 16, 4);
+	ent->sprite = gf2d_sprite_load_all("images/orb.png", 16, 16, 4);
 	ent->frameCount = 1;
 	ent->frameRate = 0;
 	ent->scale = vector2d(2, 2);
@@ -97,7 +97,7 @@ void orb_think(Entity *self)
 		collided = check_collision(self);
 		if (collided)
 		{
-			if (collided->flags & ENT_DEADLY || collided->flags & ENT_SOLID)
+			if (collided->flags & ENT_DEADLY || collided->flags & ENT_SOLID || (collided->flags & ENT_PLAYER && self->flags & ENT_SOLID))
 			{
 				self->hitbox->x -= self->velocity.x;
 				self->hitbox->y -= self->velocity.y;
@@ -152,7 +152,7 @@ void orb_think(Entity *self)
 			self->flags = ENT_DEADLY;
 			//self->hitbox = orb_self->activeHitbox;
 			self->baseFrame = 1;
-			self->frameCount = 2;
+			self->frameCount = 3;
 			self->frameRate = 1;
 		}
 
