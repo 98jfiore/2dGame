@@ -24,9 +24,9 @@ Entity *automata_spawn(Vector2D position, ent_movement_flags startDir, int cycle
 
 	vector2d_copy(ent->position, position);
 
-	ent->sprite = gf2d_sprite_load_all("images/sweeper.png", 16, 16, 4);
+	ent->sprite = gf2d_sprite_load_all("images/automata.png", 16, 16, 4);
 	ent->frameCount = 4;
-	ent->frameRate = 0.1;
+	ent->frameRate = 0.05;
 	ent->scale = vector2d(2, 2);
 	ent->flags = ENT_DEADLY | ENT_DESTRUCTABLE;
 
@@ -148,6 +148,11 @@ void automata_think(Entity *self)
 			{
 				newVel.x = -1;
 			}
+			self->frameRate = 0.05;
+		}
+		else
+		{
+			self->frameRate = 0;
 		}
 
 		self->velocity = newVel;

@@ -6,6 +6,8 @@
 #include "gf2d_sprite.h"
 
 #include "level.h"
+#include "player.h"
+#include "entity.h"
 #include "ent_environ.h"
 #include "ent_env_las.h"
 #include "ent_npc.h"
@@ -337,6 +339,26 @@ Level *level_load(const char *filename)
 				}
 			}
 		}
+	}
+
+	//Load in player
+	objjs = sj_object_get_value(leveljs, "player spawn");
+	if (objjs != NULL)
+	{
+		sj_get_integer_value(sj_object_get_value(objjs, "x"), &objx);
+		sj_get_integer_value(sj_object_get_value(objjs, "y"), &objy);
+
+		position = vector2d(objx * level->tileSet->frame_w * level->scaleAmount, objy * level->tileSet->frame_h * level->scaleAmount);
+
+		player_spawn(position);
+	}
+	else
+	{
+		slog("Player spawn not found");
+		level_free(level);
+		entity_manager_free();
+		sj_free(json);
+		return NULL;
 	}
 
 	sj_free(json);
