@@ -48,6 +48,7 @@ Entity *laser_spawn(Vector2D position, char *spriteSheet, int frameNum, int spri
 	laser->hitbox = hitbox;
 
 	ent->data = laser;
+	ent->damage = 1;
 
 	ent->update = laser_update;
 	ent->draw = laser_draw;

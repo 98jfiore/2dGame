@@ -4,6 +4,19 @@
 #include "entity.h"
 #include "shapes.h"
 
+typedef enum{
+	PLR_ALIVE = 1,
+	PLR_DEAD = 2,
+	PLR_INVIN = 4,
+} player_flags;
+
+typedef struct
+{
+	Uint8	health;
+	Uint8	flags; 
+	Uint32	iframesRemaining;
+}Player;
+
 /**
  * @brief Spawn a player entity
  * @param position The screen position to spawn the player at.

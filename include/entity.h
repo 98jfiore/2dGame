@@ -16,6 +16,7 @@ enum entity_flags {
 	ENT_DESTRUCTABLE = 4,
 	ENT_HITTABLE = 8,
 	ENT_PLAYER = 16,
+	ENT_NOINVIN = 32,
 };
 
 typedef enum{
@@ -38,6 +39,7 @@ typedef struct Entity_s
 	float		frameRate;
 	int			frameCount;
 	int			baseFrame;
+	int			damage;
 	void		(*update)(struct Entity_s *self);
 	void		(*think)(struct Entity_s *self);
 	void		(*draw)(struct Entity_s *self);

@@ -63,6 +63,7 @@ Entity *automata_spawn(Vector2D position, ent_movement_flags startDir, int cycle
 	}
 
 	ent->velocity = velocity;
+	ent->damage = 1;
 
 	ent->data = automata;
 	ent->think = automata_think;

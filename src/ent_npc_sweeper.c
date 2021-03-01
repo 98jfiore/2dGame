@@ -43,6 +43,8 @@ Entity *sweeper_spawn(Vector2D position, ent_movement_flags startDir, int cycle)
 	sweeper->pointInCycle = 0;
 
 	ent->data = sweeper;
+	ent->damage = 1;
+
 	ent->think = sweeper_think;
 	ent->free = sweeper_free;
 

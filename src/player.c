@@ -12,6 +12,7 @@ Entity *player_spawn(Vector2D position)
 {
 	Entity *ent;
 	Rect *hitbox;
+	Player *player;
 
 	ent = entity_new();
 	if (ent == NULL)
@@ -40,6 +41,12 @@ Entity *player_spawn(Vector2D position)
 
 	ent->update = player_update;
 
+	player = (Player *)malloc(sizeof(Player));
+	player->flags = PLR_ALIVE;
+	player->health = 2;
+
+	ent->data = player;
+
 	return ent;
 }
 
@@ -63,35 +70,79 @@ void player_think(Entity *self)
 void player_update(Entity *self)
 {
 	Entity *collided;
+	Player *player;
+	int	damageTaken;
 
-	if (self->hitbox != NULL)
+	player = (Player *)self->data;
+
+	if (player->flags & PLR_ALIVE)
 	{
-		self->hitbox->x += self->velocity.x;
-		self->hitbox->y += self->velocity.y;
-		//Check if player is coliding with something, find out what it is, and do something about it.
-		collided = check_collision(self);
-		if (collided)
+		if (self->hitbox != NULL)
 		{
-			if (collided->flags & ENT_SOLID)
+			self->hitbox->x += self->velocity.x;
+			self->hitbox->y += self->velocity.y;
+			//Check if player is coliding with something, find out what it is, and do something about it.
+			collided = check_collision(self);
+			if (collided)
 			{
-				self->hitbox->x -= self->velocity.x;
-				self->hitbox->y -= self->velocity.y;
-				self->velocity = vector2d(0, 0);
-				//printf("%.6f, %.6f vs %.6f, %.6f\n", self->hitbox->x, self->hitbox->y, self->position.x, self->position.y);
-				//printf("%.6f, %.6f vs %.6f, %.6f\n", collided->hitbox->x, collided->hitbox->y, collided->position.x, collided->position.y);
-			}
-			else if (collided->flags & ENT_DEADLY)
-			{
-				entity_free(self);
-				slog("You DIED");
-				return;
-				//printf("%.6f, %.6f vs %.6f, %.6f\n", self->hitbox->x, self->hitbox->y, self->position.x, self->position.y);
-				//printf("%.6f, %.6f vs %.6f, %.6f\n", collided->hitbox->x, collided->hitbox->y, collided->position.x, collided->position.y);
+				if ((~player->flags) & PLR_INVIN || collided->flags & ENT_NOINVIN)
+				{
+					if (collided->flags & ENT_SOLID)
+					{
+						self->hitbox->x -= self->velocity.x;
+						self->hitbox->y -= self->velocity.y;
+						self->velocity = vector2d(0, 0);
+						//printf("%.6f, %.6f vs %.6f, %.6f\n", self->hitbox->x, self->hitbox->y, self->position.x, self->position.y);
+						//printf("%.6f, %.6f vs %.6f, %.6f\n", collided->hitbox->x, collided->hitbox->y, collided->position.x, collided->position.y);
+					}
+					else if (collided->flags & ENT_DEADLY)
+					{
+						damageTaken = collided->damage;
+						if (damageTaken == -1)
+						{
+							player->health = 0;
+							slog("Took all damage");
+						}
+						else
+						{
+							player->health -= damageTaken;
+							slog("Took %i damage", damageTaken);
+							player->flags = player->flags | PLR_INVIN;
+							player->iframesRemaining = 80;
+						}
+					}
+				}
 			}
 		}
+
+		if (player->flags & PLR_INVIN)
+		{
+			if (player->iframesRemaining > 0)
+			{
+				player->iframesRemaining--;
+				printf("%i\n", player->iframesRemaining);
+			}
+			else
+			{
+				player->flags = PLR_ALIVE;
+			}
+		}
+		
+		if (player->health <= 0)
+		{
+			player->health = 0;
+			player->flags = PLR_DEAD;
+			return;
+		}
+		
+
+		vector2d_add(self->position, self->position, self->velocity);
+		player_think(self);
 	}
-
-
-	vector2d_add(self->position, self->position, self->velocity);
-	player_think(self);
+	else if (player->flags & PLR_DEAD)
+	{
+		entity_free(self);
+		slog("You DIED");
+		return;
+	}
 }

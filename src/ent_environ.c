@@ -194,8 +194,9 @@ Entity *pit_spawn(Vector2D position, char *spriteSheet, int frameNum, int sprite
 	hitbox->width = spriteWidth * scale - 15;
 	hitbox->height = spriteHeight * scale - 15;
 	ent->hitbox = hitbox;
+	ent->damage = -1;
 
-	ent->flags = ENT_DEADLY;
+	ent->flags = ENT_DEADLY | ENT_NOINVIN;
 
 	return ent;
 }
@@ -219,6 +220,7 @@ Entity *spike_spawn(Vector2D position, char *spriteSheet, int frameNum, int spri
 	hitbox->width = spriteWidth * scale - 10;
 	hitbox->height = spriteHeight * scale - 10;
 	ent->hitbox = hitbox;
+	ent->damage = 1;
 
 	ent->flags = ENT_DEADLY | ENT_HITTABLE;
 

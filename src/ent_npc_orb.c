@@ -45,6 +45,7 @@ Entity *orb_spawn(Vector2D position, ent_movement_flags startDir, int cycle)
 
 	ent->flags = ENT_SOLID | ENT_DESTRUCTABLE;
 	ent->hitbox = inactiveHitbox;
+	ent->damage = 1;
 
 	orb = malloc(sizeof(Orb));
 	orb->movementFlags = startDir;
