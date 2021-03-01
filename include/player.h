@@ -36,4 +36,10 @@ void player_think(Entity *self);
 */
 void player_update(Entity *self);
 
+/**
+* @brief Draw the player entity
+* @param self A pointer to the player entity.
+*/
+void player_draw(Entity *self);
+
 #endif

@@ -47,6 +47,8 @@ Entity *player_spawn(Vector2D position)
 
 	ent->data = player;
 
+	ent->draw = player_draw;
+
 	return ent;
 }
 
@@ -85,17 +87,17 @@ void player_update(Entity *self)
 			collided = check_collision(self);
 			if (collided)
 			{
-				if ((~player->flags) & PLR_INVIN || collided->flags & ENT_NOINVIN)
+				if (collided->flags & ENT_SOLID)
 				{
-					if (collided->flags & ENT_SOLID)
-					{
-						self->hitbox->x -= self->velocity.x;
-						self->hitbox->y -= self->velocity.y;
-						self->velocity = vector2d(0, 0);
-						//printf("%.6f, %.6f vs %.6f, %.6f\n", self->hitbox->x, self->hitbox->y, self->position.x, self->position.y);
-						//printf("%.6f, %.6f vs %.6f, %.6f\n", collided->hitbox->x, collided->hitbox->y, collided->position.x, collided->position.y);
-					}
-					else if (collided->flags & ENT_DEADLY)
+					self->hitbox->x -= self->velocity.x;
+					self->hitbox->y -= self->velocity.y;
+					self->velocity = vector2d(0, 0);
+					//printf("%.6f, %.6f vs %.6f, %.6f\n", self->hitbox->x, self->hitbox->y, self->position.x, self->position.y);
+					//printf("%.6f, %.6f vs %.6f, %.6f\n", collided->hitbox->x, collided->hitbox->y, collided->position.x, collided->position.y);
+				}
+				else if (collided->flags & ENT_DEADLY)
+				{
+					if ((~player->flags) & PLR_INVIN || collided->flags & ENT_NOINVIN)
 					{
 						damageTaken = collided->damage;
 						if (damageTaken == -1)
@@ -146,3 +148,50 @@ void player_update(Entity *self)
 		return;
 	}
 }
+
+void player_draw(Entity * self)
+{
+	Vector2D upperLeft;
+	Player *player;
+
+	player = (Player *)self->data;
+
+	if (self->sprite == NULL || self->hitbox == NULL)
+	{
+		return; //Nothing to draw
+	}
+
+	if (player->flags & PLR_INVIN && (player->iframesRemaining % 4 == 0 || player->iframesRemaining % 4 == 1))
+	{
+		//Flash when invincible.
+		return;
+	}
+
+	if (self->scale.x != 0 || self->scale.y != 0)
+	{
+		upperLeft = vector2d(0, 0);
+		gf2d_sprite_draw(
+			self->sprite,
+			self->position,
+			&self->scale,
+			&upperLeft,
+			NULL,
+			NULL,
+			NULL,
+			(Uint32)self->frame);
+	}
+	else
+	{
+		gf2d_sprite_draw(
+			self->sprite,
+			self->position,
+			NULL,
+			NULL,
+			NULL,
+			NULL,
+			NULL,
+			(Uint32)self->frame);
+	}
+}
+
+/*eol@eof*/
