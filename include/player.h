@@ -12,6 +12,7 @@ typedef enum{
 
 typedef struct
 {
+	Uint8	maxhealth;
 	Uint8	health;
 	Uint8	flags; 
 	Uint32	iframesRemaining;

@@ -44,6 +44,7 @@ Entity *player_spawn(Vector2D position)
 	player = (Player *)malloc(sizeof(Player));
 	player->flags = PLR_ALIVE;
 	player->health = 2;
+	player->maxhealth = 2;
 
 	ent->data = player;
 
@@ -122,7 +123,6 @@ void player_update(Entity *self)
 			if (player->iframesRemaining > 0)
 			{
 				player->iframesRemaining--;
-				printf("%i\n", player->iframesRemaining);
 			}
 			else
 			{
@@ -161,7 +161,7 @@ void player_draw(Entity * self)
 		return; //Nothing to draw
 	}
 
-	if (player->flags & PLR_INVIN && (player->iframesRemaining % 4 == 0 || player->iframesRemaining % 4 == 1))
+	if (player->flags & PLR_INVIN && player->iframesRemaining % 10 < 5)
 	{
 		//Flash when invincible.
 		return;
