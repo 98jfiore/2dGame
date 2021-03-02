@@ -45,7 +45,7 @@ Entity *player_spawn(Vector2D position)
 	player = (Player *)malloc(sizeof(Player));
 	player->flags = PLR_ALIVE;
 	player->health = 2;
-	player->maxhealth = 2;
+	player->maxhealth = 6;
 
 	ent->data = player;
 

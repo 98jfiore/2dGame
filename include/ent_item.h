@@ -35,4 +35,60 @@ Entity *healing1_spawn(Vector2D position);
 */
 void healing1_action(Entity *self, Entity *ent);
 
+/**
+* @brief Spawn an healing item entity
+* @param position The screen position to spawn the healing item at.
+* @return NULL on error, or a pointer to a new healing item entity.
+*/
+Entity *healing2_spawn(Vector2D position);
+
+/**
+* @brief When a player hits this item, do something
+* @param self A pointer to the item entity.
+* @param ent The entity to be acted on.
+*/
+void healing2_action(Entity *self, Entity *ent);
+
+/**
+* @brief Spawn an healing item entity
+* @param position The screen position to spawn the healing item at.
+* @return NULL on error, or a pointer to a new healing item entity.
+*/
+Entity *healing3_spawn(Vector2D position);
+
+/**
+* @brief When a player hits this item, do something
+* @param self A pointer to the item entity.
+* @param ent The entity to be acted on.
+*/
+void healing3_action(Entity *self, Entity *ent);
+
+/**
+* @brief Spawn an invincibility item entity
+* @param position The screen position to spawn the healing item at.
+* @return NULL on error, or a pointer to a new healing item entity.
+*/
+Entity *invin1_spawn(Vector2D position);
+
+/**
+* @brief When a player hits this item, do something
+* @param self A pointer to the item entity.
+* @param ent The entity to be acted on.
+*/
+void invin1_action(Entity *self, Entity *ent);
+
+/**
+* @brief Spawn an invincibility item entity
+* @param position The screen position to spawn the healing item at.
+* @return NULL on error, or a pointer to a new healing item entity.
+*/
+Entity *invin2_spawn(Vector2D position);
+
+/**
+* @brief When a player hits this item, do something
+* @param self A pointer to the item entity.
+* @param ent The entity to be acted on.
+*/
+void invin2_action(Entity *self, Entity *ent);
+
 #endif

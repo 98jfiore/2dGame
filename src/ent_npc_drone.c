@@ -36,6 +36,7 @@ Entity *drone_spawn(Vector2D position, ent_movement_flags startDir)
 	hitbox->width = ent->sprite->frame_w * 2 - 2;
 	hitbox->height = ent->sprite->frame_h * 2 - 2;
 	ent->hitbox = hitbox;
+	ent->damage = 1;
 
 	npc = malloc(sizeof(NPC));
 	npc->movementFlags = startDir;

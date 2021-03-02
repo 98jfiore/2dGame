@@ -388,6 +388,22 @@ Level *level_load(const char *filename)
 			{
 				healing1_spawn(position);
 			}
+			else if (strcmp(objType, "healing2") == 0)
+			{
+				healing2_spawn(position);
+			}
+			else if (strcmp(objType, "healing3") == 0)
+			{
+				healing3_spawn(position);
+			}
+			else if (strcmp(objType, "invin1") == 0)
+			{
+				invin1_spawn(position);
+			}
+			else if (strcmp(objType, "invin2") == 0)
+			{
+				invin2_spawn(position);
+			}
 		}
 	}
 
