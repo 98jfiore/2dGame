@@ -5,7 +5,7 @@
 
 typedef struct
 {
-	void	(*action)(Entity *get);
+	void	(*action)(Entity *self, Entity *ent);
 }Item;
 
 /**
@@ -30,8 +30,9 @@ Entity *healing1_spawn(Vector2D position);
 
 /**
 * @brief When a player hits this item, do something
+* @param self A pointer to the item entity.
 * @param ent The entity to be acted on.
 */
-void healing1_action(Entity *ent);
+void healing1_action(Entity *self, Entity *ent);
 
 #endif

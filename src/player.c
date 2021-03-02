@@ -7,6 +7,7 @@
 
 #include "player.h"
 #include "entity.h"
+#include "ent_item.h"
 
 Entity *player_spawn(Vector2D position)
 {
@@ -74,6 +75,7 @@ void player_update(Entity *self)
 {
 	Entity *collided;
 	Player *player;
+	Item *item;
 	int	damageTaken;
 
 	player = (Player *)self->data;
@@ -113,6 +115,15 @@ void player_update(Entity *self)
 							player->flags = player->flags | PLR_INVIN;
 							player->iframesRemaining = 80;
 						}
+					}
+				}
+
+				if (collided->flags & ENT_ITEM)
+				{
+					item = (Item *)collided->data;
+					if (item->action != NULL)
+					{
+						item->action(collided, self);
 					}
 				}
 			}

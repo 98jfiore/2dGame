@@ -5,6 +5,7 @@
 #include "gfc_vector.h"
 
 #include "ent_item.h"
+#include "player.h"
 #include "shapes.h"
 
 
@@ -65,14 +66,25 @@ Entity *healing1_spawn(Vector2D position)
 
 	item->action = healing1_action;
 
-	//item_free(ent);
-
 	return NULL;
 }
 
-void healing1_action(Entity *ent)
+void healing1_action(Entity *self, Entity *ent)
 {
-	return;
+	Player *player;
+
+	if (ent == NULL) return;
+	
+	if (ent->flags & ENT_PLAYER)
+	{
+		player = (Player *)ent->data;
+		if (player->health < player->maxhealth)
+		{
+			player->health++;
+			entity_free(self);
+		}
+	}
+
 }
 
 
