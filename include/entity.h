@@ -17,6 +17,7 @@ enum entity_flags {
 	ENT_HITTABLE = 8,
 	ENT_PLAYER = 16,
 	ENT_NOINVIN = 32,
+	ENT_ITEM = 64,
 };
 
 typedef enum{

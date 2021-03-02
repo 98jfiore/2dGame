@@ -31,8 +31,8 @@ Entity *robot_spawn(Vector2D position, ent_movement_flags startDir)
 
 	hitbox = (Rect *)malloc(sizeof(Rect));
 
-	hitbox->x = position.x - 1;
-	hitbox->y = position.y - 1;
+	hitbox->x = position.x + 1;
+	hitbox->y = position.y + 1;
 	hitbox->width = ent->sprite->frame_w * 2 - 2;
 	hitbox->height = ent->sprite->frame_h * 2 - 2;
 	ent->hitbox = hitbox;
@@ -121,6 +121,7 @@ void robot_think(Entity *self)
 void robot_free(Entity *self)
 {
 	free(self->data);
+	entity_free(self);
 }
 
 

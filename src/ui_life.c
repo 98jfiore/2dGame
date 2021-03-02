@@ -13,7 +13,6 @@ void health_component_free(UIComponent *comp)
 
 	gf2d_sprite_free(life->full_sprite);
 	gf2d_sprite_free(life->empty_sprite);
-	free(comp);
 }
 
 

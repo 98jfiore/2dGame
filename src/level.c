@@ -17,6 +17,7 @@
 #include "ent_npc_sweeper.h"
 #include "ent_npc_automata.h"
 #include "ent_npc_orb.h"
+#include "ent_item.h"
 
 Level *level_new()
 {
@@ -360,6 +361,32 @@ Level *level_load(const char *filename)
 				{
 					laserBase_spawn(position, (char *)string, laserBaseCode - 1, laserCode - 1, level->tileWidth, level->tileHeight, level->tileFramesPerLine, level->scaleAmount, objCycle, objRange, MOV_WEST);
 				}
+			}
+		}
+	}
+
+	//Load in items
+	objectsjs = sj_object_get_value(leveljs, "items");
+	if (objectsjs != NULL)
+	{
+		objCount = sj_array_get_count(objectsjs);
+		for (i = 0; i < objCount; i++)
+		{
+			objjs = sj_array_get_nth(objectsjs, i);
+			if (objjs == NULL)
+			{
+				slog("ITEM Not found");
+				continue;
+			}
+			objType = sj_get_string_value(sj_object_get_value(objjs, "type"));
+			sj_get_integer_value(sj_object_get_value(objjs, "x"), &objx);
+			sj_get_integer_value(sj_object_get_value(objjs, "y"), &objy);
+
+			position = vector2d(objx * level->tileSet->frame_w * level->scaleAmount, objy * level->tileSet->frame_h * level->scaleAmount);
+
+			if (strcmp(objType, "healing1") == 0)
+			{
+				healing1_spawn(position);
 			}
 		}
 	}
