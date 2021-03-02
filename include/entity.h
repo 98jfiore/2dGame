@@ -18,6 +18,7 @@ enum entity_flags {
 	ENT_PLAYER = 16,
 	ENT_NOINVIN = 32,
 	ENT_ITEM = 64,
+	ENT_UPGRADE = 128,
 };
 
 typedef enum{
@@ -30,7 +31,7 @@ typedef enum{
 typedef struct Entity_s
 {
 	Bool		_inuse;
-	Uint8		flags;
+	Uint16		flags;
 	Sprite		*sprite;
 	Vector2D	position;
 	Vector2D	velocity;

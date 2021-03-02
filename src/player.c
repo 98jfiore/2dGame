@@ -8,6 +8,7 @@
 #include "player.h"
 #include "entity.h"
 #include "ent_item.h"
+#include "ent_upgrade.h"
 
 Entity *player_spawn(Vector2D position)
 {
@@ -76,6 +77,7 @@ void player_update(Entity *self)
 	Entity *collided;
 	Player *player;
 	Item *item;
+	Upgrade *upgrade;
 	int	damageTaken;
 
 	player = (Player *)self->data;
@@ -124,6 +126,14 @@ void player_update(Entity *self)
 					if (item->action != NULL)
 					{
 						item->action(collided, self);
+					}
+				}
+				else if (collided->flags & ENT_UPGRADE)
+				{
+					upgrade = (Upgrade *)collided->data;
+					if (upgrade->action != NULL)
+					{
+						upgrade->action(collided, self);
 					}
 				}
 			}

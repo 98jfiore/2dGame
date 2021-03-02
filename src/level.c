@@ -18,6 +18,7 @@
 #include "ent_npc_automata.h"
 #include "ent_npc_orb.h"
 #include "ent_item.h"
+#include "ent_upgrade.h"
 
 Level *level_new()
 {
@@ -45,7 +46,7 @@ Level *level_load(const char *filename)
 	int objCount;
 	int objx, objy;
 	int objSpeed, objCycle, objRange;
-	const char *objType, *objStartDir;
+	const char *objType, *objStartDir, *objTag;
 
 	Vector2D position;
 
@@ -403,6 +404,33 @@ Level *level_load(const char *filename)
 			else if (strcmp(objType, "invin2") == 0)
 			{
 				invin2_spawn(position);
+			}
+		}
+	}
+
+	//Load in upgrade items
+	objectsjs = sj_object_get_value(leveljs, "upgrades");
+	if (objectsjs != NULL)
+	{
+		objCount = sj_array_get_count(objectsjs);
+		for (i = 0; i < objCount; i++)
+		{
+			objjs = sj_array_get_nth(objectsjs, i);
+			if (objjs == NULL)
+			{
+				slog("UPGRADE Not found");
+				continue;
+			}
+			objType = sj_get_string_value(sj_object_get_value(objjs, "type"));
+			sj_get_integer_value(sj_object_get_value(objjs, "x"), &objx);
+			sj_get_integer_value(sj_object_get_value(objjs, "y"), &objy);
+			objTag = sj_get_string_value(sj_object_get_value(objjs, "tag"));
+
+			position = vector2d(objx * level->tileSet->frame_w * level->scaleAmount, objy * level->tileSet->frame_h * level->scaleAmount);
+
+			if (strcmp(objType, "health") == 0)
+			{
+				health_spawn(position);
 			}
 		}
 	}

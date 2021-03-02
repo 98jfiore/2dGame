@@ -135,6 +135,14 @@
 				"y" : 14
 			}
 		],
+		"upgrades": [
+			{
+				"type": "health",
+				"tag" : "health_level1",
+				"x" : 6,
+				"y" : 6
+			}
+		],
 		"floorCode" : 1,
 		"wallCode": 2,
 		"pitCode" : 3,

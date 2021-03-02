@@ -65,7 +65,7 @@ void health_component_update(UIComponent *self)
 	life = (UILife *)self->data;
 	player = life->player;
 
-	/*if (life->_last && life->healthRep < player->maxhealth)
+	if (life->_last == 1 && life->healthRep < player->maxhealth)
 	{
 		next = component_new();
 		if (next == NULL)
@@ -74,14 +74,15 @@ void health_component_update(UIComponent *self)
 			return;
 		}
 
-		next->position = vector2d(self->position.x + self->sprite->frame_w * self->scale.x + 2, self->position.y);
-		next->sprite = self->sprite;
+		next->sprite = life->empty_sprite;
 		if (next->sprite == NULL)
 		{
 			slog("UI sprite couldn't load");
 			free(next);
 			return;
 		}
+
+		next->position = vector2d(self->position.x + self->sprite->frame_w * self->scale.x + 2, self->position.y);
 		next->frameCount = self->frameCount;
 		next->baseFrame = self->baseFrame;
 		next->scale = self->scale;
@@ -92,12 +93,14 @@ void health_component_update(UIComponent *self)
 
 		nextLife = (UILife *)malloc(sizeof(UILife));
 		nextLife->healthRep = life->healthRep + 1;
-		nextLife->ent = life->ent;
+		nextLife->player = life->player;
 		nextLife->full_sprite = life->full_sprite;
 		nextLife->empty_sprite = life->empty_sprite;
 		nextLife->_last = 1;
+		next->data = nextLife;
+
 		life->_last = 0;
-	}*/
+	}
 
 	if (life->healthRep > player->health)
 	{
