@@ -1,0 +1,28 @@
+{
+	"ui": {
+		"components": [
+			{
+				"type": "life",
+				"x": 50,
+				"y": 600
+			}
+		],
+		"life": {
+			"filename": "images/health.png",
+			"sprite_w": 32,
+			"sprite_h": 32,
+			"frames_per_line": 1,
+			"frame_count": 1,
+			"frame_num": 1,
+			"sprite_scale": 2,
+			"empty life" : {
+				"filename": "images/nohealth.png",
+				"sprite_w" : 32,
+				"sprite_h" : 32,
+				"frames_per_line" : 1,
+				"frame_count" : 1,
+				"frame_num" : 1
+			}
+		}
+	}
+}

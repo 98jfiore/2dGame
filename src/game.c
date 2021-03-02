@@ -12,6 +12,7 @@
 #include "ent_npc.h"
 #include "ent_environ.h"
 #include "level.h"
+#include "ui.h"
 
 int main(int argc, char * argv[])
 {
@@ -42,6 +43,7 @@ int main(int argc, char * argv[])
     SDL_ShowCursor(SDL_DISABLE);
 
 	level = level_load("defs/testworld.json");
+	
     
     /*demo setup*/
     mouse = gf2d_sprite_load_all("images/pointer.png",32,32,16);
@@ -58,12 +60,15 @@ int main(int argc, char * argv[])
         if (mf >= 16.0)mf = 0;
         
 		entity_manager_update_entities();
+		ui_manager_update_components();
         
         gf2d_graphics_clear_screen();// clears drawing buffers
         // all drawing should happen betweem clear_screen and next_frame
 			level_draw(level);
 
 			entity_manager_draw_entities();
+
+			ui_manager_draw_components();
 
             //UI elements last
             gf2d_sprite_draw(
@@ -75,6 +80,7 @@ int main(int argc, char * argv[])
                 NULL,
                 &mouseColor,
                 (int)mf);
+
         gf2d_grahics_next_frame();// render current draw frame and skip to the next frame
         
         if (keys[SDL_SCANCODE_ESCAPE])done = 1; // exit condition

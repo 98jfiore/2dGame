@@ -8,6 +8,7 @@
 #include "level.h"
 #include "player.h"
 #include "entity.h"
+#include "ui.h"
 #include "ent_environ.h"
 #include "ent_env_las.h"
 #include "ent_npc.h"
@@ -34,6 +35,7 @@ Level *level_load(const char *filename)
 {
 	Level *level;
 	SJson *json, *leveljs, *tileMap, *row;
+	Entity *player;
 	const char *string;
 	int rows, columns;
 	int i, j, count, tileIndex;
@@ -371,7 +373,7 @@ Level *level_load(const char *filename)
 
 		position = vector2d(objx * level->tileSet->frame_w * level->scaleAmount, objy * level->tileSet->frame_h * level->scaleAmount);
 
-		player_spawn(position);
+		player = player_spawn(position);
 	}
 	else
 	{
@@ -381,6 +383,9 @@ Level *level_load(const char *filename)
 		sj_free(json);
 		return NULL;
 	}
+
+	string = sj_get_string_value(sj_object_get_value(leveljs, "uiFormat"));
+	ui_format_load(string, player);
 
 	sj_free(json);
 	return level;
