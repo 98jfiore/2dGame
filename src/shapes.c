@@ -1,3 +1,5 @@
+#include <math.h>
+
 #include "shapes.h"
 
 SDL_bool IntersectRect(Rect *a, Rect *b)
@@ -35,4 +37,38 @@ SDL_bool IntersectRect(Rect *a, Rect *b)
 		return SDL_TRUE;
 	}
 	return SDL_FALSE;
+}
+
+
+double PointsAngle(Vector2D origin, Vector2D dest)
+{
+	double ydiff, xdiff, baseAngle;
+
+	ydiff = fabs(dest.y - origin.y);
+	xdiff = fabs(origin.x - dest.x);
+
+	baseAngle = atan(ydiff / xdiff) * 180.0 / PI;
+
+	if (dest.y < origin.y)
+	{
+		if (dest.x > origin.x)
+		{
+			return baseAngle;
+		}
+		else
+		{
+			return (180-baseAngle);
+		}
+	}
+	else
+	{
+		if (dest.x < origin.x)
+		{
+			return baseAngle + 180;
+		}
+		else
+		{
+			return (360 - baseAngle);
+		}
+	}
 }

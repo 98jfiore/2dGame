@@ -118,7 +118,7 @@ void attack_update(Attack *self)
 	else
 	{
 		self->hitbox->x = self->owner->position.x - (self->owner->sprite->frame_w * self->owner->scale.x) + 1;
-		self->hitbox->y = self->owner->position.y + (self->owner->sprite->frame_h * self->owner->scale.y) + 1;
+		self->hitbox->y = self->owner->position.y + 1;
 	}
 	if (self->update == NULL) return;
 	self->update(self);

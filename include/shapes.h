@@ -3,6 +3,10 @@
 
 #include "SDL_stdinc.h"
 
+#include "gfc_vector.h"
+
+#define PI 3.14159265
+
 typedef struct
 {
 	float x;
@@ -18,5 +22,13 @@ typedef struct
 * @return An SDL boolean variable representing whether or not the rectangles intersected.
 */
 SDL_bool IntersectRect(Rect *a, Rect *b);
+
+/**
+* @brief Get the angle between the x-axis and the line from origin to dest
+* @param origin The first point
+* @param dest The second point
+* @return A double representing the angle found
+*/
+double PointsAngle(Vector2D origin, Vector2D dest);
 
 #endif

@@ -61,6 +61,8 @@ void player_think(Entity *self)
 	Uint8 *state;
 	Vector2D new_vel;
 	Player *player;
+	int clickX, clickY;
+	double clickAngle;
 
 	//Move in a direction based on WASD
 	new_vel = vector2d(0, 0);
@@ -76,11 +78,29 @@ void player_think(Entity *self)
 	if (player == NULL) return;
 
 	//Is left mouse button clicked
-	if (SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_LEFT))
+	if (SDL_GetMouseState(&clickX, &clickY) & SDL_BUTTON(SDL_BUTTON_LEFT))
 	{
 		if ((~player->flags) & PLR_ATTACKING)
 		{
-			player->attack = start_attack(self, MOV_NORTH);
+			clickAngle = PointsAngle(self->position, vector2d(clickX, clickY));
+			
+			if (clickAngle >= 45 && clickAngle < 135)
+			{
+				player->attack = start_attack(self, MOV_NORTH);
+			}
+			else if (clickAngle >= 135 && clickAngle < 225)
+			{
+				player->attack = start_attack(self, MOV_WEST);
+			}
+			else if (clickAngle >= 225 && clickAngle < 315)
+			{
+				player->attack = start_attack(self, MOV_SOUTH);
+			}
+			else
+			{
+				player->attack = start_attack(self, MOV_EAST);
+			}
+
 			player->flags = player->flags | PLR_ATTACKING;
 		}
 	}
