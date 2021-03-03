@@ -39,6 +39,9 @@ Level *level_load(const char *filename)
 	SJson *json, *leveljs, *tileMap, *row;
 	Entity *player;
 	const char *string;
+	SJson *savedjs, *savedObjjs;
+	int saveFound;
+	char *saveFile;
 	int rows, columns;
 	int i, j, count, tileIndex;
 	int wallCode, pitCode, spikeCode, laserCode, laserBaseCode, tileType;
@@ -49,6 +52,12 @@ Level *level_load(const char *filename)
 	const char *objType, *objStartDir, *objTag;
 
 	Vector2D position;
+
+	Entity *test;
+	Upgrade *upTest;
+
+	saveFile = "saves/save.json";
+	savedjs = sj_load(saveFile);
 
 	if (filename == NULL)
 	{
@@ -428,13 +437,52 @@ Level *level_load(const char *filename)
 
 			position = vector2d(objx * level->tileSet->frame_w * level->scaleAmount, objy * level->tileSet->frame_h * level->scaleAmount);
 
-			if (strcmp(objType, "health") == 0)
+			if (savedjs == NULL)
 			{
-				health_spawn(position);
+				if (strcmp(objType, "health") == 0)
+				{
+					health_spawn(position, objTag);
+				}
+				else if (strcmp(objType, "sword") == 0)
+				{
+					test = sword_spawn(position, objTag);
+					upTest = (Upgrade *)test->data;
+					printf("%s\n", upTest->tag);
+				}
 			}
-			else if (strcmp(objType, "sword") == 0)
+			else
 			{
-				sword_spawn(position);
+				savedObjjs = sj_object_get_value(savedjs, objTag);
+				if (savedObjjs == NULL)
+				{
+					if (strcmp(objType, "health") == 0)
+					{
+						health_spawn(position, objTag);
+					}
+					else if (strcmp(objType, "sword") == 0)
+					{
+						test = sword_spawn(position, objTag);
+						upTest = (Upgrade *)test->data;
+						printf("%s\n", upTest->tag);
+					}
+				}
+				else
+				{
+					sj_get_integer_value(savedObjjs, &saveFound);
+					if (saveFound != 1)
+					{
+						if (strcmp(objType, "health") == 0)
+						{
+							health_spawn(position, objTag);
+						}
+						else if (strcmp(objType, "sword") == 0)
+						{
+							test = sword_spawn(position, objTag);
+							upTest = (Upgrade *)test->data;
+							printf("%s\n", upTest->tag);
+						}
+					}
+				}
 			}
 		}
 	}
@@ -449,6 +497,7 @@ Level *level_load(const char *filename)
 		position = vector2d(objx * level->tileSet->frame_w * level->scaleAmount, objy * level->tileSet->frame_h * level->scaleAmount);
 
 		player = player_spawn(position);
+		load_player(player, saveFile);
 	}
 	else
 	{

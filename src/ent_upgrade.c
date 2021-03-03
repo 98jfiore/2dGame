@@ -10,7 +10,7 @@
 #include "shapes.h"
 
 
-Entity *upgrade_spawn(Vector2D position)
+Entity *upgrade_spawn(Vector2D position, char *tag)
 {
 	Entity *ent;
 	Upgrade *upgrade;
@@ -28,6 +28,9 @@ Entity *upgrade_spawn(Vector2D position)
 
 	upgrade = (Upgrade *)malloc(sizeof(Upgrade));
 	ent->data = upgrade;
+	upgrade->tag = malloc(strlen(tag) + 1);
+	strcpy(upgrade->tag, tag);
+	//upgrade->tag = tag
 
 	ent->free = upgrade_free;
 
@@ -42,13 +45,13 @@ void upgrade_free(Entity *self)
 	free(upgrade);
 }
 
-Entity *health_spawn(Vector2D position)
+Entity *health_spawn(Vector2D position, char *tag)
 {
 	Entity *ent;
 	Upgrade *upgrade;
 	Rect *hitbox;
 
-	ent = upgrade_spawn(position);
+	ent = upgrade_spawn(position, tag);
 	upgrade = (Upgrade *)ent->data;
 
 	ent->sprite = gf2d_sprite_load_all("images/morehealth.png", 16, 16, 1);
@@ -67,7 +70,9 @@ Entity *health_spawn(Vector2D position)
 
 	upgrade->action = health_action;
 
-	return NULL;
+	ent->data = upgrade;
+
+	return ent;
 }
 
 void health_action(Entity *self, Entity *ent)
@@ -85,13 +90,13 @@ void health_action(Entity *self, Entity *ent)
 
 }
 
-Entity *sword_spawn(Vector2D position)
+Entity *sword_spawn(Vector2D position, char *tag)
 {
 	Entity *ent;
 	Upgrade *upgrade;
 	Rect *hitbox;
 
-	ent = upgrade_spawn(position);
+	ent = upgrade_spawn(position, tag);
 	upgrade = (Upgrade *)ent->data;
 
 	ent->sprite = gf2d_sprite_load_all("images/sword.png", 16, 16, 1);
@@ -110,7 +115,7 @@ Entity *sword_spawn(Vector2D position)
 
 	upgrade->action = sword_action;
 
-	return NULL;
+	return ent;
 }
 
 void sword_action(Entity *self, Entity *ent)

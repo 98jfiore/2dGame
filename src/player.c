@@ -2,6 +2,7 @@
 #include <SDL_mouse.h>
 
 #include "simple_logger.h"
+#include "simple_json.h"
 
 #include "gf2d_sprite.h"
 #include "gfc_vector.h"
@@ -185,7 +186,9 @@ void player_update(Entity *self)
 					upgrade = (Upgrade *)collided->data;
 					if (upgrade->action != NULL)
 					{
+						save_playerUpgrade("saves/save.json", upgrade->tag);
 						upgrade->action(collided, self);
+						save_player(self, "saves/save.json");
 					}
 				}
 			}
@@ -272,6 +275,145 @@ void player_draw(Entity * self)
 	if (player->flags & PLR_ATTACKING && player->attack != NULL)
 	{
 		attack_draw(player->attack);
+	}
+}
+
+void save_player(Entity *self, char *fileName)
+{
+	SJson *baseJson, *playerJson;
+	Player *player;
+
+	baseJson = sj_load(fileName);
+	if (baseJson == NULL)
+	{
+		baseJson = sj_object_new();
+	}
+
+	//If player already saved in there, delete it
+	sj_object_delete(baseJson, "player");
+
+	playerJson = sj_object_new();
+	if (playerJson == NULL)
+	{
+		slog("Could not create JSON object");
+		return;
+	}
+
+	if (self == NULL)
+	{
+		slog("Cannot save a null player");
+		return;
+	}
+	player = (Player *)self->data;
+	if (player == NULL)
+	{
+		slog("Cannot save a null player");
+		return;
+	}
+
+	sj_object_insert(playerJson, "health", sj_new_int(player->health));
+	sj_object_insert(playerJson, "maxHealth", sj_new_int(player->maxhealth));
+
+	sj_object_insert(baseJson, "player", playerJson);
+	
+	sj_save(baseJson, fileName);
+}
+
+void save_playerUpgrade(char *fileName, char *upgradeTag)
+{
+	SJson *baseJson;
+
+	baseJson = sj_load(fileName);
+	if (baseJson == NULL)
+	{
+		baseJson = sj_object_new();
+	}
+
+	if (upgradeTag == NULL)
+	{
+		slog("Cannot save NULL upgrade");
+		return;
+	}
+	
+	sj_object_delete(baseJson, upgradeTag);
+
+	sj_object_insert(baseJson, upgradeTag, sj_new_int(1));
+
+	sj_save(baseJson, fileName);
+}
+
+void load_player(Entity *ent, char *fileName)
+{
+	SJson *baseJson, *playerJson;
+	int health, maxHealth;
+	Player *player;
+
+	if (ent == NULL)
+	{
+		slog("Cannot load player onto a NULL entity");
+		return;
+	}
+	player = (Player *)ent->data;
+	if (player == NULL)
+	{
+		slog("Cannot load player onto a non-player entity");
+		return;
+	}
+
+	baseJson = sj_load(fileName);
+	if (baseJson == NULL)
+	{
+		//slog("Could not load file");
+		return;
+	}
+
+	playerJson = sj_object_get_value(baseJson, "player");
+	if (playerJson == NULL)
+	{
+		slog("Could not load Player");
+		return;
+	}
+
+	sj_get_integer_value(sj_object_get_value(playerJson, "health"), &health);
+	sj_get_integer_value(sj_object_get_value(playerJson, "maxHealth"), &maxHealth);
+	
+	player->health = health;
+	player->maxhealth = maxHealth;
+
+	load_player_inventory(ent, baseJson);
+}
+
+
+void load_player_inventory(Entity *ent, SJson *save)
+{
+	SJson *obj;
+	int objFound;
+	Player *player;
+	Inventory *inv;
+
+	if ((~ent->flags) & ENT_PLAYER)
+	{
+		slog("Cannot load inventory of nonexistant player");
+		return;
+	}
+	player = (Player *)ent->data;
+	if (player == NULL)
+	{
+		slog("Cannot load inventory of nonexistant player");
+		return;
+	}
+
+	//Does player have sword?
+	obj = sj_object_get_value(save, "sword");
+	if (obj != NULL)
+	{
+		sj_get_integer_value(obj, &objFound);
+		if (objFound == 1)
+		{
+			inv = unlock_attack();
+			inv->next = player->inventory;
+			player->inventory = inv;
+		}
 	}
 }
 

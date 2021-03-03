@@ -58,3 +58,6 @@ gf2d
 *.log
 
 makefile.dep
+
+#Save files
+saves/*
