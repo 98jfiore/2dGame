@@ -35,4 +35,18 @@ Entity *health_spawn(Vector2D position);
 */
 void health_action(Entity *self, Entity *ent);
 
+/**
+* @brief Spawn a sword item entity
+* @param position The screen position to spawn the sword item at.
+* @return NULL on error, or a pointer to a new sword item entity.
+*/
+Entity *sword_spawn(Vector2D position);
+
+/**
+* @brief When a player hits this upgrade item, do something
+* @param self A pointer to the item entity.
+* @param ent The entity to be acted on.
+*/
+void sword_action(Entity *self, Entity *ent);
+
 #endif

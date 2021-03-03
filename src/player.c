@@ -48,6 +48,8 @@ Entity *player_spawn(Vector2D position)
 	player->flags = PLR_ALIVE;
 	player->health = 2;
 	player->maxhealth = 2;
+	
+	player->inventory = NULL;
 
 	ent->data = player;
 
@@ -82,27 +84,30 @@ void player_think(Entity *self)
 	{
 		if ((~player->flags) & PLR_ATTACKING)
 		{
-			clickAngle = PointsAngle(self->position, vector2d(clickX, clickY));
-			
-			if (clickAngle >= 45 && clickAngle < 135)
+			if (player->inventory != NULL && player->inventory->attack != NULL)
 			{
-				player->attack = start_attack(self, MOV_NORTH);
-			}
-			else if (clickAngle >= 135 && clickAngle < 225)
-			{
-				player->attack = start_attack(self, MOV_WEST);
-			}
-			else if (clickAngle >= 225 && clickAngle < 315)
-			{
-				player->attack = start_attack(self, MOV_SOUTH);
-			}
-			else
-			{
-				player->attack = start_attack(self, MOV_EAST);
-			}
+				clickAngle = PointsAngle(self->position, vector2d(clickX, clickY));
 
-			player->attackWait = 50;
-			player->flags = player->flags | PLR_ATTACKING;
+				if (clickAngle >= 45 && clickAngle < 135)
+				{
+					player->attack = player->inventory->attack(self, MOV_NORTH);
+				}
+				else if (clickAngle >= 135 && clickAngle < 225)
+				{
+					player->attack = player->inventory->attack(self, MOV_WEST);
+				}
+				else if (clickAngle >= 225 && clickAngle < 315)
+				{
+					player->attack = player->inventory->attack(self, MOV_SOUTH);
+				}
+				else
+				{
+					player->attack = player->inventory->attack(self, MOV_EAST);
+				}
+
+				player->attackWait = 50;
+				player->flags = player->flags | PLR_ATTACKING;
+			}
 		}
 	}
 

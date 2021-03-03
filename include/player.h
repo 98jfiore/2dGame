@@ -4,6 +4,7 @@
 #include "entity.h"
 #include "shapes.h"
 #include "attack.h"
+#include "inventory.h"
 
 typedef enum{
 	PLR_ALIVE = 1,
@@ -15,12 +16,13 @@ typedef enum{
 
 typedef struct
 {
-	Uint8	maxhealth;
-	Uint8	health;
-	Uint8	flags; 
-	Uint32	iframesRemaining;
-	Attack	*attack;
-	Uint32	attackWait;
+	Uint8		maxhealth;
+	Uint8		health;
+	Uint8		flags; 
+	Uint32		iframesRemaining;
+	Attack		*attack;
+	Uint32		attackWait;
+	Inventory	*inventory;
 }Player;
 
 /**

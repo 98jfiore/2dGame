@@ -6,6 +6,7 @@
 
 #include "ent_upgrade.h"
 #include "player.h"
+#include "inventory.h"
 #include "shapes.h"
 
 
@@ -82,6 +83,52 @@ void health_action(Entity *self, Entity *ent)
 		entity_free(self);
 	}
 
+}
+
+Entity *sword_spawn(Vector2D position)
+{
+	Entity *ent;
+	Upgrade *upgrade;
+	Rect *hitbox;
+
+	ent = upgrade_spawn(position);
+	upgrade = (Upgrade *)ent->data;
+
+	ent->sprite = gf2d_sprite_load_all("images/sword.png", 16, 16, 1);
+	ent->frameCount = 1;
+	ent->frameRate = 0;
+	ent->baseFrame = 0;
+	ent->scale = vector2d(2, 2);
+
+	hitbox = (Rect *)malloc(sizeof(Rect));
+
+	hitbox->x = position.x + 1;
+	hitbox->y = position.y + 1;
+	hitbox->width = ent->sprite->frame_w * 2 - 2;
+	hitbox->height = ent->sprite->frame_h * 2 - 2;
+	ent->hitbox = hitbox;
+
+	upgrade->action = sword_action;
+
+	return NULL;
+}
+
+void sword_action(Entity *self, Entity *ent)
+{
+	Player *player;
+	Inventory *inv;
+
+	if (ent == NULL || self == NULL) return;
+
+	if (ent->flags & ENT_PLAYER)
+	{
+		player = (Player *)ent->data;
+		
+		inv = unlock_attack();
+		inv->next = player->inventory;
+		player->inventory = inv;
+		entity_free(self);
+	}
 }
 
 /*eol@eof*/

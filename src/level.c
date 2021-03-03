@@ -432,6 +432,10 @@ Level *level_load(const char *filename)
 			{
 				health_spawn(position);
 			}
+			else if (strcmp(objType, "sword") == 0)
+			{
+				sword_spawn(position);
+			}
 		}
 	}
 
