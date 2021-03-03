@@ -91,6 +91,8 @@ Attack *start_attack(Entity *owner, ent_movement_flags direction)
 
 void attack_update(Attack *self)
 {
+	Entity *hit;
+
 	if (!self) return;
 	//Generic updates
 	self->frame += self->frameRate;
@@ -120,6 +122,17 @@ void attack_update(Attack *self)
 		self->hitbox->x = self->owner->position.x - (self->owner->sprite->frame_w * self->owner->scale.x) + 1;
 		self->hitbox->y = self->owner->position.y + 1;
 	}
+
+	hit = check_attackHit(self->hitbox, self->owner);
+	if (hit != NULL)
+	{
+		if (hit->flags & ENT_DESTRUCTABLE)
+		{
+			entity_free(hit);
+		}
+	}
+
+
 	if (self->update == NULL) return;
 	self->update(self);
 }

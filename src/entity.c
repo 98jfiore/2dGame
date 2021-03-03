@@ -171,6 +171,39 @@ Entity *check_collision(Entity *self)
 	return NULL;
 }
 
+Entity *check_attackHit(Rect *atk, Entity *owner)
+{
+	int i;
+	SDL_bool intersection;
+
+	if (atk == NULL)
+	{
+		slog("Cannot check hits against nonexistant attack");
+		return NULL;
+	}
+
+	if (entity_manager.entity_list == NULL)
+	{
+		slog("Entity manager not initialized");
+		return NULL;
+	}
+
+	for (i = 0; i < entity_manager.max_entities; ++i)
+	{
+		if (&entity_manager.entity_list[i] == owner) continue;
+		if (entity_manager.entity_list[i]._inuse == 0 || entity_manager.entity_list[i].hitbox == NULL) continue;
+		if ((~entity_manager.entity_list[i].flags) & ENT_HITTABLE) continue;
+		intersection = IntersectRect(atk, entity_manager.entity_list[i].hitbox);
+		if (intersection == SDL_TRUE)
+		{
+			return &entity_manager.entity_list[i];
+		}
+	}
+
+	return NULL;
+
+}
+
 Entity *entity_new()
 {
 	int i;

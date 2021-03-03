@@ -43,7 +43,7 @@ Entity *orb_spawn(Vector2D position, ent_movement_flags startDir, int cycle)
 	inactiveHitbox->width = ent->sprite->frame_w * 2 - 4;
 	inactiveHitbox->height = ent->sprite->frame_h * 2 - 4;
 
-	ent->flags = ENT_SOLID | ENT_DESTRUCTABLE;
+	ent->flags = ENT_SOLID | ENT_DESTRUCTABLE | ENT_HITTABLE;
 	ent->hitbox = inactiveHitbox;
 	ent->damage = 1;
 
@@ -141,7 +141,7 @@ void orb_think(Entity *self)
 	{
 		if (self->flags & ENT_DEADLY)
 		{
-			self->flags = ENT_SOLID | ENT_DESTRUCTABLE;
+			self->flags = ENT_SOLID | ENT_DESTRUCTABLE | ENT_HITTABLE;
 			//self->hitbox = orb_self->inactiveHitbox;
 			self->baseFrame = 0;
 			self->frameCount = 1;
@@ -171,7 +171,6 @@ void orb_free(Entity *self)
 
 	orb_self = (Orb *)self->data;
 	free(orb_self->activeHitbox);
-	free(orb_self->inactiveHitbox);
 
 	free(self->data);
 }

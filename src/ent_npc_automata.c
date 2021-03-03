@@ -28,7 +28,7 @@ Entity *automata_spawn(Vector2D position, ent_movement_flags startDir, int cycle
 	ent->frameCount = 4;
 	ent->frameRate = 0.05;
 	ent->scale = vector2d(2, 2);
-	ent->flags = ENT_DEADLY | ENT_DESTRUCTABLE;
+	ent->flags = ENT_DEADLY | ENT_DESTRUCTABLE | ENT_HITTABLE;
 
 	hitbox = (Rect *)malloc(sizeof(Rect));
 

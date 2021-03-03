@@ -27,7 +27,7 @@ Entity *robot_spawn(Vector2D position, ent_movement_flags startDir)
 	ent->frameCount = 4;
 	ent->frameRate = 0.05;
 	ent->scale = vector2d(2, 2);
-	ent->flags = ENT_DEADLY | ENT_DESTRUCTABLE;
+	ent->flags = ENT_DEADLY | ENT_DESTRUCTABLE | ENT_HITTABLE;
 
 	hitbox = (Rect *)malloc(sizeof(Rect));
 
@@ -121,7 +121,6 @@ void robot_think(Entity *self)
 void robot_free(Entity *self)
 {
 	free(self->data);
-	entity_free(self);
 }
 
 

@@ -8,6 +8,7 @@
 #include "gf2d_sprite.h"
 
 #include "shapes.h"
+//#include "attack.h"
 
 
 enum entity_flags {
@@ -76,6 +77,14 @@ void entity_manager_draw_entities();
 * @return NULL on no collision or error, or a pointer to an entity self collides with.
 */
 Entity *check_collision(Entity *self);
+
+/**
+* @brief Checks to see if attack hit any valid entities
+* @param atk The hitbox of the attack to check for hits.
+* @param owner The owner of the attack.
+* @return NULL on no hit or error, or a pointer to an entity atk hits.
+*/
+Entity *check_attackHit(Rect *atk, Entity *owner);
 
 /**
  * @brief Allocate an entity in the entity list and return a pointer to it.
