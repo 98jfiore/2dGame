@@ -101,13 +101,21 @@ void player_think(Entity *self)
 				player->attack = start_attack(self, MOV_EAST);
 			}
 
+			player->attackWait = 50;
 			player->flags = player->flags | PLR_ATTACKING;
 		}
 	}
 
 	if (player->flags & PLR_ATTACKING && player->attack == NULL)
 	{
-		player->flags = player->flags & (~PLR_ATTACKING);
+		if (player->attackWait > 0)
+		{
+			player->attackWait--;
+		}
+		else
+		{
+			player->flags = player->flags & (~PLR_ATTACKING);
+		}
 	}
 }
 

@@ -35,7 +35,7 @@ Attack *start_attack(Entity *owner, ent_movement_flags direction)
 		return NULL;
 	}
 	atk->frame = 0;
-	atk->frameRate = 0.5;
+	atk->frameRate = 0.25;
 	atk->lastFrame = 4;
 
 	atk->damage = 1;

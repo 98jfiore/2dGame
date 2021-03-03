@@ -20,6 +20,7 @@ typedef struct
 	Uint8	flags; 
 	Uint32	iframesRemaining;
 	Attack	*attack;
+	Uint32	attackWait;
 }Player;
 
 /**
