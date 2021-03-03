@@ -3,11 +3,14 @@
 
 #include "entity.h"
 #include "shapes.h"
+#include "attack.h"
 
 typedef enum{
 	PLR_ALIVE = 1,
 	PLR_DEAD = 2,
 	PLR_INVIN = 4,
+	PLR_TOATTACK = 8,
+	PLR_ATTACKING = 16,
 } player_flags;
 
 typedef struct
@@ -16,6 +19,7 @@ typedef struct
 	Uint8	health;
 	Uint8	flags; 
 	Uint32	iframesRemaining;
+	Attack	*attack;
 }Player;
 
 /**

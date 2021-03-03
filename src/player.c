@@ -1,4 +1,5 @@
 #include <SDL_keyboard.h>
+#include <SDL_mouse.h>
 
 #include "simple_logger.h"
 
@@ -46,7 +47,7 @@ Entity *player_spawn(Vector2D position)
 	player = (Player *)malloc(sizeof(Player));
 	player->flags = PLR_ALIVE;
 	player->health = 2;
-	player->maxhealth = 6;
+	player->maxhealth = 2;
 
 	ent->data = player;
 
@@ -59,6 +60,7 @@ void player_think(Entity *self)
 {
 	Uint8 *state;
 	Vector2D new_vel;
+	Player *player;
 
 	//Move in a direction based on WASD
 	new_vel = vector2d(0, 0);
@@ -70,6 +72,23 @@ void player_think(Entity *self)
 
 	self->velocity = new_vel;
 
+	player = (Player *)self->data;
+	if (player == NULL) return;
+
+	//Is left mouse button clicked
+	if (SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_LEFT))
+	{
+		if ((~player->flags) & PLR_ATTACKING)
+		{
+			player->attack = start_attack(self, MOV_NORTH);
+			player->flags = player->flags | PLR_ATTACKING;
+		}
+	}
+
+	if (player->flags & PLR_ATTACKING && player->attack == NULL)
+	{
+		player->flags = player->flags & (~PLR_ATTACKING);
+	}
 }
 
 void player_update(Entity *self)
@@ -158,7 +177,10 @@ void player_update(Entity *self)
 			return;
 		}
 		
-
+		if (player->flags & PLR_ATTACKING && player->attack != NULL)
+		{
+			attack_update(player->attack);
+		}
 		vector2d_add(self->position, self->position, self->velocity);
 		player_think(self);
 	}
@@ -212,6 +234,11 @@ void player_draw(Entity * self)
 			NULL,
 			NULL,
 			(Uint32)self->frame);
+	}
+
+	if (player->flags & PLR_ATTACKING && player->attack != NULL)
+	{
+		attack_draw(player->attack);
 	}
 }
 
