@@ -28,6 +28,14 @@ Inventory *unlock_attack()
 	return inv;
 }
 
+Inventory *unlock_key(char *type)
+{
+	Inventory *inv;
+
+	inv = create_inventory(type);
+
+	return inv;
+}
 
 void free_inventory(Inventory *inv)
 {

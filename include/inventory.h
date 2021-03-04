@@ -34,6 +34,12 @@ Inventory *create_inventory(char *name);
 Inventory *unlock_attack();
 
 /**
+* @brief Create a key inventory item of type type
+* @return NULL on error, else a pointer to the inventory item that has been created
+*/
+Inventory *unlock_key(char *type);
+
+/**
 * @brief Free an inventory item
 * @param inv The inventory item to be freed
 */

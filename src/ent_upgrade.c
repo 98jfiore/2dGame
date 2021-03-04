@@ -75,19 +75,21 @@ Entity *health_spawn(Vector2D position, char *tag)
 	return ent;
 }
 
-void health_action(Entity *self, Entity *ent)
+SDL_bool health_action(Entity *self, Entity *ent)
 {
 	Player *player;
 
-	if (ent == NULL) return;
+	if (ent == NULL) return SDL_FALSE;
 
 	if (ent->flags & ENT_PLAYER)
 	{
 		player = (Player *)ent->data;
 		player->maxhealth++;
 		entity_free(self);
+		return SDL_TRUE;
 	}
 
+	return SDL_FALSE;
 }
 
 Entity *sword_spawn(Vector2D position, char *tag)
@@ -118,12 +120,12 @@ Entity *sword_spawn(Vector2D position, char *tag)
 	return ent;
 }
 
-void sword_action(Entity *self, Entity *ent)
+SDL_bool sword_action(Entity *self, Entity *ent)
 {
 	Player *player;
 	Inventory *inv;
 
-	if (ent == NULL || self == NULL) return;
+	if (ent == NULL || self == NULL) return SDL_FALSE;
 
 	if (ent->flags & ENT_PLAYER)
 	{
@@ -138,7 +140,11 @@ void sword_action(Entity *self, Entity *ent)
 		inv->next = player->inventory;
 		player->inventory = inv;
 		entity_free(self);
+
+		return SDL_TRUE;
 	}
+
+	return SDL_FALSE;
 }
 
 Entity *swordUpgrade_spawn(Vector2D position, char *tag)
@@ -169,12 +175,12 @@ Entity *swordUpgrade_spawn(Vector2D position, char *tag)
 	return ent;
 }
 
-void swordUpgrade_action(Entity *self, Entity *ent)
+SDL_bool swordUpgrade_action(Entity *self, Entity *ent)
 {
 	Player *player;
 	Inventory *inv;
 
-	if (ent == NULL || self == NULL) return;
+	if (ent == NULL || self == NULL) return SDL_FALSE;
 
 	if (ent->flags & ENT_PLAYER)
 	{
@@ -182,7 +188,7 @@ void swordUpgrade_action(Entity *self, Entity *ent)
 		if (player == NULL)
 		{
 			slog("Cannot upgrade sword for nonexistent player");
-			return;
+			return SDL_FALSE;
 		}
 
 		inv = player->inventory;
@@ -192,11 +198,89 @@ void swordUpgrade_action(Entity *self, Entity *ent)
 			{
 				inv->flags = inv->flags | INV_UPGRADED;
 				entity_free(self);
-				break;
+
+				return SDL_TRUE;
 			}
 			inv = inv->next;
 		}
 	}
+
+	return SDL_FALSE;
+}
+
+Entity *key_spawn(Vector2D position, char *tag)
+{
+	Entity *ent;
+	Upgrade *upgrade;
+	Rect *hitbox;
+
+	ent = upgrade_spawn(position, tag);
+	upgrade = (Upgrade *)ent->data;
+
+	ent->sprite = gf2d_sprite_load_all("images/key.png", 16, 16, 1);
+	ent->frameCount = 1;
+	ent->frameRate = 0;
+	ent->baseFrame = 0;
+	ent->scale = vector2d(2, 2);
+
+	hitbox = (Rect *)malloc(sizeof(Rect));
+
+	hitbox->x = position.x + 1;
+	hitbox->y = position.y + 1;
+	hitbox->width = ent->sprite->frame_w * 2 - 2;
+	hitbox->height = ent->sprite->frame_h * 2 - 2;
+	ent->hitbox = hitbox;
+
+	upgrade->action = key_action;
+
+	return ent;
+}
+
+SDL_bool key_action(Entity *self, Entity *ent)
+{
+	Player *player;
+	Inventory *inv, *player_inv;
+	Upgrade *upgrade;
+
+	if (ent == NULL || self == NULL) return SDL_FALSE;
+
+	if (ent->flags & ENT_PLAYER)
+	{
+		player = (Player *)ent->data;
+		if (player == NULL)
+		{
+			slog("Cannot unlock key for nonexistent player");
+			return SDL_FALSE;
+		}
+
+		//Create Key inventory item
+		upgrade = (Upgrade *)self->data;
+		if (upgrade == NULL)
+		{
+			slog("Item is not an upgrade");
+			return SDL_FALSE;
+		}
+		inv = unlock_key(upgrade->tag);
+
+		//Add key to back of player's inventory
+		player_inv = player->inventory;
+		if (player_inv == NULL)
+		{
+			player->inventory = inv;
+		}
+		else
+		{
+			while (player_inv->next != NULL)
+			{
+				player_inv = player_inv->next;
+			}
+			player_inv->next = inv;
+		}
+
+		entity_free(self);
+		return SDL_TRUE;
+	}
+	return SDL_FALSE;
 }
 
 /*eol@eof*/

@@ -131,6 +131,8 @@ void player_update(Entity *self)
 	Player *player;
 	Item *item;
 	Upgrade *upgrade;
+	SDL_bool happened;
+	char *grabbedTag;
 	int	damageTaken;
 
 	player = (Player *)self->data;
@@ -186,8 +188,12 @@ void player_update(Entity *self)
 					upgrade = (Upgrade *)collided->data;
 					if (upgrade->action != NULL)
 					{
-						save_playerUpgrade("saves/save.json", upgrade->tag);
-						upgrade->action(collided, self);
+						grabbedTag = upgrade->tag;
+						happened = upgrade->action(collided, self);
+						if (happened == SDL_TRUE)
+						{
+							save_playerUpgrade("saves/save.json", grabbedTag);
+						}
 						save_player(self, "saves/save.json");
 					}
 				}
@@ -409,7 +415,7 @@ void load_player_inventory(Entity *ent, SJson *save)
 	SJson *obj;
 	int objFound;
 	Player *player;
-	Inventory *inv;
+	Inventory *inv, *playerInv;
 
 	if ((~ent->flags) & ENT_PLAYER)
 	{
@@ -431,8 +437,52 @@ void load_player_inventory(Entity *ent, SJson *save)
 		if (objFound == 1)
 		{
 			inv = unlock_attack();
+			if (inv == NULL)
+			{
+				slog("Failed to make inventory item");
+				return;
+			}
 			inv->next = player->inventory;
 			player->inventory = inv;
+		}
+
+		//Does that sword have a beam upgrade?
+		obj = sj_object_get_value(save, "beamSword");
+		if (obj != NULL)
+		{
+			sj_get_integer_value(obj, &objFound);
+			if (objFound == 1)
+			{
+				player->inventory->flags = player->inventory->flags | INV_UPGRADED;
+			}
+		}
+	}
+
+	//Does the player have a gold key?
+
+	obj = sj_object_get_value(save, "goldKey");
+	if (obj != NULL)
+	{
+		inv = unlock_key("goldKey");
+		if (inv == NULL)
+		{
+			slog("Failed to make inventory item");
+			return;
+		}
+
+		//Add key to back of player's inventory
+		playerInv = player->inventory;
+		if (playerInv == NULL)
+		{
+			player->inventory = inv;
+		}
+		else
+		{
+			while (playerInv->next != NULL)
+			{
+				playerInv = playerInv->next;
+			}
+			playerInv->next = inv;
 		}
 	}
 }

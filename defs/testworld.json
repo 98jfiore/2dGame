@@ -149,10 +149,16 @@
 				"y" : 8
 			},
 			{
-				"type": "sword_upgrade",
-				"tag" : "sword_upgrade",
+				"type": "beamSword",
+				"tag" : "beamSword",
 				"x" : 8,
 				"y" : 6
+			},
+			{
+				"type": "key",
+				"tag" : "goldKey",
+				"x" : 10,
+				"y" : 4
 			}
 		],
 		"floorCode" : 1,

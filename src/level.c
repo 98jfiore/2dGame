@@ -443,13 +443,17 @@ Level *level_load(const char *filename)
 				{
 					health_spawn(position, objTag);
 				}
+				else if (strcmp(objType, "beamSword") == 0)
+				{
+					swordUpgrade_spawn(position, objTag);
+				}
 				else if (strcmp(objType, "sword") == 0)
 				{
 					sword_spawn(position, objTag);
 				}
-				else if (strcmp(objType, "sword_upgrade") == 0)
+				else if (strcmp(objType, "key") == 0)
 				{
-					swordUpgrade_spawn(position, objTag);
+					key_spawn(position, objTag);
 				}
 			}
 			else
@@ -461,13 +465,17 @@ Level *level_load(const char *filename)
 					{
 						health_spawn(position, objTag);
 					}
+					else if (strcmp(objType, "beamSword") == 0)
+					{
+						swordUpgrade_spawn(position, objTag);
+					}
 					else if (strcmp(objType, "sword") == 0)
 					{
 						sword_spawn(position, objTag);
 					}
-					else if (strcmp(objType, "sword_upgrade") == 0)
+					else if (strcmp(objType, "key") == 0)
 					{
-						swordUpgrade_spawn(position, objTag);
+						key_spawn(position, objTag);
 					}
 				}
 				else
@@ -479,13 +487,17 @@ Level *level_load(const char *filename)
 						{
 							health_spawn(position, objTag);
 						}
+						else if (strcmp(objType, "beamSword") == 0)
+						{
+							swordUpgrade_spawn(position, objTag);
+						}
 						else if (strcmp(objType, "sword") == 0)
 						{
 							sword_spawn(position, objTag);
 						}
-						else if (strcmp(objType, "sword_upgrade") == 0)
+						else if (strcmp(objType, "key") == 0)
 						{
-							swordUpgrade_spawn(position, objTag);
+							key_spawn(position, objTag);
 						}
 					}
 				}
