@@ -109,8 +109,13 @@
 			},
 			{
 				"type": "goldDoor",
-				"x" : 5,
-				"y" : 5
+				"x" : 26,
+				"y" : 10
+			},
+			{
+				"type": "goldDoor",
+				"x" : 26,
+				"y" : 11
 			}
 		],
 		"items": [
@@ -150,8 +155,8 @@
 			{
 				"type": "sword",
 				"tag" : "sword",
-				"x" : 7,
-				"y" : 8
+				"x" : 29,
+				"y" : 2
 			},
 			{
 				"type": "beamSword",
@@ -162,8 +167,8 @@
 			{
 				"type": "key",
 				"tag" : "goldKey",
-				"x" : 10,
-				"y" : 4
+				"x" : 25,
+				"y" : 2
 			}
 		],
 		"floorCode" : 1,

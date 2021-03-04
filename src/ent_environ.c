@@ -255,7 +255,31 @@ Entity *goldDoor_spawn(Vector2D position, char *spriteSheet, int frameNum, int s
 	strcpy(door->keyType, "goldKey");
 	ent->data = door;
 
+	ent->free = free_door;
+
 	return ent;
+}
+
+void free_door(Entity *self)
+{
+	Door *door;
+
+	if (self == NULL)
+	{
+		slog("Can't free a null entity");
+		return;
+	}
+
+	door = (Door *)self->data;
+	if (door == NULL)
+	{
+		slog("Can't free nonexistent door");
+		return;
+	}
+
+	free(door->keyType);
+	free(door); 
+
 }
 
 void environment_draw(Entity *ent)

@@ -11,6 +11,7 @@
 #include "entity.h"
 #include "ent_item.h"
 #include "ent_upgrade.h"
+#include "ent_environ.h"
 
 Entity *player_spawn(Vector2D position)
 {
@@ -131,11 +132,18 @@ void player_update(Entity *self)
 	Player *player;
 	Item *item;
 	Upgrade *upgrade;
+	Door *door;
+	Inventory *inv;
 	SDL_bool happened;
 	char *grabbedTag;
 	int	damageTaken;
 
 	player = (Player *)self->data;
+	if (player == NULL)
+	{
+		slog("Player is NULL");
+		return;
+	}
 
 	if (player->flags & PLR_ALIVE)
 	{
@@ -147,54 +155,81 @@ void player_update(Entity *self)
 			collided = check_collision(self);
 			if (collided)
 			{
-				if (collided->flags & ENT_SOLID)
+				//If you collided with a door, see if you can open it
+				if (collided->flags & ENT_LOCKED)
 				{
-					self->hitbox->x -= self->velocity.x;
-					self->hitbox->y -= self->velocity.y;
-					self->velocity = vector2d(0, 0);
-					//printf("%.6f, %.6f vs %.6f, %.6f\n", self->hitbox->x, self->hitbox->y, self->position.x, self->position.y);
-					//printf("%.6f, %.6f vs %.6f, %.6f\n", collided->hitbox->x, collided->hitbox->y, collided->position.x, collided->position.y);
-				}
-				else if (collided->flags & ENT_DEADLY)
-				{
-					if ((~player->flags) & PLR_INVIN || collided->flags & ENT_NOINVIN)
+					door = (Door *)collided->data;
+					if (door == NULL)
 					{
-						damageTaken = collided->damage;
-						if (damageTaken == -1)
-						{
-							player->health = 0;
-							slog("Took all damage");
-						}
-						else
-						{
-							player->health -= damageTaken;
-							slog("Took %i damage", damageTaken);
-							player->flags = player->flags | PLR_INVIN;
-							player->iframesRemaining = 80;
-						}
+						slog("Locked object does not have information on that");
+						return;
 					}
-				}
 
-				if (collided->flags & ENT_ITEM)
-				{
-					item = (Item *)collided->data;
-					if (item->action != NULL)
+					//Go through inventory
+					inv = player->inventory;
+					while (inv != NULL)
 					{
-						item->action(collided, self);
+						if (strcmp(inv->name, door->keyType) == 0)
+						{
+							entity_free(collided);
+							break;
+						}
+
+						inv = inv->next;
 					}
 				}
-				else if (collided->flags & ENT_UPGRADE)
+				
+				if (collided != NULL)
 				{
-					upgrade = (Upgrade *)collided->data;
-					if (upgrade->action != NULL)
+					if (collided->flags & ENT_SOLID)
 					{
-						grabbedTag = upgrade->tag;
-						happened = upgrade->action(collided, self);
-						if (happened == SDL_TRUE)
+						self->hitbox->x -= self->velocity.x;
+						self->hitbox->y -= self->velocity.y;
+						self->velocity = vector2d(0, 0);
+						//printf("%.6f, %.6f vs %.6f, %.6f\n", self->hitbox->x, self->hitbox->y, self->position.x, self->position.y);
+						//printf("%.6f, %.6f vs %.6f, %.6f\n", collided->hitbox->x, collided->hitbox->y, collided->position.x, collided->position.y);
+					}
+					else if (collided->flags & ENT_DEADLY)
+					{
+						if ((~player->flags) & PLR_INVIN || collided->flags & ENT_NOINVIN)
 						{
-							save_playerUpgrade("saves/save.json", grabbedTag);
+							damageTaken = collided->damage;
+							if (damageTaken == -1)
+							{
+								player->health = 0;
+								slog("Took all damage");
+							}
+							else
+							{
+								player->health -= damageTaken;
+								slog("Took %i damage", damageTaken);
+								player->flags = player->flags | PLR_INVIN;
+								player->iframesRemaining = 80;
+							}
 						}
-						save_player(self, "saves/save.json");
+					}
+
+					if (collided->flags & ENT_ITEM)
+					{
+						item = (Item *)collided->data;
+						if (item->action != NULL)
+						{
+							item->action(collided, self);
+						}
+					}
+					else if (collided->flags & ENT_UPGRADE)
+					{
+						upgrade = (Upgrade *)collided->data;
+						if (upgrade->action != NULL)
+						{
+							grabbedTag = upgrade->tag;
+							happened = upgrade->action(collided, self);
+							if (happened == SDL_TRUE)
+							{
+								save_playerUpgrade("saves/save.json", grabbedTag);
+							}
+							save_player(self, "saves/save.json");
+						}
 					}
 				}
 			}

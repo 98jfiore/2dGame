@@ -107,6 +107,12 @@ Entity *spike_spawn(Vector2D position, char *spriteSheet, int frameNum, int spri
 Entity *goldDoor_spawn(Vector2D position, char *spriteSheet, int frameNum, int spriteWidth, int spriteHeight, int fpl, int scale);
 
 /**
+* @brief Free a door entity
+* @param self The door that is to be updated.
+*/
+void free_door(Entity *self);
+
+/**
 * @brief Draws the provided environment entity to the current render frame
 * @param ent The entity to draw
 */
