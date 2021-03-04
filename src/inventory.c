@@ -12,6 +12,7 @@ Inventory *create_inventory(char *name)
 	inv->free = NULL;
 	inv->attack = NULL;
 	inv->next = NULL;
+	inv->flags = 0;
 
 	return inv;
 }
@@ -20,7 +21,7 @@ Inventory *unlock_attack()
 {
 	Inventory *inv;
 
-	inv = create_inventory("attack");
+	inv = create_inventory("sword");
 
 	inv->attack = start_attack;
 

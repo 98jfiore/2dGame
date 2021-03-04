@@ -6,6 +6,10 @@
 
 #include "attack.h"
 
+enum inventory_flags {
+	INV_UPGRADED = 1,
+};
+
 typedef struct Inventory_s
 {
 	char				*name;
@@ -13,6 +17,7 @@ typedef struct Inventory_s
 	void				(*free)(struct Inventory_s *self);
 	Attack				*(*attack)(Entity *owner, ent_movement_flags direction);
 	struct Inventory_s	*next;
+	Uint16				flags;
 }Inventory;
 
 /**

@@ -53,4 +53,19 @@ Entity *sword_spawn(Vector2D position, char *tag);
 */
 void sword_action(Entity *self, Entity *ent);
 
+/**
+* @brief Spawn a sword upgrade item entity
+* @param position The screen position to spawn the sword item at.
+* @param tag The tag of the upgrade item to spawn.
+* @return NULL on error, or a pointer to a new sword item entity.
+*/
+Entity *swordUpgrade_spawn(Vector2D position, char *tag);
+
+/**
+* @brief When a player hits this upgrade item, do something
+* @param self A pointer to the item entity.
+* @param ent The entity to be acted on.
+*/
+void swordUpgrade_action(Entity *self, Entity *ent);
+
 #endif

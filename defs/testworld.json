@@ -141,12 +141,18 @@
 				"tag" : "health_level1",
 				"x" : 6,
 				"y" : 6
-			}
+			},
 			{
 				"type": "sword",
 				"tag" : "sword",
 				"x" : 7,
 				"y" : 8
+			},
+			{
+				"type": "sword_upgrade",
+				"tag" : "sword_upgrade",
+				"x" : 8,
+				"y" : 6
 			}
 		],
 		"floorCode" : 1,

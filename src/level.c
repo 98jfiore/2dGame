@@ -53,8 +53,8 @@ Level *level_load(const char *filename)
 
 	Vector2D position;
 
-	Entity *test;
-	Upgrade *upTest;
+	//Entity *test;
+	//Upgrade *upTest;
 
 	saveFile = "saves/save.json";
 	savedjs = sj_load(saveFile);
@@ -445,9 +445,11 @@ Level *level_load(const char *filename)
 				}
 				else if (strcmp(objType, "sword") == 0)
 				{
-					test = sword_spawn(position, objTag);
-					upTest = (Upgrade *)test->data;
-					printf("%s\n", upTest->tag);
+					sword_spawn(position, objTag);
+				}
+				else if (strcmp(objType, "sword_upgrade") == 0)
+				{
+					swordUpgrade_spawn(position, objTag);
 				}
 			}
 			else
@@ -461,9 +463,11 @@ Level *level_load(const char *filename)
 					}
 					else if (strcmp(objType, "sword") == 0)
 					{
-						test = sword_spawn(position, objTag);
-						upTest = (Upgrade *)test->data;
-						printf("%s\n", upTest->tag);
+						sword_spawn(position, objTag);
+					}
+					else if (strcmp(objType, "sword_upgrade") == 0)
+					{
+						swordUpgrade_spawn(position, objTag);
 					}
 				}
 				else
@@ -477,9 +481,11 @@ Level *level_load(const char *filename)
 						}
 						else if (strcmp(objType, "sword") == 0)
 						{
-							test = sword_spawn(position, objTag);
-							upTest = (Upgrade *)test->data;
-							printf("%s\n", upTest->tag);
+							sword_spawn(position, objTag);
+						}
+						else if (strcmp(objType, "sword_upgrade") == 0)
+						{
+							swordUpgrade_spawn(position, objTag);
 						}
 					}
 				}

@@ -128,11 +128,74 @@ void sword_action(Entity *self, Entity *ent)
 	if (ent->flags & ENT_PLAYER)
 	{
 		player = (Player *)ent->data;
+		if (player == NULL)
+		{
+			slog("Cannot unlock sword for nonexistent player");
+			return;
+		}
 		
 		inv = unlock_attack();
 		inv->next = player->inventory;
 		player->inventory = inv;
 		entity_free(self);
+	}
+}
+
+Entity *swordUpgrade_spawn(Vector2D position, char *tag)
+{
+	Entity *ent;
+	Upgrade *upgrade;
+	Rect *hitbox;
+
+	ent = upgrade_spawn(position, tag);
+	upgrade = (Upgrade *)ent->data;
+
+	ent->sprite = gf2d_sprite_load_all("images/swordbeam.png", 16, 16, 1);
+	ent->frameCount = 1;
+	ent->frameRate = 0;
+	ent->baseFrame = 0;
+	ent->scale = vector2d(2, 2);
+
+	hitbox = (Rect *)malloc(sizeof(Rect));
+
+	hitbox->x = position.x + 1;
+	hitbox->y = position.y + 1;
+	hitbox->width = ent->sprite->frame_w * 2 - 2;
+	hitbox->height = ent->sprite->frame_h * 2 - 2;
+	ent->hitbox = hitbox;
+
+	upgrade->action = swordUpgrade_action;
+
+	return ent;
+}
+
+void swordUpgrade_action(Entity *self, Entity *ent)
+{
+	Player *player;
+	Inventory *inv;
+
+	if (ent == NULL || self == NULL) return;
+
+	if (ent->flags & ENT_PLAYER)
+	{
+		player = (Player *)ent->data;
+		if (player == NULL)
+		{
+			slog("Cannot upgrade sword for nonexistent player");
+			return;
+		}
+
+		inv = player->inventory;
+		while (inv != NULL)
+		{
+			if (strcmp(inv->name, "sword") == 0)
+			{
+				inv->flags = inv->flags | INV_UPGRADED;
+				entity_free(self);
+				break;
+			}
+			inv = inv->next;
+		}
 	}
 }
 
