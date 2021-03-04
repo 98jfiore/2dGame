@@ -94,6 +94,7 @@ Attack *start_attack(Entity *owner, ent_movement_flags direction)
 void attack_update(Attack *self)
 {
 	Entity *hit;
+	Player *player;
 
 	if (!self) return;
 	//Generic updates
@@ -125,9 +126,9 @@ void attack_update(Attack *self)
 		self->hitbox->y = self->owner->position.y + 1;
 	}
 
-
+	player = (Player *)self->owner->data;
 	//If upgraded fire beam on frame 2
-	if (self->frame == 2)
+	if (player != NULL && player->health == player->maxhealth &&self->frame == 2)
 	{
 		projectile_spawn(vector2d(self->hitbox->x - 1, self->hitbox->y - 1), self->direction, self->owner);
 	}
