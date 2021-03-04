@@ -133,7 +133,7 @@ SDL_bool sword_action(Entity *self, Entity *ent)
 		if (player == NULL)
 		{
 			slog("Cannot unlock sword for nonexistent player");
-			return;
+			return SDL_FALSE;
 		}
 		
 		inv = unlock_attack();

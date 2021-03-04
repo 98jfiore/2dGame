@@ -44,7 +44,7 @@ Level *level_load(const char *filename)
 	char *saveFile;
 	int rows, columns;
 	int i, j, count, tileIndex;
-	int wallCode, pitCode, spikeCode, laserCode, laserBaseCode, tileType;
+	int wallCode, pitCode, spikeCode, laserCode, laserBaseCode, goldDoorCode, tileType;
 	SJson *objectsjs, *objjs;
 	int objCount;
 	int objx, objy;
@@ -107,6 +107,7 @@ Level *level_load(const char *filename)
 		sj_get_integer_value(sj_object_get_value(leveljs, "spikeCode"), &spikeCode);
 		sj_get_integer_value(sj_object_get_value(leveljs, "laserCode"), &laserCode);
 		sj_get_integer_value(sj_object_get_value(leveljs, "laserBaseCode"), &laserBaseCode);
+		sj_get_integer_value(sj_object_get_value(leveljs, "goldDoorCode"), &goldDoorCode);
 		sj_get_float_value(sj_object_get_value(leveljs, "scale"), &level->scaleAmount);
 
 		level->tileSet = gf2d_sprite_load_all(
@@ -371,6 +372,11 @@ Level *level_load(const char *filename)
 				{
 					laserBase_spawn(position, (char *)string, laserBaseCode - 1, laserCode - 1, level->tileWidth, level->tileHeight, level->tileFramesPerLine, level->scaleAmount, objCycle, objRange, MOV_WEST);
 				}
+			}
+
+			else if (strcmp(objType, "goldDoor") == 0)
+			{
+				goldDoor_spawn(position, (char *)string, goldDoorCode - 1, level->tileWidth, level->tileHeight, level->tileFramesPerLine, level->scaleAmount);
 			}
 		}
 	}

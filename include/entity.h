@@ -20,6 +20,7 @@ enum entity_flags {
 	ENT_NOINVIN = 32,
 	ENT_ITEM = 64,
 	ENT_UPGRADE = 128,
+	ENT_LOCKED = 256,
 };
 
 typedef enum{

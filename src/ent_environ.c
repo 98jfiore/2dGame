@@ -227,6 +227,37 @@ Entity *spike_spawn(Vector2D position, char *spriteSheet, int frameNum, int spri
 	return ent;
 }
 
+Entity *goldDoor_spawn(Vector2D position, char *spriteSheet, int frameNum, int spriteWidth, int spriteHeight, int fpl, int scale)
+{
+	Entity *ent;
+	Rect *hitbox;
+	Door *door;
+
+	ent = environment_spawn(position, spriteSheet, frameNum, spriteWidth, spriteHeight, fpl, scale);
+	if (ent == NULL)
+	{
+		slog("Failed to create entity");
+		return NULL;
+	}
+
+	hitbox = (Rect *)malloc(sizeof(Rect));
+
+	hitbox->x = position.x + 2.5;
+	hitbox->y = position.y + 2.5;
+	hitbox->width = spriteWidth * scale - 5;
+	hitbox->height = spriteHeight * scale - 5;
+	ent->hitbox = hitbox;
+
+	ent->flags = ENT_SOLID | ENT_HITTABLE | ENT_LOCKED;
+
+	door = (Door *)malloc(sizeof(Door));
+	door->keyType = malloc(strlen("goldKey") + 1);
+	strcpy(door->keyType, "goldKey");
+	ent->data = door;
+
+	return ent;
+}
+
 void environment_draw(Entity *ent)
 {
 	Vector2D upperleft;
