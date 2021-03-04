@@ -53,6 +53,12 @@ void player_update(Entity *self);
 void player_draw(Entity *self);
 
 /**
+* @brief Free the player entity
+* @param self A pointer to the player entity.
+*/
+void player_free(Entity *self);
+
+/**
 * @brief Save the player's state to a json
 * @param self A pointer to the player entity to be saved.
 * @param fileName The name of the file to save the player to.

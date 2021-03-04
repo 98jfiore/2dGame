@@ -278,6 +278,26 @@ void player_draw(Entity * self)
 	}
 }
 
+void player_free(Entity *self)
+{
+	Player *player;
+
+	if (self == NULL)
+	{
+		slog("Cannot free a null ent");
+		return;
+	}
+	player = (Player *)self->data;
+	if (player == NULL)
+	{
+		slog("Entity is not a player");
+		return;
+	}
+	attack_free(player->attack);
+	free_inventory(player->inventory);
+	free(player);
+}
+
 void save_player(Entity *self, char *fileName)
 {
 	SJson *baseJson, *playerJson;

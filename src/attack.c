@@ -2,6 +2,7 @@
 
 #include "player.h"
 #include "attack.h"
+#include "ent_projectile.h"
 
 Attack *start_attack(Entity *owner, ent_movement_flags direction)
 {
@@ -78,6 +79,7 @@ Attack *start_attack(Entity *owner, ent_movement_flags direction)
 		hitbox->y = owner->position.y + 1;
 		hitbox->width = atk->sprite->frame_w * atk->scale.x - 2;
 		hitbox->height = atk->sprite->frame_h * atk->scale.y - 2;
+
 	}
 
 	atk->hitbox = hitbox;
@@ -121,6 +123,13 @@ void attack_update(Attack *self)
 	{
 		self->hitbox->x = self->owner->position.x - (self->owner->sprite->frame_w * self->owner->scale.x) + 1;
 		self->hitbox->y = self->owner->position.y + 1;
+	}
+
+
+	//If upgraded fire beam on frame 2
+	if (self->frame == 2)
+	{
+		projectile_spawn(vector2d(self->hitbox->x - 1, self->hitbox->y - 1), self->direction, self->owner);
 	}
 
 	hit = check_attackHit(self->hitbox, self->owner);
