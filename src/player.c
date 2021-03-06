@@ -52,6 +52,10 @@ Entity *player_spawn(Vector2D position)
 	player->maxhealth = 2;
 	
 	player->inventory = NULL;
+	player->attack = NULL;
+
+	player->attackWait = 0;
+	player->specialWait = 0;
 
 	ent->data = player;
 
@@ -113,6 +117,19 @@ void player_think(Entity *self)
 		}
 	}
 
+	//Is right mouse button clicked
+	if (SDL_GetMouseState(&clickX, &clickY) & SDL_BUTTON(SDL_BUTTON_RIGHT))
+	{
+		if ((~player->flags) & PLR_ATTACKING && player->specialWait <= 0)
+		{
+			drop_bomb(self);
+			player->attackWait = 50;
+			player->specialWait = 500;
+			player->flags = player->flags | PLR_ATTACKING;
+			player->attack = NULL;
+		}
+	}
+
 	if (player->flags & PLR_ATTACKING && player->attack == NULL)
 	{
 		if (player->attackWait > 0)
@@ -123,6 +140,11 @@ void player_think(Entity *self)
 		{
 			player->flags = player->flags & (~PLR_ATTACKING);
 		}
+	}
+
+	if (player->specialWait > 0)
+	{
+		player->specialWait--;
 	}
 }
 
@@ -201,10 +223,7 @@ void player_update(Entity *self)
 							}
 							else
 							{
-								player->health -= damageTaken;
-								slog("Took %i damage", damageTaken);
-								player->flags = player->flags | PLR_INVIN;
-								player->iframesRemaining = 80;
+								player_doDamage(self, damageTaken);
 							}
 						}
 					}
@@ -337,6 +356,38 @@ void player_free(Entity *self)
 	attack_free(player->attack);
 	free_inventory(player->inventory);
 	free(player);
+}
+
+
+void player_doDamage(Entity *player, int damage)
+{
+	Player *plr;
+
+	if (player == NULL)
+	{
+		slog("Cannot damage a null ent");
+		return;
+	}
+	plr = (Player *)player->data;
+	if ((~player->flags) & ENT_PLAYER && plr == NULL)
+	{
+		slog("Entity is not a player");
+		return;
+	}
+
+	if (plr->flags & PLR_DEAD || plr->flags & PLR_INVIN)
+	{
+		return;
+	}
+
+	plr->health -= damage;
+	slog("Took %i damage", damage);
+	plr->flags = plr->flags | PLR_INVIN;
+	plr->iframesRemaining = 80;
+	if (plr->health <= 0)
+	{
+		plr->flags = PLR_DEAD;
+	}
 }
 
 void save_player(Entity *self, char *fileName)

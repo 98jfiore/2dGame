@@ -204,6 +204,41 @@ Entity *check_attackHit(Rect *atk, Entity *owner)
 
 }
 
+void check_explosionHit(Rect *explosion, Entity *owner)
+{
+	int i;
+	SDL_bool intersection;
+
+	if (explosion == NULL)
+	{
+		slog("Cannot check hits against nonexistant attack");
+		return;
+	}
+
+	if (entity_manager.entity_list == NULL)
+	{
+		slog("Entity manager not initialized");
+		return;
+	}
+
+	for (i = 0; i < entity_manager.max_entities; ++i)
+	{
+		if (entity_manager.entity_list[i]._inuse == 0 || entity_manager.entity_list[i].hitbox == NULL) continue;
+		intersection = IntersectRect(explosion, entity_manager.entity_list[i].hitbox);
+		if (intersection == SDL_TRUE)
+		{
+			if (entity_manager.entity_list[i].flags & ENT_PLAYER)
+			{
+				player_doDamage(&entity_manager.entity_list[i], 1);
+			}
+			else if (entity_manager.entity_list[i].flags & ENT_DESTRUCTABLE)
+			{
+				entity_free(&entity_manager.entity_list[i]);
+			}
+		}
+	}
+}
+
 Entity *entity_new()
 {
 	int i;

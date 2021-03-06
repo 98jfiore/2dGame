@@ -3,6 +3,7 @@
 #include "player.h"
 #include "attack.h"
 #include "ent_projectile.h"
+#include "ent_bomb.h"
 
 Attack *start_attack(Entity *owner, ent_movement_flags direction)
 {
@@ -89,6 +90,29 @@ Attack *start_attack(Entity *owner, ent_movement_flags direction)
 	atk->free = NULL;
 
 	return atk;
+}
+
+Entity *drop_bomb(Entity *owner)
+{
+	Entity *ent;
+
+	if (owner == NULL)
+	{
+		slog("Cannot have an attack with no owner");
+		return NULL;
+	}
+
+	ent = bomb_spawn(owner->position, owner);
+	if (ent == NULL)
+	{
+		slog("Could not allocate entity");
+		return NULL;
+	}
+
+	if (ent->scale.x == 0) ent->scale.x = 1;
+	if (ent->scale.y == 0) ent->scale.y = 1;
+
+	return ent;
 }
 
 void attack_update(Attack *self)

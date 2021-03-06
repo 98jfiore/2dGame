@@ -32,6 +32,13 @@ typedef struct Attack_s
 Attack *start_attack(Entity *owner, ent_movement_flags direction);
 
 /**
+* @brief Drop a bomb
+* @param owner The entity whose bomb this is
+* @return NULL on error, else a pointer to bomb that was dropped
+*/
+Entity *drop_bomb(Entity *owner);
+
+/**
 * @brief Check if the attack has hit any entities
 * @param self The attack to check for hits from
 * @return NULL on error or no hit, otherwise a pointer to the entity that was hit

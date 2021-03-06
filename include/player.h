@@ -24,6 +24,7 @@ typedef struct
 	Uint32		iframesRemaining;
 	Attack		*attack;
 	Uint32		attackWait;
+	Uint32		specialWait;
 	Inventory	*inventory;
 }Player;
 

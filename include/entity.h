@@ -88,6 +88,14 @@ Entity *check_collision(Entity *self);
 Entity *check_attackHit(Rect *atk, Entity *owner);
 
 /**
+* @brief Explosion does damage to entities it hits.
+* @param atk The hitbox of the explosion to check for hits.
+* @param owner The owner of the attack.
+* @return NULL on no hit or error, or a pointer to an entity atk hits.
+*/
+void check_explosionHit(Rect *explosion, Entity *owner);
+
+/**
  * @brief Allocate an entity in the entity list and return a pointer to it.
  * @return NULL on error or a pointer to an initialized entity.
  */
@@ -110,6 +118,13 @@ void entity_draw(Entity *ent);
 * @param ent The entity to update
 */
 void entity_update(Entity *self);
+
+/**
+* @brief Do some damage to the player entity
+* @param player A pointer to the player entity.
+* @param damage The amound of damage to do to the player.
+*/
+void player_doDamage(Entity *player, int damage);
 
 
 #endif
