@@ -85,4 +85,19 @@ Entity *key_spawn(Vector2D position, char *tag);
 */
 SDL_bool key_action(Entity *self, Entity *ent);
 
+/**
+* @brief Spawn a bomb upgrade item entity
+* @param position The screen position to spawn the sword item at.
+* @param tag The tag of the upgrade item to spawn.
+* @return NULL on error, or a pointer to a new bomb item entity.
+*/
+Entity *bombUpgrade_spawn(Vector2D position, char *tag);
+
+/**
+* @brief When a player hits this upgrade item, do something
+* @param self A pointer to the item entity.
+* @param ent The entity to be acted on.
+*/
+SDL_bool bombUpgrade_action(Entity *self, Entity *ent);
+
 #endif

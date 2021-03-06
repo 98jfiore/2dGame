@@ -69,6 +69,7 @@ void player_think(Entity *self)
 	Uint8 *state;
 	Vector2D new_vel;
 	Player *player;
+	Inventory *inv;
 	int clickX, clickY;
 	double clickAngle;
 
@@ -120,13 +121,24 @@ void player_think(Entity *self)
 	//Is right mouse button clicked
 	if (SDL_GetMouseState(&clickX, &clickY) & SDL_BUTTON(SDL_BUTTON_RIGHT))
 	{
+		//Does the player even have bombs?
 		if ((~player->flags) & PLR_ATTACKING && player->specialWait <= 0)
 		{
-			drop_bomb(self);
-			player->attackWait = 50;
-			player->specialWait = 500;
-			player->flags = player->flags | PLR_ATTACKING;
-			player->attack = NULL;
+			inv = player->inventory;
+			while (inv != NULL)
+			{
+				if (strcmp(inv->name, "bombs") == 0)
+				{
+					drop_bomb(self);
+					player->attackWait = 50;
+					player->specialWait = 500;
+					player->flags = player->flags | PLR_ATTACKING;
+					player->attack = NULL;
+					break;
+				}
+
+				inv = inv->next;
+			}
 		}
 	}
 
@@ -544,8 +556,34 @@ void load_player_inventory(Entity *ent, SJson *save)
 		}
 	}
 
-	//Does the player have a gold key?
+	//Does the player have bombs?
+	obj = sj_object_get_value(save, "bombs");
+	if (obj != NULL)
+	{
+		inv = create_inventory("bombs");
+		if (inv == NULL)
+		{
+			slog("Failed to make inventory item");
+			return;
+		}
 
+		//Add bomb to back of player's inventory
+		playerInv = player->inventory;
+		if (playerInv == NULL)
+		{
+			player->inventory = inv;
+		}
+		else
+		{
+			while (playerInv->next != NULL)
+			{
+				playerInv = playerInv->next;
+			}
+			playerInv->next = inv;
+		}
+	}
+
+	//Does the player have a gold key?
 	obj = sj_object_get_value(save, "goldKey");
 	if (obj != NULL)
 	{

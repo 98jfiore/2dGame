@@ -283,4 +283,80 @@ SDL_bool key_action(Entity *self, Entity *ent)
 	return SDL_FALSE;
 }
 
+Entity *bombUpgrade_spawn(Vector2D position, char *tag)
+{
+	Entity *ent;
+	Upgrade *upgrade;
+	Rect *hitbox;
+
+	ent = upgrade_spawn(position, tag);
+	upgrade = (Upgrade *)ent->data;
+
+	ent->sprite = gf2d_sprite_load_all("images/bombpickup.png", 16, 16, 1);
+	ent->frameCount = 1;
+	ent->frameRate = 0;
+	ent->baseFrame = 0;
+	ent->scale = vector2d(2, 2);
+
+	hitbox = (Rect *)malloc(sizeof(Rect));
+
+	hitbox->x = position.x + 1;
+	hitbox->y = position.y + 1;
+	hitbox->width = ent->sprite->frame_w * 2 - 2;
+	hitbox->height = ent->sprite->frame_h * 2 - 2;
+	ent->hitbox = hitbox;
+
+	upgrade->action = bombUpgrade_action;
+
+	return ent;
+}
+
+SDL_bool bombUpgrade_action(Entity *self, Entity *ent)
+{
+
+	Player *player;
+	Inventory *inv, *player_inv;
+	Upgrade *upgrade;
+
+	if (ent == NULL || self == NULL) return SDL_FALSE;
+
+	if (ent->flags & ENT_PLAYER)
+	{
+		player = (Player *)ent->data;
+		if (player == NULL)
+		{
+			slog("Cannot unlock key for nonexistent player");
+			return SDL_FALSE;
+		}
+
+		//Create Key inventory item
+		upgrade = (Upgrade *)self->data;
+		if (upgrade == NULL)
+		{
+			slog("Item is not an upgrade");
+			return SDL_FALSE;
+		}
+		inv = create_inventory(upgrade->tag);
+
+		//Add bomb to back of player's inventory
+		player_inv = player->inventory;
+		if (player_inv == NULL)
+		{
+			player->inventory = inv;
+		}
+		else
+		{
+			while (player_inv->next != NULL)
+			{
+				player_inv = player_inv->next;
+			}
+			player_inv->next = inv;
+		}
+
+		entity_free(self);
+		return SDL_TRUE;
+	}
+	return SDL_FALSE;
+}
+
 /*eol@eof*/

@@ -461,6 +461,10 @@ Level *level_load(const char *filename)
 				{
 					key_spawn(position, objTag);
 				}
+				else if (strcmp(objType, "bombUpgrade") == 0)
+				{
+					bombUpgrade_spawn(position, objTag);
+				}
 			}
 			else
 			{
@@ -483,6 +487,10 @@ Level *level_load(const char *filename)
 					{
 						key_spawn(position, objTag);
 					}
+					else if (strcmp(objType, "bombUpgrade") == 0)
+					{
+						bombUpgrade_spawn(position, objTag);
+					}
 				}
 				else
 				{
@@ -504,6 +512,10 @@ Level *level_load(const char *filename)
 						else if (strcmp(objType, "key") == 0)
 						{
 							key_spawn(position, objTag);
+						}
+						else if (strcmp(objType, "bombUpgrade") == 0)
+						{
+							bombUpgrade_spawn(position, objTag);
 						}
 					}
 				}

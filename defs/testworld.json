@@ -169,6 +169,12 @@
 				"tag" : "goldKey",
 				"x" : 25,
 				"y" : 2
+			},
+			{
+				"type": "bombUpgrade",
+				"tag" : "bombs",
+				"x" : 5,
+				"y" : 7
 			}
 		],
 		"floorCode" : 1,
