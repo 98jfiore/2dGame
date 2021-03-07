@@ -119,6 +119,7 @@ void attack_update(Attack *self)
 {
 	Entity *hit;
 	Player *player;
+	Entity *owner;
 
 	if (!self) return;
 	//Generic updates
@@ -150,20 +151,62 @@ void attack_update(Attack *self)
 		self->hitbox->y = self->owner->position.y + 1;
 	}
 
-	player = (Player *)self->owner->data;
-	//If upgraded fire beam on frame 2
-	if (player != NULL && player->inventory->flags & INV_UPGRADED && player->health == player->maxhealth &&self->frame == 2)
+	owner = self->owner;
+	if (owner != NULL)
 	{
-		projectile_spawn(vector2d(self->hitbox->x - 1, self->hitbox->y - 1), self->direction, self->owner);
-	}
-
-	hit = check_attackHit(self->hitbox, self->owner);
-	if (hit != NULL)
-	{
-		if (hit->flags & ENT_DESTRUCTABLE)
+		if (owner->flags & ENT_PLAYER)
 		{
-			entity_free(hit);
+			player = (Player *)self->owner->data;
+
+			//If upgraded fire beam on frame 2
+			if (player != NULL && player->inventory->flags & INV_UPGRADED && player->health == player->maxhealth &&self->frame == 2)
+			{
+				projectile_spawn(vector2d(self->hitbox->x - 1, self->hitbox->y - 1), self->direction, self->owner);
+			}
+
+			hit = check_attackHit(self->hitbox, self->owner);
+			if (hit != NULL)
+			{
+
+				if (self->direction == MOV_NORTH)
+				{
+					owner->velocity = vector2d(0, 40);
+				}
+				else if (self->direction == MOV_SOUTH)
+				{
+					owner->velocity = vector2d(0, -40);
+				}
+				else if (self->direction == MOV_EAST)
+				{
+					owner->velocity = vector2d(-40, 0);
+				}
+				else
+				{
+					owner->velocity = vector2d(40, 0);
+				}
+
+				if (hit->flags & ENT_DESTRUCTABLE)
+				{
+					entity_free(hit);
+					
+					attack_free(self);
+				}
+			}
 		}
+		else
+		{
+			hit = check_attackHit(self->hitbox, self->owner);
+			if (hit != NULL)
+			{
+				if (hit->flags & ENT_DESTRUCTABLE)
+				{
+					entity_free(hit);
+					attack_free(self);
+				}
+			}
+
+		}
+
 	}
 
 

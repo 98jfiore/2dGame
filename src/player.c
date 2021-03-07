@@ -74,12 +74,22 @@ void player_think(Entity *self)
 	double clickAngle;
 
 	//Move in a direction based on WASD
-	new_vel = vector2d(0, 0);
-	state = SDL_GetKeyboardState(NULL);
-	if (state[SDL_SCANCODE_A]) new_vel.x -= 5;
-	if (state[SDL_SCANCODE_D]) new_vel.x += 5;
-	if (state[SDL_SCANCODE_W]) new_vel.y -= 5;
-	if (state[SDL_SCANCODE_S]) new_vel.y += 5;
+	//If player is not in knockback
+	if (self->velocity.x <= 5 && self->velocity.y <= 5 && self->velocity.x >= -5 && self->velocity.y >= -5)
+	{
+		new_vel = vector2d(0, 0);
+		state = SDL_GetKeyboardState(NULL);
+		if (state[SDL_SCANCODE_A]) new_vel.x -= 5;
+		else if (state[SDL_SCANCODE_D]) new_vel.x += 5;
+		else if (state[SDL_SCANCODE_W]) new_vel.y -= 5;
+		else if (state[SDL_SCANCODE_S]) new_vel.y += 5;
+	}
+	else
+	{
+		new_vel = self->velocity;
+		new_vel.x = new_vel.x * 2 / 3;
+		new_vel.y = new_vel.y * 2 / 3;
+	}
 
 	self->velocity = new_vel;
 
@@ -179,6 +189,12 @@ void player_update(Entity *self)
 		return;
 	}
 
+
+	if (player->flags & PLR_ATTACKING && player->attack != NULL)
+	{
+		attack_update(player->attack);
+	}
+
 	if (player->flags & PLR_ALIVE)
 	{
 		if (self->hitbox != NULL)
@@ -220,12 +236,14 @@ void player_update(Entity *self)
 						self->hitbox->x -= self->velocity.x;
 						self->hitbox->y -= self->velocity.y;
 						self->velocity = vector2d(0, 0);
-						//printf("%.6f, %.6f vs %.6f, %.6f\n", self->hitbox->x, self->hitbox->y, self->position.x, self->position.y);
-						//printf("%.6f, %.6f vs %.6f, %.6f\n", collided->hitbox->x, collided->hitbox->y, collided->position.x, collided->position.y);
 					}
 					else if (collided->flags & ENT_DEADLY)
 					{
-						if ((~player->flags) & PLR_INVIN || collided->flags & ENT_NOINVIN)
+						if ((self->velocity.x > 5 || self->velocity.x < -5 || self->velocity.y > 5 || self->velocity.y < -5) && collided->flags & ENT_NOINVIN)
+						{
+
+						}
+						else if ((~player->flags) & PLR_INVIN || collided->flags & ENT_NOINVIN)
 						{
 							damageTaken = collided->damage;
 							if (damageTaken == -1)
@@ -284,12 +302,10 @@ void player_update(Entity *self)
 			player->flags = PLR_DEAD;
 			return;
 		}
-		
-		if (player->flags & PLR_ATTACKING && player->attack != NULL)
-		{
-			attack_update(player->attack);
-		}
 		vector2d_add(self->position, self->position, self->velocity);
+
+		//printf("%.6f, %.6f   %.6f, %.6f\n", self->hitbox->x, self->hitbox->y, self->position.x, self->position.y);
+
 		player_think(self);
 	}
 	else if (player->flags & PLR_DEAD)
