@@ -3,6 +3,8 @@
 #include "simple_logger.h"
 #include "simple_json.h"
 
+#include "font.h"
+
 #include "ui.h"
 #include "ui_life.h"
 
@@ -35,6 +37,8 @@ void ui_manager_init(Uint32 max_comp)
 	ui_manager.max_components = max_comp;
 	atexit(ui_manager_free);
 	slog("UI system initialized");
+
+	//gfc_text_init("fonts/colony_wars.ttf");
 }
 
 void ui_manager_free()
@@ -75,6 +79,7 @@ void component_update(UIComponent *self)
 void ui_manager_draw_components()
 {
 	int i;
+	Font *font;
 	if (ui_manager.component_list == NULL)
 	{
 		slog("Entity manager not initialized");
@@ -85,6 +90,10 @@ void ui_manager_draw_components()
 		if (ui_manager.component_list[i]._inuse == 0) continue;
 		component_draw(&ui_manager.component_list[i]);
 	}
+	//gfc_text_draw_line("HEY", FT_H1, gfc_color(126, 104, 166, 1), vector2d(20,20));
+	/*font = font_load("fonts/RETRO_SPACE.ttf", 70);
+	font_render(font, "GAME OVER", gfc_color8(0, 0, 0, 255), vector2d(500, 300));
+	font_render(font, "GAME OVER", gfc_color8(0, 0, 0, 150), vector2d(500, 200));*/
 }
 
 void component_draw(UIComponent *comp)

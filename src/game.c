@@ -13,6 +13,7 @@
 #include "ent_environ.h"
 #include "level.h"
 #include "ui.h"
+#include "font.h"
 
 int main(int argc, char * argv[])
 {
@@ -41,6 +42,8 @@ int main(int argc, char * argv[])
     gf2d_sprite_init(1024);
 	entity_manager_init(500);
     SDL_ShowCursor(SDL_DISABLE);
+	
+	font_init(5);
 
 	level = level_load("defs/testworld.json");
 	
@@ -80,6 +83,7 @@ int main(int argc, char * argv[])
                 NULL,
                 &mouseColor,
                 (int)mf);
+
 
         gf2d_grahics_next_frame();// render current draw frame and skip to the next frame
         
