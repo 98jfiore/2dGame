@@ -17,6 +17,13 @@ typedef struct
 	int				healthRep;
 }UILife;
 
+typedef struct
+{
+	Player			*player;
+	Vector4D		backdropColor;
+	TextUIComponent	*text;
+}UIGameOver;
+
 /**
 * @brief Frees the provided component
 * @param ent The component to free
@@ -50,5 +57,31 @@ void health_component_update(UIComponent *self);
 * @return NULL on error or a pointer to a new UI Component
 */
 UIComponent *health_component_create(const char *spriteFile, int sprite_w, int sprite_h, int sprite_fpl, int sprite_count, int sprite_num, const char *spriteFile_empty, int sprite_w_empty, int sprite_h_empty, int sprite_fpl_empty, int sprite_count_empty, int sprite_num_empty, int x, int y, int scale, Entity *ent);
+
+
+/**
+* @brief Frees the provided component
+* @param ent The component to free
+*/
+void gameOver_component_free(UIComponent *comp);
+
+/**
+* @brief Updates the provided component to the current state
+* @param ent The component to update
+*/
+void gameOver_component_update(UIComponent *self);
+
+/**
+* @brief Draws the provided component to the current state
+* @param ent The component to update
+*/
+void gameOver_component_draw(UIComponent *self);
+
+/**
+* @brief Creates a game over component for the entity given
+* @param ent A pointer to the entity whose health you need to keep track of
+* @return NULL on error or a pointer to a new UI Component
+*/
+UIComponent *gameOver_component_create(Entity *ent);
 
 #endif

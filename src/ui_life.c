@@ -118,4 +118,159 @@ void health_component_update(UIComponent *self)
 	}
 }
 
+void gameOver_component_free(UIComponent *comp)
+{
+	TextUIComponent *text;
+	UIGameOver *gameOver;
+
+	if (comp == NULL) return;
+
+	gameOver = (UIGameOver *)comp->data;
+	if (gameOver == NULL) return;
+
+	text = gameOver->text;
+	font_free(text->font);
+	free(text->text);
+	free(text);
+
+	free(gameOver);
+}
+
+void gameOver_component_update(UIComponent *self)
+{
+	UIGameOver *gameOver;
+
+	if (self == NULL) return;
+
+	gameOver = (UIGameOver *)self->data;
+	if (gameOver == NULL) return;
+
+	if (self->flags & UI_INVISIBLE)
+	{
+		if (gameOver->player == NULL || gameOver->player->health == 0)
+		{
+			self->flags = 0;
+		}
+	}
+	else
+	{
+		if (gameOver->text->color.a < 255)
+		{
+			gameOver->text->color.a += 0.25;
+		}
+		if (gameOver->backdropColor.w < 175)
+		{
+			gameOver->backdropColor.w += 0.3;
+		}
+	}
+
+}
+
+void gameOver_component_draw(UIComponent *self)
+{
+	UIGameOver *gameOver;
+	TextUIComponent *text;
+
+
+	if (self->flags & UI_INVISIBLE) return;
+
+
+	if (self == NULL) return;
+
+	gameOver = (UIGameOver *)self->data;
+	if (gameOver == NULL) return;
+
+	if (self->sprite != NULL)
+	{
+		gf2d_sprite_draw(
+			self->sprite,
+			vector2d(0, 0),
+			NULL,
+			NULL,
+			NULL,
+			NULL,
+			&gameOver->backdropColor,
+			0);
+	}
+
+	text = gameOver->text;
+	if (text == NULL) return;
+
+	font_render(text->font, text->text, text->color, self->position);
+}
+
+UIComponent *gameOver_component_create(Entity *ent)
+{
+	UIComponent *comp;
+	TextUIComponent *textComp;
+	UIGameOver *gameOver;
+	Player *player;
+
+	if (ent->flags & ENT_PLAYER)
+	{
+		player = (Player *)ent->data;
+		
+		comp = component_new();
+		if (comp == NULL)
+		{
+			slog("Failed to create component");
+			return NULL;
+		}
+
+		comp->sprite = gf2d_sprite_load_image("images/backgrounds/void.png");
+		if (comp->sprite == NULL)
+		{
+			slog("UI sprite couldn't load");
+			component_free(comp);
+			return NULL;
+		}
+
+		comp->position = vector2d(420, 300);
+		comp->frameCount = 0;
+		comp->baseFrame = 0;
+		comp->scale = vector2d(0, 0);
+		comp->frameRate = 0;
+		comp->flags = UI_INVISIBLE;
+
+		gameOver = (UIGameOver *)malloc(sizeof(UIGameOver));
+		if (gameOver == NULL)
+		{
+			slog("GAME OVER couldn't be allocated");
+			component_free(comp);
+			return NULL;
+		}
+
+		gameOver->player = player;
+
+		textComp = (TextUIComponent *)malloc(sizeof(TextUIComponent));
+		if (textComp == NULL)
+		{
+			slog("GAME OVER couldn't be allocated");
+			free(gameOver);
+			component_free(comp);
+			return NULL;
+		}
+
+		textComp->font = font_load("fonts/RETRO_SPACE_INV.ttf", 70);
+		textComp->color = gfc_color8(255,255,255,0);
+		textComp->text = "GAME OVER";
+
+		gameOver->text = textComp;
+
+		gameOver->backdropColor = vector4d(0, 0, 0, 10);
+
+		comp->data = gameOver;
+		comp->free = gameOver_component_free;
+		comp->draw = gameOver_component_draw;
+		comp->update = gameOver_component_update;
+
+		return comp;
+	}
+	else
+	{
+		return NULL;
+	}
+}
+
+
 /*eol@eof*/

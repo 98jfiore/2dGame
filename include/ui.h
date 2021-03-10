@@ -6,6 +6,7 @@
 
 #include "entity.h"
 #include "player.h"
+#include "font.h"
 
 enum ui_flags {
 	UI_INVISIBLE = 1,
@@ -18,6 +19,7 @@ typedef struct UIComponent_s
 	Sprite			*sprite;
 	Vector2D		position;
 	Vector2D		scale;
+	Vector4D		*color;
 	float			frame;
 	float			frameRate;
 	int				frameCount;
@@ -27,6 +29,13 @@ typedef struct UIComponent_s
 	void			(*free)(struct UIComponent_s *self);
 	void			*data;
 }UIComponent;
+
+typedef struct
+{
+	char *text;
+	Font *font;
+	Color color;
+}TextUIComponent;
 
 /**
 * @brief Initialize the ui manager
@@ -93,5 +102,35 @@ void component_update(UIComponent *self);
 * @return NULL on error or a pointer to a new UI Component
 */
 UIComponent *component_create(const char *spriteFile, int sprite_w, int sprite_h, int sprite_fpl, int sprite_count, int sprite_num, int x, int y, int scale);
+
+/**
+* @brief Creates a component containing text from info given
+* @param text The text that will show up in the componenet
+* @param fontFile The file that the font can be found on
+* @param ptsize The pointsize of the text
+* @param color The color of the text
+* @param x The x position this component will be on
+* @param y The y position this component will be on
+* @return NULL on error or a pointer to a new UI Component
+*/
+UIComponent *text_component_create(char *text, char *fontFile, Uint32 ptsize, Color color, int x, int y);
+
+/**
+* @brief Frees the provided text component
+* @param ent The component to free
+*/
+void text_component_free(UIComponent *comp);
+
+/**
+* @brief Draws the provided text component to the current render frame
+* @param ent The component to draw
+*/
+void text_component_draw(UIComponent *comp);
+
+/**
+* @brief Updates the provided text component to the current state
+* @param ent The component to update
+*/
+void text_component_update(UIComponent *self);
 
 #endif

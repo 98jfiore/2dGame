@@ -3,8 +3,6 @@
 #include "simple_logger.h"
 #include "simple_json.h"
 
-#include "font.h"
-
 #include "ui.h"
 #include "ui_life.h"
 
@@ -43,10 +41,18 @@ void ui_manager_init(Uint32 max_comp)
 
 void ui_manager_free()
 {
-	if (ui_manager.component_list != NULL)
+	int i;
+	if (ui_manager.component_list == NULL)
 	{
-		free(ui_manager.component_list);
+		return;
 	}
+	
+	for (i = 0; i < ui_manager.max_components; ++i)
+	{
+		if (ui_manager.component_list[i]._inuse == 0) continue;
+		//component_free(&ui_manager.component_list[i]);
+	}
+	free(ui_manager.component_list);
 	memset(&ui_manager, 0, sizeof(UIManager));
 }
 
@@ -79,7 +85,7 @@ void component_update(UIComponent *self)
 void ui_manager_draw_components()
 {
 	int i;
-	Font *font;
+	//Font *font;
 	if (ui_manager.component_list == NULL)
 	{
 		slog("Entity manager not initialized");
@@ -106,13 +112,14 @@ void component_draw(UIComponent *comp)
 		return;
 	}
 	//If specialized draw, do it, otherwise do generic
+
 	if (comp->draw)
 	{
 		comp->draw(comp);
 	}
 	else
 	{
-		if (comp->sprite == NULL)
+		if (comp->sprite == NULL || comp->flags & UI_INVISIBLE)
 		{
 			return; //Nothing to draw
 		}
@@ -186,8 +193,79 @@ UIComponent *component_create(const char *spriteFile, int sprite_w, int sprite_h
 	comp->baseFrame = sprite_num;
 	comp->scale = vector2d(scale, scale);
 	comp->frameRate = 0;
+	comp->color = NULL;
 
 	return comp;
+}
+
+UIComponent *text_component_create(char *text, char *fontFile, Uint32 ptsize, Color color, int x, int y)
+{
+	UIComponent *comp;
+	TextUIComponent *textComp;
+
+	comp = component_new();
+	if (comp == NULL)
+	{
+		slog("Failed to create component");
+		return NULL;
+	}
+
+	comp->position = vector2d(x, y);
+	comp->sprite = NULL;
+	comp->frameCount = 0;
+	comp->baseFrame = 0;
+	comp->scale = vector2d(0, 0);
+	comp->frameRate = 0;
+	comp->flags = 0;
+
+	textComp = (TextUIComponent *)malloc(sizeof(TextUIComponent));
+	
+	textComp->font = font_load(fontFile, ptsize);
+	textComp->color = color;
+	textComp->text = text;
+
+	comp->data = textComp;
+	comp->free = text_component_free;
+	comp->draw = text_component_draw;
+	comp->update = text_component_update;
+
+	return comp;
+
+}
+
+void text_component_free(UIComponent *comp)
+{
+	TextUIComponent *text;
+
+	text = (TextUIComponent *) comp->data;
+	if (text == NULL) return;
+	font_free(text->font);
+	free(text->text);
+	free(text);
+}
+
+
+void text_component_draw(UIComponent *comp)
+{
+	TextUIComponent *text;
+
+	if (comp == NULL)
+	{
+		slog("Cannot draw a NULL component");
+		return;
+	}
+
+	if (comp->flags & UI_INVISIBLE) return;
+
+	text = (TextUIComponent *)comp->data;
+	if (text == NULL) return;
+
+	font_render(text->font, text->text, text->color, comp->position);
+}
+
+void text_component_update(UIComponent *self)
+{
+	return;
 }
 
 void component_free(UIComponent *comp)
@@ -300,6 +378,9 @@ void ui_format_load(const char *filename, Entity *player)
 		}
 	}
 
+	gameOver_component_create(player);
+
+	//text_component_create("HEY GUYS!", "fonts/RETRO_SPACE_INV.ttf", 50, gfc_color8(0, 0, 0, 255), 600, 70);
 
 	sj_free(json);
 }

@@ -23,6 +23,7 @@
 				"frame_count" : 1,
 				"frame_num" : 1
 			}
-		}
+		},
+		"gameover": 1
 	}
 }
