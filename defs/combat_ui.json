@@ -7,6 +7,7 @@
 				"y": 600
 			}
 		],
+		"gameover": 0,
 		"life": {
 			"filename": "images/health.png",
 			"sprite_w": 32,
@@ -23,7 +24,6 @@
 				"frame_count" : 1,
 				"frame_num" : 1
 			}
-		},
-		"gameover": 1
+		}
 	}
 }

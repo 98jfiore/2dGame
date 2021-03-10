@@ -41,16 +41,9 @@ void ui_manager_init(Uint32 max_comp)
 
 void ui_manager_free()
 {
-	int i;
 	if (ui_manager.component_list == NULL)
 	{
 		return;
-	}
-	
-	for (i = 0; i < ui_manager.max_components; ++i)
-	{
-		if (ui_manager.component_list[i]._inuse == 0) continue;
-		//component_free(&ui_manager.component_list[i]);
 	}
 	free(ui_manager.component_list);
 	memset(&ui_manager, 0, sizeof(UIManager));
@@ -272,7 +265,6 @@ void component_free(UIComponent *comp)
 {
 	if (comp == NULL)
 	{
-		slog("Cannot free a NULL component");
 		return;
 	}
 	if (comp->free != NULL)
@@ -378,8 +370,13 @@ void ui_format_load(const char *filename, Entity *player)
 		}
 	}
 
-	gameOver_component_create(player);
 
+	compsjs = sj_object_get_value(uijs, "gameover");
+	if (compjs != NULL)
+	{
+		sj_get_integer_value(compjs, &i);
+		if (i == 1){ gameOver_component_create(player); }
+	}
 	//text_component_create("HEY GUYS!", "fonts/RETRO_SPACE_INV.ttf", 50, gfc_color8(0, 0, 0, 255), 600, 70);
 
 	sj_free(json);
