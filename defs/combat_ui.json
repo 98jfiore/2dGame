@@ -7,7 +7,7 @@
 				"y": 600
 			}
 		],
-		"gameover": 0,
+		"gameover": 1,
 		"life": {
 			"filename": "images/health.png",
 			"sprite_w": 32,

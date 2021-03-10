@@ -370,14 +370,8 @@ void ui_format_load(const char *filename, Entity *player)
 		}
 	}
 
-
-	compsjs = sj_object_get_value(uijs, "gameover");
-	if (compjs != NULL)
-	{
-		sj_get_integer_value(compjs, &i);
-		if (i == 1){ gameOver_component_create(player); }
-	}
-	//text_component_create("HEY GUYS!", "fonts/RETRO_SPACE_INV.ttf", 50, gfc_color8(0, 0, 0, 255), 600, 70);
+	sj_get_integer_value(sj_object_get_value(uijs, "gameover"), &i);
+	if (i == 1){ gameOver_component_create(player); }
 
 	sj_free(json);
 }

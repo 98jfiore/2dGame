@@ -45,7 +45,7 @@ int main(int argc, char * argv[])
 	
 	font_init(5);
 
-	level = level_load("defs/testworld.json");
+	level = level_load("defs/room1_1.json");
 	
     
     /*demo setup*/

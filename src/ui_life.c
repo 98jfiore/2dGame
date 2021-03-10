@@ -225,7 +225,6 @@ UIComponent *gameOver_component_create(Entity *ent)
 			return NULL;
 		}
 
-		comp->position = vector2d(420, 300);
 		comp->frameCount = 0;
 		comp->baseFrame = 0;
 		comp->scale = vector2d(0, 0);
@@ -252,8 +251,10 @@ UIComponent *gameOver_component_create(Entity *ent)
 		}
 
 		textComp->font = font_load("fonts/RETRO_SPACE_INV.ttf", 70);
-		textComp->color = gfc_color8(255,255,255,0);
+		textComp->color = gfc_color8(255,255,255,1);
+
 		textComp->text = "GAME OVER";
+		comp->position = vector2d(420, 300);
 
 		gameOver->text = textComp;
 
