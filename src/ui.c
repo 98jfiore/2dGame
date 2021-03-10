@@ -54,7 +54,7 @@ void ui_manager_update_components()
 	int i;
 	if (ui_manager.component_list == NULL)
 	{
-		slog("Entity manager not initialized");
+		slog("UI manager not initialized");
 		return;
 	}
 	for (i = 0; i < ui_manager.max_components; ++i)
@@ -81,7 +81,7 @@ void ui_manager_draw_components()
 	//Font *font;
 	if (ui_manager.component_list == NULL)
 	{
-		slog("Entity manager not initialized");
+		slog("UI manager not initialized");
 		return;
 	}
 	for (i = 0; i < ui_manager.max_components; ++i)

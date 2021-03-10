@@ -44,6 +44,29 @@ void entity_manager_free()
 	memset(&entity_manager, 0, sizeof(EntityManager));
 }
 
+Entity *delete_notplayer()
+{
+	int i;
+	Entity *player;
+
+	if (entity_manager.entity_list == NULL)
+	{
+		slog("Entity manager not initialized");
+		return NULL;
+	}
+	player = NULL;
+	for (i = 0; i < entity_manager.max_entities; ++i)
+	{
+		if (entity_manager.entity_list[i]._inuse == 0) continue;
+		if (entity_manager.entity_list[i].flags & ENT_PLAYER) player = &entity_manager.entity_list[i];
+		else
+		{
+			entity_manager.entity_list[i]._inuse = 0;
+		}
+	}
+	return player;
+}
+
 void entity_update(Entity *self)
 {
 	if (!self) return;
@@ -252,6 +275,9 @@ Entity *entity_new()
 		if (entity_manager.entity_list[i]._inuse) continue; //Entity space is in use
 		memset(&entity_manager.entity_list[i], 0, sizeof(Entity));
 		entity_manager.entity_list[i]._inuse = 1;
+		entity_manager.entity_list[i].free = NULL;
+		entity_manager.entity_list[i].hitbox = NULL;
+		entity_manager.entity_list[i].sprite = NULL;
 		return &entity_manager.entity_list[i];
 	}
 	slog("No free entities available");
@@ -269,10 +295,16 @@ void entity_free(Entity *ent)
 	{
 		ent->free(ent);
 	}
-	gf2d_sprite_free(ent->sprite);
-	ent->sprite = NULL;
-	free(ent->hitbox);
-	ent->hitbox = NULL;
+	if (ent->sprite != NULL)
+	{
+		gf2d_sprite_free(ent->sprite);
+		ent->sprite = NULL;
+	}
+	if (ent->hitbox != NULL)
+	{
+		free(ent->hitbox);
+		ent->hitbox = NULL;
+	}
 	ent->_inuse = 0;
 }
 

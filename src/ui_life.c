@@ -23,6 +23,7 @@ UIComponent *health_component_create(const char *spriteFile, int sprite_w, int s
 	Player *player;
 	int i;
 
+	if (ent == NULL) return NULL;
 	if (ent->flags & ENT_PLAYER)
 	{
 		player = (Player *)ent->data;
@@ -206,6 +207,7 @@ UIComponent *gameOver_component_create(Entity *ent)
 	UIGameOver *gameOver;
 	Player *player;
 
+	if (ent == NULL) return NULL;
 	if (ent->flags & ENT_PLAYER)
 	{
 		player = (Player *)ent->data;

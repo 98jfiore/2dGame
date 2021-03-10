@@ -21,6 +21,7 @@ enum entity_flags {
 	ENT_ITEM = 64,
 	ENT_UPGRADE = 128,
 	ENT_LOCKED = 256,
+	ENT_TRANSITION = 512,
 };
 
 typedef enum{
@@ -61,6 +62,12 @@ void entity_manager_init(Uint32 max_entities);
  * @brief Free all entities in the system and destroy the entity manager
  */
 void entity_manager_free();
+
+/**
+* @brief Deletes all entities that are not the player
+* @return NULL on error or no player, or a pointer to the player entity
+*/
+Entity *delete_notplayer();
 
 /**
 * @brief Update all entities in the system

@@ -67,7 +67,7 @@ int main(int argc, char * argv[])
         
         gf2d_graphics_clear_screen();// clears drawing buffers
         // all drawing should happen betweem clear_screen and next_frame
-			level_draw(level);
+			level_draw();
 
 			entity_manager_draw_entities();
 

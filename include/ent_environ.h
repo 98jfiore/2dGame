@@ -102,7 +102,7 @@ Entity *spike_spawn(Vector2D position, char *spriteSheet, int frameNum, int spri
 * @param spriteHeight The height of sprites in the sprite sheet.
 * @param spriteHeight Frames per line in the sprite sheet.
 * @param scale How much to scale the sprite by.
-* @return NULL on error, or a pointer to a new player entity.
+* @return NULL on error, or a pointer to a new gold door entity.
 */
 Entity *goldDoor_spawn(Vector2D position, char *spriteSheet, int frameNum, int spriteWidth, int spriteHeight, int fpl, int scale);
 
