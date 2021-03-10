@@ -100,7 +100,7 @@ Level *level_loadWithPlayer(const char *filename, Entity *player, char *nextPlay
 	SJson *json, *leveljs;
 	const char *string;
 	char *saveFile;
-	SJson *objjs;
+	SJson *objjs, *positionjs;
 	int objx, objy;
 
 	level = level_jsonload(filename);
@@ -127,8 +127,17 @@ Level *level_loadWithPlayer(const char *filename, Entity *player, char *nextPlay
 	objjs = sj_object_get_value(leveljs, "player spawn");
 	if (objjs != NULL)
 	{
-		sj_get_integer_value(sj_object_get_value(objjs, "x"), &objx);
-		sj_get_integer_value(sj_object_get_value(objjs, "y"), &objy);
+		positionjs = sj_object_get_value(objjs, nextPlayerPos);
+		if (positionjs != NULL)
+		{
+			sj_get_integer_value(sj_object_get_value(positionjs, "x"), &objx);
+			sj_get_integer_value(sj_object_get_value(positionjs, "y"), &objy);
+		}
+		else
+		{
+			sj_get_integer_value(sj_object_get_value(objjs, "x"), &objx);
+			sj_get_integer_value(sj_object_get_value(objjs, "y"), &objy);
+		}
 		player->position = vector2d(objx * level->tileSet->frame_w * level->scaleAmount, objy * level->tileSet->frame_h * level->scaleAmount);
 		player->hitbox->x = player->position.x;
 		player->hitbox->y = player->position.y;

@@ -88,7 +88,7 @@ void sweeper_think(Entity *self)
 		collided = check_collision(self);
 		if (collided)
 		{
-			if (collided->flags & ENT_DEADLY || collided->flags & ENT_SOLID)
+			if (collided->flags & ENT_DEADLY || collided->flags & ENT_SOLID || collided->flags & ENT_TRANSITION)
 			{
 				self->hitbox->x -= self->velocity.x;
 				self->hitbox->y -= self->velocity.y;

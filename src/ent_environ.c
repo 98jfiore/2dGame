@@ -49,10 +49,10 @@ Entity *wall_spawn(Vector2D position, char *spriteSheet, int frameNum, int sprit
 
 	hitbox = (Rect *)malloc(sizeof(Rect));
 
-	hitbox->x = position.x + 2.5;
-	hitbox->y = position.y + 2.5;
-	hitbox->width = spriteWidth * scale - 5;
-	hitbox->height = spriteHeight * scale -5;
+	hitbox->x = position.x + 3;
+	hitbox->y = position.y + 3;
+	hitbox->width = spriteWidth * scale - 6;
+	hitbox->height = spriteHeight * scale - 6;
 	ent->hitbox = hitbox;
 
 	ent->flags = ENT_SOLID | ENT_HITTABLE;
@@ -136,7 +136,7 @@ void moving_wall_update(Entity *self)
 		collided = check_collision(self);
 		if (collided)
 		{
-			if (collided->flags & ENT_SOLID || collided->flags & ENT_PLAYER)
+			if (collided->flags & ENT_SOLID || collided->flags & ENT_PLAYER || collided->flags & ENT_TRANSITION)
 			{
 				self->hitbox->x -= self->velocity.x;
 				self->hitbox->y -= self->velocity.y;

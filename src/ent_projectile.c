@@ -105,7 +105,7 @@ void projectile_update(Entity *self)
 				entity_free(collided);
 				entity_free(self);
 			}
-			else if (collided->flags & ENT_SOLID)
+			else if (collided->flags & ENT_SOLID || collided->flags & ENT_TRANSITION)
 			{
 				entity_free(self);
 			}
