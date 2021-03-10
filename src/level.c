@@ -167,6 +167,8 @@ Level *level_jsonload(const char *filename)
 	int objx, objy;
 	int objSpeed, objCycle, objRange;
 	const char *objType, *objStartDir, *objTag;
+	const char *transPoint, *transLevel;
+	int spriteFrame;
 
 	Vector2D position;
 
@@ -302,9 +304,6 @@ Level *level_jsonload(const char *filename)
 			}
 		}
 	}
-
-	position = vector2d(10 * level->tileSet->frame_w * level->scaleAmount, 7 * level->tileSet->frame_h * level->scaleAmount);
-	transition_spawn(position, (char *)string, pitCode - 1, level->tileWidth, level->tileHeight, level->tileFramesPerLine, level->scaleAmount, "defs/testworld.json", "West", level);
 
 	//Load in enemies
 	objectsjs = sj_object_get_value(leveljs, "enemies");
@@ -497,6 +496,16 @@ Level *level_jsonload(const char *filename)
 			else if (strcmp(objType, "goldDoor") == 0)
 			{
 				goldDoor_spawn(position, (char *)string, goldDoorCode - 1, level->tileWidth, level->tileHeight, level->tileFramesPerLine, level->scaleAmount);
+			}
+
+
+
+			else if (strcmp(objType, "transition") == 0)
+			{
+				transPoint = sj_get_string_value(sj_object_get_value(objjs, "toPoint"));
+				transLevel = sj_get_string_value(sj_object_get_value(objjs, "toLevel"));
+				sj_get_integer_value(sj_object_get_value(objjs, "spriteFrame"), &spriteFrame);
+				transition_spawn(position, (char *)string, spriteFrame - 1, level->tileWidth, level->tileHeight, level->tileFramesPerLine, level->scaleAmount, transLevel, transPoint, level);
 			}
 		}
 	}
@@ -771,8 +780,10 @@ Entity *transition_spawn(Vector2D position, char *spriteSheet, int frameNum, int
 		entity_free(ent);
 		return NULL;
 	}
-	trans->nextLevel = nextLevel;
-	trans->nextPos = nextPos;
+	trans->nextLevel = malloc(strlen(nextLevel) + 1);
+	strcpy(trans->nextLevel, nextLevel);
+	trans->nextPos = malloc(strlen(nextPos) + 1);
+	strcpy(trans->nextPos, nextPos);
 	trans->currentLevel = level;
 	ent->data = trans;
 
