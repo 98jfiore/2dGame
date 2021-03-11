@@ -125,7 +125,7 @@
 				"type": "transition",
 				"x" : 1,
 				"y" : 10,
-				"toLevel" : "defs/room1_1.json",
+				"toLevel" : "defs/testTran.json",
 				"toPoint" : "East",
 				"spriteFrame" : 16
 			},
@@ -133,7 +133,7 @@
 				"type": "transition",
 				"x" : 1,
 				"y" : 11,
-				"toLevel" : "defs/room1_1.json",
+				"toLevel" : "defs/testTran.json",
 				"toPoint" : "East",
 				"spriteFrame" : 17
 			}
