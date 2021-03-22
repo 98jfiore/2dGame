@@ -37,3 +37,16 @@ Use WASD to move, walls will stop you, pits will kill you, enemies move and will
 Move your mouse around to aim your attacks.
 After picking up a sword, left click to swing it.  If you picked up the upgrade and have full health, you will also shoot a beam.
 After picking up the bomb, right click to drop it.
+### Deliverables:
+#### Common:
+1. Functioning Entity System: Everything that interacts with the player or the world is an entity.
+2. Fully Interactable Environment:  Walls stop players, enemies harm player.
+3. User Interface: Hearts in the lower-left show the player's current health.
+4. Read / Write Access: Collected Upgrades stick around after reloads.
+5. README: This document
+#### Personal:
+1. Top down puzzle world: The basic format of the world.
+2. 5 dungeon features/puzzles: Walls, pits, spikes, moving walls, lasers, and locked doors.
+3. 5 different enemy behaviors: Robots (move in one direction), Drones (move in one direction, can move over some obstacles), Automata (moves in one direction, occasionally stops), Sweeper (changes direction), Orb (move in one direction, properties change).
+4. Upgradable Player (5 ways): Health Upgrade (go up one heart), Sword Upgrade (unlock attack), Sword Beam (at full health shoot sword beam), Bomb Upgrade (drop bombs), Key Upgrade (can now unlock doors).
+5. 5 pickups: Health Potion 1 (heal one heart, can be found in room 3), Health Potion 2 (heal 2 hearts, can be found in room 6), Health Potion 3 (heal all hearts, can be found in room 1), Invincibility 1 (become invincible for a short time, can be found in room 2), Invincibility 2 (become invincible for a longer time, can be found in room 3).

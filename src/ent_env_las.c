@@ -89,6 +89,12 @@ Entity *laserBase_spawn(Vector2D position, char *spriteSheet, int frameNum, int 
 			slog("Failed to create entity");
 			return NULL;
 		}
+
+		for (i = 1; i <= range; i++)
+		{
+			laserPos = vector2d(position.x - i * spriteWidth * scale, position.y);
+			laser_spawn(laserPos, spriteSheet, laserFrameNum, spriteWidth, spriteHeight, fpl, scale, cycle, orientation);
+		}
 	}
 	else if (orientation == MOV_NORTH)
 	{
@@ -114,6 +120,12 @@ Entity *laserBase_spawn(Vector2D position, char *spriteSheet, int frameNum, int 
 		{
 			slog("Failed to create entity");
 			return NULL;
+		}
+
+		for (i = 1; i <= range; i++)
+		{
+			laserPos = vector2d(position.x, position.y + i * spriteHeight * scale);
+			laser_spawn(laserPos, spriteSheet, laserFrameNum, spriteWidth, spriteHeight, fpl, scale, cycle, orientation);
 		}
 	}
 

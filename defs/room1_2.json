@@ -44,6 +44,34 @@
 				"y" : 2
 			}
 		},
+		"enemies": [
+			{
+				"type": "sweeper",
+				"x" : 16,
+				"y" : 10,
+				"startDir" : "east",
+				"cycle" : 80
+			},
+			{
+				"type": "sweeper",
+				"x" : 18,
+				"y" : 12,
+				"startDir" : "west",
+				"cycle" : 55
+			},
+			{
+				"type": "robot",
+				"x" : 16,
+				"y" : 5,
+				"startDir" : "east"
+			},
+			{
+				"type": "robot",
+				"x" : 17,
+				"y" : 5,
+				"startDir" : "west"
+			}
+		],
 		"obstacles" : [
 			{
 				"type": "transition",
@@ -108,6 +136,23 @@
 				"toLevel" : "defs/room1_7.json",
 				"toPoint" : "South",
 				"spriteFrame" : 15
+			},
+			{
+				"type": "goldDoor",
+				"x" : 16,
+				"y" : 2
+			},
+			{
+				"type": "goldDoor",
+				"x" : 17,
+				"y" : 2
+			}
+		],
+		"items": [
+			{
+				"type": "invin1",
+				"x" : 6,
+				"y" : 14
 			}
 		],
 		"floorCode" : 1,
