@@ -128,6 +128,7 @@ void healing2_action(Entity *self, Entity *ent)
 		if (player->health < player->maxhealth)
 		{
 			player->health += 2;
+			if (player->health > player->maxhealth) player->health = player->maxhealth;
 			entity_free(self);
 		}
 	}
