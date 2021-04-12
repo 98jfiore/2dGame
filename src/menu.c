@@ -100,7 +100,7 @@ void menu_manager_update()
 	}
 	else if (state[SDL_SCANCODE_W])
 	{
-		if (menu_manager.at_x != 0)
+		if (menu_manager.at_y != 0)
 		{
 			menu_manager.component_list[menu_manager.at_y * menu_manager.max_comp_across + menu_manager.at_x].flags = 0;
 			menu_manager.at_y--;
@@ -112,7 +112,7 @@ void menu_manager_update()
 	{
 		menu_manager.component_list[menu_manager.at_y * menu_manager.max_comp_across + menu_manager.at_x].flags = 0;
 		menu_manager.at_y++;
-		if (menu_manager.at_x >= menu_manager.max_comp_across) menu_manager.at_y = 0;
+		if (menu_manager.at_y >= menu_manager.max_comp_down) menu_manager.at_y = 0;
 		else if (menu_manager.component_list[menu_manager.at_y * menu_manager.max_comp_across + menu_manager.at_x]._inuse == 0) menu_manager.at_y = 0;
 		menu_manager.component_list[menu_manager.at_y * menu_manager.max_comp_across + menu_manager.at_x].flags = MENU_SELECTED;
 		menu_manager.actionWait = 30;

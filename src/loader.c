@@ -216,7 +216,6 @@ Level *level_jsonload(const char *filename)
 	if (string)
 	{
 		level->bgImage = gf2d_sprite_load_image(string);
-		slog("WHYU");
 	}
 
 	string = sj_get_string_value(sj_object_get_value(leveljs, "tileSet"));
