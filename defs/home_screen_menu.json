@@ -1,0 +1,34 @@
+{
+	"menu": {
+		"width": 1,
+		"height": 1,
+		"components": [
+			{
+				"action": "level_load",
+				"text": "Load Game",
+				"font" : "fonts/RETRO_SPACE_INV.ttf",
+				"pt_size": 25,
+				"color" : {
+					"r": 0,
+					"g": 0,
+					"b": 0,
+					"a": 255
+				}
+				"sprite" : "images/health.png",
+				"sprWidth" : 32,
+				"sprHeight" : 32,
+				"frames_per_line" : 1,
+				"frame_count" : 1,
+				"frame_num" : 1,
+				"scale" : 2,
+				"menux": 0,
+				"menuy": 0,
+				"x": 50,
+				"y": 600,
+				"offsetx": 10,
+				"offsety": 10,
+				"specification": "defs/room1_1.json"
+			}
+		]
+	}
+}

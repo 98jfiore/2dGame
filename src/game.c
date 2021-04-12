@@ -11,8 +11,10 @@
 #include "player.h"
 #include "ent_npc.h"
 #include "ent_environ.h"
+#include "loader.h"
 #include "level.h"
 #include "ui.h"
+#include "menu.h"
 #include "font.h"
 
 int main(int argc, char * argv[])
@@ -45,7 +47,7 @@ int main(int argc, char * argv[])
 	
 	font_init(5);
 
-	level = level_load("defs/room1_1.json");
+	level = level_load("defs/home_screen.json");
 	
     
     /*demo setup*/
@@ -64,6 +66,7 @@ int main(int argc, char * argv[])
         
 		entity_manager_update_entities();
 		ui_manager_update_components();
+		menu_manager_update();
         
         gf2d_graphics_clear_screen();// clears drawing buffers
         // all drawing should happen betweem clear_screen and next_frame
@@ -72,6 +75,8 @@ int main(int argc, char * argv[])
 			entity_manager_draw_entities();
 
 			ui_manager_draw_components();
+
+			menu_manager_draw_components();
 
             //UI elements last
             gf2d_sprite_draw(

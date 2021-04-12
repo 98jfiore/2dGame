@@ -37,6 +37,14 @@ typedef struct
 	Color color;
 }TextUIComponent;
 
+/*typedef struct
+{
+	char *text;
+	Font *font;
+	Color color;
+	void (*action)(struct UIComponent_s *self);	
+}MenuUIComponent;*/
+
 /**
 * @brief Initialize the ui manager
 * @param max_comp How many concurrent ui components to support
