@@ -846,6 +846,7 @@ void menu_format_load(const char *filename)
 	SJson *json, *menujs, *compsjs, *compjs;
 	int menuWidth, menuHeight, compCount;
 	SDL_bool check;
+	MenuComponent *comp;
 
 	SJson *colorjs;
 	Color text_color;
@@ -949,7 +950,8 @@ void menu_format_load(const char *filename)
 			action = sj_get_string_value(sj_object_get_value(compjs, "action"));
 			specification = sj_get_string_value(sj_object_get_value(compjs, "specification"));
 
-			menu_component_create(text, fontFile, text_ptsize, text_color, spriteFile, sprite_w, sprite_h, frames_per_line, frame_count, frame_num, scale, menux, menuy, offx, offy, x, y, action, specification);
+			comp = menu_component_create(text, fontFile, text_ptsize, text_color, spriteFile, sprite_w, sprite_h, frames_per_line, frame_count, frame_num, scale, menux, menuy, offx, offy, x, y, action, specification);
+			if (i == 0) comp->flags = MENU_SELECTED;
 		}
 	}
 	sj_free(json);

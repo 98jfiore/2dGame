@@ -166,6 +166,7 @@ MenuComponent *menu_component_new(Uint32 x, Uint32 y)
 void menu_component_draw(MenuComponent *comp)
 {
 	Vector2D upperLeft;
+	Uint32 frame;
 
 	if (comp == NULL)
 	{
@@ -184,6 +185,10 @@ void menu_component_draw(MenuComponent *comp)
 		{
 			return; //Nothing to draw
 		}
+
+		frame = (Uint32)comp->frame;
+		if (comp->flags & MENU_SELECTED) frame++;
+
 		if (comp->scale.x != 0 || comp->scale.y != 0)
 		{
 			upperLeft = vector2d(0, 0);
@@ -195,7 +200,7 @@ void menu_component_draw(MenuComponent *comp)
 				NULL,
 				NULL,
 				NULL,
-				(Uint32)comp->frame);
+				frame);
 		}
 		else
 		{
@@ -207,7 +212,7 @@ void menu_component_draw(MenuComponent *comp)
 				NULL,
 				NULL,
 				NULL,
-				(Uint32)comp->frame);
+				frame);
 		}
 
 		if (comp->text != NULL || comp->font != NULL)
