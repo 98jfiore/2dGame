@@ -80,4 +80,10 @@ void menu_component_draw(MenuComponent *comp);
 */
 void menu_component_update(MenuComponent *self);
 
+/**
+* @brief Have components without specific knowledge do something
+* @param arg A string that does nothing
+*/
+void menu_do_nothing(char *arg);
+
 #endif

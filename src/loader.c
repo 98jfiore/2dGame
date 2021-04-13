@@ -22,6 +22,7 @@
 #include "ent_upgrade.h"
 
 static Level *thisLevel = { NULL };
+static char *saveFile = "saves/save.json";
 
 Level *level_load(const char *filename)
 {
@@ -29,14 +30,14 @@ Level *level_load(const char *filename)
 	SJson *json, *leveljs;
 	Entity *player;
 	const char *string;
-	char *saveFile;
+	//char *saveFile;
 	SJson *objjs;
 	int objx, objy;
 
 	Vector2D position;
 
 	level = level_jsonload(filename);
-	saveFile = "saves/save.json";
+	//saveFile = "saves/save.json";
 
 	json = sj_load(filename);
 	if (json == NULL)
@@ -730,6 +731,18 @@ void level_transition(const char *nextLevel)
 	level_load(nextLevel);
 }
 
+void level_transitionNewGame(const char *nextLevel)
+{
+
+	SJson *baseJson;
+
+	baseJson = sj_object_new();
+	sj_save(baseJson, saveFile);
+
+	level_unload(thisLevel);
+	level_load(nextLevel);
+}
+
 void level_transitionWithPlayer(const char *nextLevel, char *nextPos, Level *currentLevel)
 {
 	Entity *player;
@@ -997,9 +1010,17 @@ MenuComponent *menu_component_create(char *text, char *fontFile, Uint32 text_pts
 	strcpy(comp->action_specification, specification);
 
 	//printf("%s\n%s\n", comp->text, comp->action_specification);
-	if (strcmp(action, "level_load") == 0)
+	if (strcmp(action, "load_game") == 0)
 	{
 		comp->action = level_transition;
+	}
+	else if (strcmp(action, "new_game") == 0)
+	{
+		comp->action = level_transitionNewGame;
+	}
+	else
+	{
+		comp->action = menu_do_nothing;
 	}
 
 	return comp;

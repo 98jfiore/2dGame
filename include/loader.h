@@ -62,6 +62,12 @@ void level_draw();
 void level_transition(const char *nextLevel);
 
 /**
+* @brief Unload a level and load the next level without a save
+* @param currentLevel A pointer to the current level.
+*/
+void level_transitionNewGame(const char *nextLevel);
+
+/**
 * @brief Unload a level and load the next
 * @param nextLevel A string containing the title of the next level
 * @param nextPos A string containing the title of the next next player position

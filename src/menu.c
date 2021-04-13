@@ -233,5 +233,10 @@ void menu_component_update(MenuComponent *self)
 	self->update(self);
 }
 
+void menu_do_nothing(char *arg)
+{
+	printf(arg);
+	printf("\n");
+}
 
 /*eol@eof*/

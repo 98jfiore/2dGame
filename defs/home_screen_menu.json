@@ -4,7 +4,7 @@
 		"height": 1,
 		"components": [
 			{
-				"action": "level_load",
+				"action": "load_game",
 				"text": "Load Game",
 				"font" : "fonts/RETRO_SPACE_INV.ttf",
 				"pt_size": 32,
@@ -30,7 +30,7 @@
 				"specification": "defs/room1_1.json"
 			},
 			{
-				"action": "level_load",
+				"action": "new_game",
 				"text": "New Game",
 				"font" : "fonts/RETRO_SPACE_INV.ttf",
 				"pt_size": 32,
