@@ -6,6 +6,7 @@
 
 #include "gf2d_graphics.h"
 #include "gf2d_sprite.h"
+#include "gfc_audio.h"
 
 #include "entity.h"
 #include "player.h"
@@ -45,6 +46,9 @@ int main(int argc, char * argv[])
 	entity_manager_init(500);
     SDL_ShowCursor(SDL_DISABLE);
 	
+	/*Start audio*/
+	gfc_audio_init(10, 4, 2, 4, SDL_TRUE, SDL_FALSE);
+
 	font_init(5);
 
 	level = level_load("defs/home_screen.json");

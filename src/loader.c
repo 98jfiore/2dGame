@@ -4,6 +4,7 @@
 #include "simple_json.h"
 
 #include "gf2d_sprite.h"
+#include "gfc_audio.h"
 
 #include "loader.h"
 #include "level.h"
@@ -166,6 +167,7 @@ Level *level_jsonload(const char *filename)
 	int i, j, count, tileIndex;
 	int wallCode, pitCode, spikeCode, laserCode, laserBaseCode, goldDoorCode, tileType;
 	SJson *objectsjs, *objjs;
+	Sound *music;
 	int objCount;
 	int objx, objy;
 	int objSpeed, objCycle, objRange;
@@ -217,6 +219,22 @@ Level *level_jsonload(const char *filename)
 	if (string)
 	{
 		level->bgImage = gf2d_sprite_load_image(string);
+	}
+
+	//Load music
+	string = sj_get_string_value(sj_object_get_value(leveljs, "music"));
+	if (string)
+	{
+		music = gfc_sound_load(string, 1, -1);
+		if (music == NULL)
+		{
+			slog("Music file could not be loaded");
+		}
+		else
+		{
+			gfc_set_background_music(music);
+
+		}
 	}
 
 	string = sj_get_string_value(sj_object_get_value(leveljs, "tileSet"));

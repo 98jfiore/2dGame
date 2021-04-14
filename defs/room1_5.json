@@ -1,6 +1,7 @@
 {
 	"level": {
 		"bgImage": "images/backgrounds/void.png",
+		"music" : "music/genericRoom.mp3",
 		"uiFormat" : "defs/combat_ui.json",
 		"tileSet" : "images/level_1_tiles.png",
 		"tileMap" : [
