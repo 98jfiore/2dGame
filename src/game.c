@@ -17,6 +17,7 @@
 #include "ui.h"
 #include "menu.h"
 #include "font.h"
+#include "game_state.h"
 
 int main(int argc, char * argv[])
 {
@@ -26,6 +27,8 @@ int main(int argc, char * argv[])
 	Level *level;
     
     int mx,my;
+	SDL_bool paused = SDL_FALSE;
+	Uint8 game_state = 0;
     float mf = 0;
     Sprite *mouse;
     Vector4D mouseColor = {255,100,255,200};
@@ -57,6 +60,8 @@ int main(int argc, char * argv[])
     /*demo setup*/
     mouse = gf2d_sprite_load_all("images/pointer.png",32,32,16);
 
+	start_game();
+
 
     /*main game loop*/
     while(!done)
@@ -68,7 +73,10 @@ int main(int argc, char * argv[])
         mf+=0.1;
         if (mf >= 16.0)mf = 0;
         
-		entity_manager_update_entities();
+		if (!(game_state & GS_PAUSED))
+		{
+			entity_manager_update_entities();
+		}
 		ui_manager_update_components();
 		menu_manager_update();
         
@@ -96,7 +104,22 @@ int main(int argc, char * argv[])
 
         gf2d_grahics_next_frame();// render current draw frame and skip to the next frame
         
-        if (keys[SDL_SCANCODE_ESCAPE])done = 1; // exit condition
+		if (keys[SDL_SCANCODE_ESCAPE])
+		{
+			if (menu_manager_active() == SDL_FALSE)
+			{
+				pause_game();
+				menu_format_load("defs/menus/pause_menu.json");
+			}
+			//If there is no menu, open pause menu
+			//done = 1; // exit condition
+		}
+		game_state = get_gameState();
+
+		if (game_state & GS_QUIT)
+		{
+			done = 1;
+		}
         //slog("Rendering at %f FPS",gf2d_graphics_get_frames_per_second());
     }
     slog("---==== END ====---");

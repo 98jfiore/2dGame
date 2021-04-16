@@ -1,0 +1,86 @@
+{
+	"menu": {
+		"width": 4,
+		"height": 1,
+		"components": [
+			{
+				"action": "resume_game",
+				"text": "Resume",
+				"font" : "fonts/RETRO_SPACE_INV.ttf",
+				"pt_size": 32,
+				"color" : {
+					"r": 0,
+					"g": 0,
+					"b": 0,
+					"a": 255
+				}
+				"sprite" : "images/menu_bar.png",
+				"sprWidth" : 256,
+				"sprHeight" : 64,
+				"frames_per_line" : 2,
+				"frame_count" : 2,
+				"frame_num" : 1,
+				"scale" : 1,
+				"menux": 0,
+				"menuy": 0,
+				"x": 108,
+				"y": 328,
+				"offsetx": 10,
+				"offsety": 20,
+				"specification": "defs/room1_1.json"
+			},
+			{
+				"action": "quit_game",
+				"text": "Quit",
+				"font" : "fonts/RETRO_SPACE_INV.ttf",
+				"pt_size": 32,
+				"color" : {
+					"r": 0,
+					"g": 0,
+					"b": 0,
+					"a": 255
+				}
+				"sprite" : "images/menu_bar.png",
+				"sprWidth" : 256,
+				"sprHeight" : 64,
+				"frames_per_line" : 2,
+				"frame_count" : 2,
+				"frame_num" : 1,
+				"scale" : 1,
+				"menux": 1,
+				"menuy": 0,
+				"x": 472,
+				"y": 328,
+				"offsetx": 10,
+				"offsety": 20,
+				"specification": "defs/room1_1.json"
+			},
+			{
+				"action": "load_game",
+				"text": "Main Menu",
+				"font" : "fonts/RETRO_SPACE_INV.ttf",
+				"pt_size": 32,
+				"color" : {
+					"r": 0,
+					"g": 0,
+					"b": 0,
+					"a": 255
+				}
+				"sprite" : "images/menu_bar.png",
+				"sprWidth" : 256,
+				"sprHeight" : 64,
+				"frames_per_line" : 2,
+				"frame_count" : 2,
+				"frame_num" : 1,
+				"scale" : 1,
+				"menux": 2,
+				"menuy": 0,
+				"x": 836,
+				"y": 328,
+				"offsetx": 10,
+				"offsety": 20,
+				"specification": "defs/home_screen.json"
+			}
+		]
+	}
+}

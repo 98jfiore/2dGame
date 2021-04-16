@@ -13,6 +13,7 @@
 #include "level.h"
 #include "menu.h"
 #include "level_save.h"
+#include "game_state.h"
 
 
 typedef struct
@@ -46,11 +47,17 @@ Level *level_loadWithPlayer(const char *filename, Entity *player, char *nextPlay
 Level *level_jsonload(const char *filename);
 
 /**
-* @brief Unload a level=
+* @brief Unload a level
 * @param level A pointer to the current level.
 * @return NULL on error or no player, else return a pointer to the player entity.
 */
 Entity *level_unload(Level *level);
+
+/**
+* @brief Unload a level and remove the player
+* @param level A pointer to the current level.
+*/
+void level_unload_no_player(Level *level);
 
 /**
 * @brief Draw a level
@@ -62,6 +69,12 @@ void level_draw();
 * @param currentLevel A pointer to the current level.
 */
 void level_transition(const char *nextLevel);
+
+/**
+* @brief Transition to a level without the current player
+* @param currentLevel A pointer to the current level.
+*/
+void level_transition_no_player(const char *nextLevel);
 
 /**
 * @brief Unload a level and load the next from menu component

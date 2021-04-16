@@ -9,6 +9,7 @@
 #include "entity.h"
 #include "player.h"
 #include "font.h"
+#include "game_state.h"
 
 enum menu_flags {
 	MENU_SELECTED = 1,
@@ -64,6 +65,18 @@ typedef struct MenuComponent_s
 SDL_bool menu_manager_init(Uint32 max_comp_across, Uint32 max_comp_down);
 
 /**
+* @brief Is there a menu manager active
+* @return Boolean referencing if there is a menu
+*/
+SDL_bool menu_manager_active();
+
+/**
+* @brief Is there a menu manager active
+* @gsflags A pointer to the gamestate flags
+*/
+void menu_manager_setFlags(Uint8 *gsflags);
+
+/**
 * @brief Set the menu_manager's at value to something specific
 * @param x The x value to set at_x to
 * @param y The y value to set at_y to
@@ -110,6 +123,18 @@ void menu_component_draw(MenuComponent *comp);
 * @param ent The component to update
 */
 void menu_component_update(MenuComponent *self);
+
+/**
+* @brief Resume the game
+* @param ent The component that called the function
+*/
+void menu_resume_game(MenuComponent *self);
+
+/**
+* @brief Updates the provided menu component to the current state
+* @param ent The component that called the function
+*/
+void menu_quit_game(MenuComponent *self);
 
 /**
 * @brief Have components without specific knowledge do something

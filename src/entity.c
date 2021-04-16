@@ -67,6 +67,22 @@ Entity *delete_notplayer()
 	return player;
 }
 
+void delete_all_ent()
+{
+	int i;
+
+	if (entity_manager.entity_list == NULL)
+	{
+		slog("Entity manager not initialized");
+		return;
+	}
+	for (i = 0; i < entity_manager.max_entities; ++i)
+	{
+		if (entity_manager.entity_list[i]._inuse == 0) continue;
+		entity_manager.entity_list[i]._inuse = 0;
+	}
+}
+
 void entity_update(Entity *self)
 {
 	if (!self) return;

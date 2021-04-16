@@ -48,6 +48,18 @@ SDL_bool menu_manager_init(Uint32 max_comp_across, Uint32 max_comp_down)
 	return SDL_TRUE;
 }
 
+SDL_bool menu_manager_active()
+{
+	if (menu_manager.component_list == NULL)
+	{
+		return SDL_FALSE;
+	}
+	else
+	{
+		return SDL_TRUE;
+	}
+}
+
 void menu_manager_set_pos(Uint32 x, Uint32 y)
 {
 	if (menu_manager.component_list == NULL)
@@ -279,6 +291,17 @@ void menu_component_update(MenuComponent *self)
 	//Specific updates
 	if (self->update == NULL) return;
 	self->update(self);
+}
+
+void menu_resume_game(MenuComponent *self)
+{
+	menu_manager_free();
+	resume_game();
+}
+
+void menu_quit_game(MenuComponent *self)
+{
+	quit_game();
 }
 
 void menu_do_nothing(MenuComponent *self)

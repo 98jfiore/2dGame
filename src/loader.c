@@ -694,6 +694,24 @@ Entity *level_unload(Level *level)
 	return player;
 }
 
+void level_unload_no_player(Level *level)
+{
+	if (level == thisLevel)
+	{
+		thisLevel = NULL;
+	}
+
+	delete_all_ent();
+	ui_manager_free();
+	menu_manager_free();
+
+	if (level != NULL)
+	{
+		level_free(level);
+	}
+
+}
+
 void level_draw()
 {
 	int i;
@@ -738,6 +756,13 @@ void level_transition(const char *nextLevel)
 	level_load(nextLevel);
 }
 
+void level_transition_no_player(const char *nextLevel)
+{
+
+	level_unload_no_player(thisLevel);
+	level_load(nextLevel);
+}
+
 void level_transitionNewGame(const char *nextLevel)
 {
 
@@ -752,12 +777,14 @@ void level_transitionNewGame(const char *nextLevel)
 
 void menu_level_transition(MenuComponent *self)
 {
-	level_transition(self->action_specification);
+	level_transition_no_player(self->action_specification);
+	resume_game();
 }
 
 void menu_level_transitionNewGame(MenuComponent *self)
 {
 	level_transitionNewGame(self->action_specification);
+	resume_game();
 }
 
 void level_transitionWithPlayer(const char *nextLevel, char *nextPos, Level *currentLevel)
@@ -1082,6 +1109,22 @@ MenuComponent *menu_component_create(char *text, char *fontFile, Uint32 text_pts
 	{
 		comp->action = menu_add_to_level;
 	}
+	else if (strcmp(action, "change_code") == 0)
+	{
+		comp->action = menu_change_edit_code;
+	}
+	else if (strcmp(action, "save_level") == 0)
+	{
+		comp->action = menu_save_level;
+	}
+	else if (strcmp(action, "resume_game") == 0)
+	{
+		comp->action = menu_resume_game;
+	}
+	else if (strcmp(action, "quit_game") == 0)
+	{
+		comp->action = menu_quit_game;
+	}
 	else
 	{
 		comp->action = menu_do_nothing;
@@ -1143,6 +1186,14 @@ MenuComponent *menu_component_create_no_text(const char *spriteFile, int sprite_
 	else if (strcmp(action, "save_level") == 0)
 	{
 		comp->action = menu_save_level;
+	}
+	else if (strcmp(action, "resume_game") == 0)
+	{
+		comp->action = menu_resume_game;
+	}
+	else if (strcmp(action, "quit_game") == 0)
+	{
+		comp->action = menu_quit_game;
 	}
 	else
 	{
