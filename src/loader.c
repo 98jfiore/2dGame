@@ -87,12 +87,10 @@ Level *level_loadWithPlayer(const char *filename, Entity *player, char *nextPlay
 	Level *level;
 	SJson *json, *leveljs;
 	const char *string;
-	char *saveFile;
 	SJson *objjs, *positionjs;
 	int objx, objy;
 
 	level = level_jsonload(filename);
-	saveFile = "saves/save.json";
 
 	json = sj_load(filename);
 	if (json == NULL)
@@ -155,7 +153,6 @@ Level *level_jsonload(const char *filename)
 	const char *string;
 	SJson *savedjs, *savedObjjs;
 	int saveFound;
-	char *saveFile;
 	int rows, columns;
 	int i, j, count, tileIndex;
 	int wallCode, pitCode, spikeCode, laserCode, laserBaseCode, goldDoorCode, tileType;
@@ -174,7 +171,6 @@ Level *level_jsonload(const char *filename)
 	//Entity *test;
 	//Upgrade *upTest;
 
-	saveFile = "saves/save.json";
 	savedjs = sj_load(saveFile);
 
 	if (filename == NULL)
@@ -1144,6 +1140,10 @@ MenuComponent *menu_component_create_no_text(const char *spriteFile, int sprite_
 	{
 		comp->action = menu_change_edit_code;
 	}
+	else if (strcmp(action, "save_level") == 0)
+	{
+		comp->action = menu_save_level;
+	}
 	else
 	{
 		comp->action = menu_do_nothing;
@@ -1163,6 +1163,11 @@ void menu_add_to_level(MenuComponent *self)
 void menu_change_edit_code(MenuComponent *self)
 {
 	levelEditCode = atoi(self->action_specification);
+}
+
+void menu_save_level(MenuComponent *self)
+{
+	save_level(thisLevel, self->action_specification);
 }
 
 void add_to_level(int code, Vector2D pos)

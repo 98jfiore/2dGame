@@ -12,6 +12,7 @@
 #include "entity.h"
 #include "level.h"
 #include "menu.h"
+#include "level_save.h"
 
 
 typedef struct
@@ -182,6 +183,12 @@ void menu_add_to_level(MenuComponent *self);
 * @param self The menu component calling the function
 */
 void menu_change_edit_code(MenuComponent *self);
+
+/**
+* @brief Save the level
+* @param self The menu component calling the function
+*/
+void menu_save_level(MenuComponent *self);
 
 /**
 * @brief Creates a component containing text from info given

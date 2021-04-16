@@ -1,0 +1,17 @@
+{
+	"bgImage": "images/backgrounds/void.png",
+	"music" : "music/genericRoom.mp3",
+	"uiFormat" : "defs/combat_ui.json",
+	"tileSet" : "images/level_1_tiles.png",
+	"floorCode" : 1,
+	"wallCode" : 2,
+	"pitCode" : 3,
+	"spikeCode" : 4,
+	"laserCode" : 5,
+	"laserBaseCode" : 7,
+	"goldDoorCode" : 11,
+	"tileWidth" : 16,
+	"tileHeight" : 16,
+	"tileFramesPerLine" : 30,
+	"scale" : 2
+}
