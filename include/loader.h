@@ -5,6 +5,7 @@
 
 #include "gfc_types.h"
 #include "gfc_text.h"
+#include "gfc_vector.h"
 
 #include "gf2d_sprite.h"
 
@@ -62,10 +63,22 @@ void level_draw();
 void level_transition(const char *nextLevel);
 
 /**
+* @brief Unload a level and load the next from menu component
+* @param self The component calling the transition
+*/
+void menu_level_transition(MenuComponent *self);
+
+/**
 * @brief Unload a level and load the next level without a save
 * @param currentLevel A pointer to the current level.
 */
 void level_transitionNewGame(const char *nextLevel);
+
+/**
+* @brief Unload a level and load the next level without a save from menu component
+* @param self The component calling the transition
+*/
+void menu_level_transitionNewGame(MenuComponent *self);
 
 /**
 * @brief Unload a level and load the next
@@ -138,6 +151,43 @@ void menu_format_load(const char *filename);
 */
 MenuComponent *menu_component_create(char *text, char *fontFile, Uint32 text_ptsize, Color text_color, const char *spriteFile, int sprite_w, int sprite_h, int sprite_fpl, int sprite_count, int sprite_num, int sprite_scale, int menu_x, int menu_y, int offset_x, int offset_y, int x, int y, char *action, char *specification);
 
+/**
+* @brief Creates a component containing text from info given
+* @param spriteFile The file the sprite can be found on
+* @param sprite_w The width of sprites on the file
+* @param sprite_h The height of sprites on the file
+* @param sprite_fpl The number of sprites per like on the file
+* @param sprite_count The number of frames the sprite is
+* @param sprite_num The initial sprite this sprite can be found on
+* @param sprite_scale The scale this component is rendered at
+* @param menu_x The x position in the menu this component will be on
+* @param menu_y The y position in the menu this component will be on
+* @param x The x position this component will be on
+* @param y The y position this component will be on
+* @param action The name of the action the component will do when selected
+* @param scale The scale this component is rendered at
+* @param specification A specification for the action performed
+* @return NULL on error or a pointer to a new UI Component
+*/
+MenuComponent *menu_component_create_no_text(const char *spriteFile, int sprite_w, int sprite_h, int sprite_fpl, int sprite_count, int sprite_num, int sprite_scale, int menu_x, int menu_y, int x, int y, char *action, char *specification);
 
+/**
+* @brief Creates a component containing text from menu component
+* @param self The menu component calling the function
+*/
+void menu_add_to_level(MenuComponent *self);
+
+/**
+* @brief Change the edit code used for level editing
+* @param self The menu component calling the function
+*/
+void menu_change_edit_code(MenuComponent *self);
+
+/**
+* @brief Creates a component containing text from info given
+* @param code The code of the tile you want to add
+* @param pos The position you want to put the new tile
+*/
+void add_to_level(int code, Vector2D pos);
 
 #endif

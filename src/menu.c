@@ -41,9 +41,27 @@ SDL_bool menu_manager_init(Uint32 max_comp_across, Uint32 max_comp_down)
 	menu_manager.max_comp_down = max_comp_down;
 	menu_manager.max_total_comp = max_comp_across * max_comp_down;
 	menu_manager.actionWait = 40;
+	menu_manager.at_x = 0;
+	menu_manager.at_y = 0;
 	atexit(menu_manager_free);
 	slog("Menu initialized");
 	return SDL_TRUE;
+}
+
+void menu_manager_set_pos(Uint32 x, Uint32 y)
+{
+	if (menu_manager.component_list == NULL)
+	{
+		slog("Cannot set position of null manager");
+		return;
+	}
+	menu_manager.at_x = x;
+	menu_manager.at_y = y;
+}
+
+Vector2D menu_manager_get_pos()
+{
+	return vector2d(menu_manager.at_x, menu_manager.at_y);
 }
 
 void menu_manager_free()
@@ -121,7 +139,7 @@ void menu_manager_update()
 	{
 		selected = menu_manager.component_list[menu_manager.at_y * menu_manager.max_comp_across + menu_manager.at_x];
 		menu_manager.actionWait = 30;
-		selected.action(selected.action_specification);
+		selected.action(&selected);
 	}
 }
 
@@ -215,9 +233,39 @@ void menu_component_draw(MenuComponent *comp)
 				frame);
 		}
 
-		if (comp->text != NULL || comp->font != NULL)
+		if (comp->text != NULL)
 		{
-			font_render(comp->font, comp->text, comp->text_color, comp->textPosition);
+			font_render(comp->text->font, comp->text->text, comp->text->text_color, comp->text->textPosition);
+		}
+
+		if (comp->second_sprite != NULL)
+		{
+
+			if (comp->second_sprite->second_scale.x != 0 || comp->second_sprite->second_scale.y != 0)
+			{
+				upperLeft = vector2d(0, 0);
+				gf2d_sprite_draw(
+					comp->second_sprite->second_sprite,
+					comp->second_sprite->second_position,
+					&comp->second_sprite->second_scale,
+					&upperLeft,
+					NULL,
+					NULL,
+					NULL,
+					comp->second_sprite->second_frame);
+			}
+			else
+			{
+				gf2d_sprite_draw(
+					comp->second_sprite->second_sprite,
+					comp->second_sprite->second_position,
+					NULL,
+					NULL,
+					NULL,
+					NULL,
+					NULL,
+					comp->second_sprite->second_frame);
+			}
 		}
 	}
 }
@@ -233,10 +281,9 @@ void menu_component_update(MenuComponent *self)
 	self->update(self);
 }
 
-void menu_do_nothing(char *arg)
+void menu_do_nothing(MenuComponent *self)
 {
-	printf(arg);
-	printf("\n");
+	printf("Nothing\n");
 }
 
 /*eol@eof*/

@@ -19,7 +19,7 @@ typedef struct
 {
 	Sprite		*bgImage;			//The background image for the level
 	Sprite		*tileSet;			//Sprite for the tileset
-	TileTypes	*tileMap;			//Tiles for the level
+	int			*tileMap;			//Tiles for the level
 	Uint32		tileWidth;			//How many pixels wide the tiles are
 	Uint32		tileHeight;			//How many pizels tall the tiles are
 	Uint32		tileFramesPerLine;	//How many pizels tall the tiles are

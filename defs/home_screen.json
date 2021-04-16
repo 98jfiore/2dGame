@@ -2,7 +2,7 @@
 	"level": {
 		"bgImage": "images/backgrounds/titlescreen.png",
 		"isPlayer" : "False",
-		"menu" : "defs/home_screen_menu.json",
+		"menu" : "defs/menus/home_screen_menu.json",
 		"music" : "music/titleScreen.mp3",
 		"startInMenu" : "True",
 		"actions" : {

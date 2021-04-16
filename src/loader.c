@@ -24,6 +24,7 @@
 
 static Level *thisLevel = { NULL };
 static char *saveFile = "saves/save.json";
+static int levelEditCode = 0;
 
 Level *level_load(const char *filename)
 {
@@ -71,18 +72,10 @@ Level *level_load(const char *filename)
 
 			player = player_spawn(position);
 			load_player(player, saveFile);
-		}
-		else
-		{
-			slog("Player spawn not found");
-			level_free(level);
-			entity_manager_free();
-			sj_free(json);
-			return NULL;
-		}
 
-		string = sj_get_string_value(sj_object_get_value(leveljs, "uiFormat"));
-		ui_format_load(string, player);
+			string = sj_get_string_value(sj_object_get_value(leveljs, "uiFormat"));
+			ui_format_load(string, player);
+		}
 	}
 
 	thisLevel = level;
@@ -277,7 +270,7 @@ Level *level_jsonload(const char *filename)
 		level->levelWidth = columns;
 
 		count = rows * columns;
-		level->tileMap = (TileTypes*)gfc_allocate_array(sizeof(TileTypes), count);
+		level->tileMap = (int*)gfc_allocate_array(sizeof(int), count);
 		if (level->tileMap == NULL)
 		{
 			level_free(level);
@@ -761,6 +754,16 @@ void level_transitionNewGame(const char *nextLevel)
 	level_load(nextLevel);
 }
 
+void menu_level_transition(MenuComponent *self)
+{
+	level_transition(self->action_specification);
+}
+
+void menu_level_transitionNewGame(MenuComponent *self)
+{
+	level_transitionNewGame(self->action_specification);
+}
+
 void level_transitionWithPlayer(const char *nextLevel, char *nextPos, Level *currentLevel)
 {
 	Entity *player;
@@ -939,26 +942,6 @@ void menu_format_load(const char *filename)
 				slog("Component load error");
 				return;
 			}
-			text = sj_get_string_value(sj_object_get_value(compjs, "text"));
-			fontFile = sj_get_string_value(sj_object_get_value(compjs, "font"));
-			sj_get_integer_value(sj_object_get_value(compjs, "pt_size"), &text_ptsize);
-
-			colorjs = sj_object_get_value(compjs, "color");
-			if (colorjs != NULL)
-			{
-				sj_get_integer_value(sj_object_get_value(colorjs, "r"), &color_r);
-				sj_get_integer_value(sj_object_get_value(colorjs, "g"), &color_g);
-				sj_get_integer_value(sj_object_get_value(colorjs, "b"), &color_b);
-				sj_get_integer_value(sj_object_get_value(colorjs, "a"), &color_a);
-			}
-			else
-			{
-				color_r = 0;
-				color_g = 0;
-				color_b = 0;
-				color_a = 255;
-			}
-			text_color = gfc_color8(color_r, color_g, color_b, color_a);
 
 			spriteFile = sj_get_string_value(sj_object_get_value(compjs, "sprite"));
 
@@ -971,17 +954,78 @@ void menu_format_load(const char *filename)
 
 			sj_get_integer_value(sj_object_get_value(compjs, "menux"), &menux);
 			sj_get_integer_value(sj_object_get_value(compjs, "menuy"), &menuy);
-			sj_get_integer_value(sj_object_get_value(compjs, "offsetx"), &offx);
-			sj_get_integer_value(sj_object_get_value(compjs, "offsety"), &offy);
 			sj_get_integer_value(sj_object_get_value(compjs, "x"), &x);
 			sj_get_integer_value(sj_object_get_value(compjs, "y"), &y);
-
 
 			action = sj_get_string_value(sj_object_get_value(compjs, "action"));
 			specification = sj_get_string_value(sj_object_get_value(compjs, "specification"));
 
-			comp = menu_component_create(text, fontFile, text_ptsize, text_color, spriteFile, sprite_w, sprite_h, frames_per_line, frame_count, frame_num, scale, menux, menuy, offx, offy, x, y, action, specification);
-			if (i == 0) comp->flags = MENU_SELECTED;
+			text = sj_get_string_value(sj_object_get_value(compjs, "text"));
+			if (text == NULL || strlen(text) == 0)
+			{
+				comp = menu_component_create_no_text(spriteFile, sprite_w, sprite_h, frames_per_line, frame_count, frame_num, scale, menux, menuy, x, y, action, specification);
+
+			}
+			else
+			{
+				fontFile = sj_get_string_value(sj_object_get_value(compjs, "font"));
+				sj_get_integer_value(sj_object_get_value(compjs, "pt_size"), &text_ptsize);
+
+				colorjs = sj_object_get_value(compjs, "color");
+				if (colorjs != NULL)
+				{
+					sj_get_integer_value(sj_object_get_value(colorjs, "r"), &color_r);
+					sj_get_integer_value(sj_object_get_value(colorjs, "g"), &color_g);
+					sj_get_integer_value(sj_object_get_value(colorjs, "b"), &color_b);
+					sj_get_integer_value(sj_object_get_value(colorjs, "a"), &color_a);
+				}
+				else
+				{
+					color_r = 0;
+					color_g = 0;
+					color_b = 0;
+					color_a = 255;
+				}
+				sj_get_integer_value(sj_object_get_value(compjs, "offsetx"), &offx);
+				sj_get_integer_value(sj_object_get_value(compjs, "offsety"), &offy);
+
+				text_color = gfc_color8(color_r, color_g, color_b, color_a);
+
+				comp = menu_component_create(text, fontFile, text_ptsize, text_color, spriteFile, sprite_w, sprite_h, frames_per_line, frame_count, frame_num, scale, menux, menuy, offx, offy, x, y, action, specification);
+			}
+
+			spriteFile = NULL;
+			spriteFile = sj_get_string_value(sj_object_get_value(compjs, "second_sprite"));
+			if (spriteFile != NULL && strlen(spriteFile) != 0)
+			{
+				sj_get_integer_value(sj_object_get_value(compjs, "second_sprWidth"), &sprite_w);
+				sj_get_integer_value(sj_object_get_value(compjs, "second_sprHeight"), &sprite_h);
+				sj_get_integer_value(sj_object_get_value(compjs, "second_frames_per_line"), &frames_per_line);
+				sj_get_integer_value(sj_object_get_value(compjs, "second_frame_count"), &frame_count);
+				sj_get_integer_value(sj_object_get_value(compjs, "second_frame_num"), &frame_num);
+				sj_get_integer_value(sj_object_get_value(compjs, "second_scale"), &scale);
+				sj_get_integer_value(sj_object_get_value(compjs, "offsetx"), &offx);
+				sj_get_integer_value(sj_object_get_value(compjs, "offsety"), &offy);
+				comp->second_sprite = malloc(sizeof(SecondSprite));
+				comp->second_sprite->second_sprite = gf2d_sprite_load_all(spriteFile, sprite_w, sprite_h, frames_per_line);
+				comp->second_sprite->second_baseFrame = frame_num;
+				comp->second_sprite->second_frame = frame_num;
+				comp->second_sprite->second_frameRate = 0;
+				comp->second_sprite->second_frameCount = frame_count;
+				comp->second_sprite->second_scale = vector2d(scale, scale);
+				comp->second_sprite->second_position = vector2d(x + offx, y + offy);
+				if (comp->second_sprite->second_sprite == NULL)
+				{
+					slog("Menu sprite couldn't load");
+					free(comp);
+				}
+			}
+
+			if (i == 0 && comp != NULL)
+			{
+				comp->flags = MENU_SELECTED;
+				menu_manager_set_pos(menux, menuy);
+			}
 		}
 	}
 	sj_free(json);
@@ -1016,12 +1060,14 @@ MenuComponent *menu_component_create(char *text, char *fontFile, Uint32 text_pts
 	comp->update = NULL;
 	comp->free = NULL;
 
-	comp->font = font_load(fontFile, text_ptsize);
-	comp->text_color = text_color;
-	comp->text = malloc((strlen(text) + 1) * sizeof(char));
-	strcpy(comp->text, text);
+	comp->text = malloc(sizeof(MenuText));
 
-	comp->textPosition = vector2d(x + offset_x, y + offset_y);
+	comp->text->font = font_load(fontFile, text_ptsize);
+	comp->text->text_color = text_color;
+	comp->text->text = malloc((strlen(text) + 1) * sizeof(char));
+	strcpy(comp->text->text, text);
+
+	comp->text->textPosition = vector2d(x + offset_x, y + offset_y);
 
 
 	comp->action_specification = malloc((strlen(specification) + 1) * sizeof(char));
@@ -1030,11 +1076,15 @@ MenuComponent *menu_component_create(char *text, char *fontFile, Uint32 text_pts
 	//printf("%s\n%s\n", comp->text, comp->action_specification);
 	if (strcmp(action, "load_game") == 0)
 	{
-		comp->action = level_transition;
+		comp->action = menu_level_transition;
 	}
 	else if (strcmp(action, "new_game") == 0)
 	{
-		comp->action = level_transitionNewGame;
+		comp->action = menu_level_transitionNewGame;
+	}
+	else if (strcmp(action, "add_to_level") == 0)
+	{
+		comp->action = menu_add_to_level;
 	}
 	else
 	{
@@ -1043,5 +1093,87 @@ MenuComponent *menu_component_create(char *text, char *fontFile, Uint32 text_pts
 
 	return comp;
 }
+
+MenuComponent *menu_component_create_no_text(const char *spriteFile, int sprite_w, int sprite_h, int sprite_fpl, int sprite_count, int sprite_num, int sprite_scale, int menu_x, int menu_y, int x, int y, char *action, char *specification)
+{
+	MenuComponent *comp;
+	comp = menu_component_new(menu_x, menu_y);
+	if (comp == NULL)
+	{
+		slog("Failed to create component");
+		return NULL;
+	}
+
+	comp->position = vector2d(x, y);
+	comp->sprite = gf2d_sprite_load_all(spriteFile, sprite_w, sprite_h, sprite_fpl);
+	if (comp->sprite == NULL)
+	{
+		slog("UI sprite couldn't load");
+		free(comp);
+		return NULL;
+	}
+	comp->frameCount = sprite_count;
+	comp->baseFrame = sprite_num;
+	comp->scale = vector2d(sprite_scale, sprite_scale);
+	comp->frameRate = 0;
+	comp->color = NULL;
+
+	comp->draw = NULL;
+	comp->update = NULL;
+	comp->free = NULL;
+
+	comp->text = NULL;
+
+	comp->action_specification = malloc((strlen(specification) + 1) * sizeof(char));
+	strcpy(comp->action_specification, specification);
+
+	//printf("%s\n%s\n", comp->text, comp->action_specification);
+	if (strcmp(action, "load_game") == 0)
+	{
+		comp->action = menu_level_transition;
+	}
+	else if (strcmp(action, "new_game") == 0)
+	{
+		comp->action = menu_level_transitionNewGame;
+	}
+	else if (strcmp(action, "add_to_level") == 0)
+	{
+		comp->action = menu_add_to_level;
+	}
+	else if (strcmp(action, "change_code") == 0)
+	{
+		comp->action = menu_change_edit_code;
+	}
+	else
+	{
+		comp->action = menu_do_nothing;
+	}
+
+	return comp;
+}
+
+void menu_add_to_level(MenuComponent *self)
+{
+	Vector2D pos;
+
+	pos = menu_manager_get_pos();
+	add_to_level(levelEditCode, pos);
+}
+
+void menu_change_edit_code(MenuComponent *self)
+{
+	levelEditCode = atoi(self->action_specification);
+}
+
+void add_to_level(int code, Vector2D pos)
+{
+	Uint32 xpos, ypos;
+
+	xpos = (Uint32)pos.x;
+	ypos = (Uint32)pos.y;
+
+	thisLevel->tileMap[ypos * thisLevel->levelWidth + xpos] = code;
+}
+
 
 /*eol@eof*/
