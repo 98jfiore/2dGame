@@ -70,6 +70,12 @@ void entity_manager_free();
 Entity *delete_notplayer();
 
 /**
+* @brief Get the player
+* @return NULL on error or no player, or a pointer to the player entity
+*/
+Entity *get_player();
+
+/**
 * @brief Deletes all entities
 * @return NULL on error or no player, or a pointer to the player entity
 */

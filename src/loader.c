@@ -1022,6 +1022,9 @@ void save_player_from_savePoint(Entity *self)
 		return;
 	}
 
+	//Save the player
+	save_player(get_player(), playerFile);
+
 	playerJson = sj_load(playerFile);
 	if (playerJson == NULL)
 	{
