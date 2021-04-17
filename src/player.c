@@ -13,6 +13,9 @@
 #include "ent_upgrade.h"
 #include "ent_environ.h"
 
+static char *playerFile = "saves/save.json";
+static char *saveFile = "";
+
 Entity *player_spawn(Vector2D position)
 {
 	Entity *ent;
@@ -275,9 +278,9 @@ void player_update(Entity *self)
 							happened = upgrade->action(collided, self);
 							if (happened == SDL_TRUE)
 							{
-								save_playerUpgrade("saves/save.json", grabbedTag);
+								save_playerUpgrade(playerFile, grabbedTag);
 							}
-							save_player(self, "saves/save.json");
+							save_player(self, playerFile);
 						}
 					}
 				}
@@ -521,6 +524,7 @@ void load_player(Entity *ent, char *fileName)
 	player->maxhealth = maxHealth;
 
 	load_player_inventory(ent, baseJson);
+	saveFile = fileName;
 }
 
 

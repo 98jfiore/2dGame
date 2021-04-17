@@ -23,6 +23,12 @@ typedef struct
 	Level *currentLevel;
 }Transition;
 
+typedef struct
+{
+	SDL_bool active;
+	char *currentLevel;
+}SavePoint;
+
 /**
 * @brief Load a level
 * @param filename Name of file level is saved on.
@@ -130,8 +136,43 @@ void transition_update(Entity *self);
 */
 void transition_free(Entity *self);
 
+/**
+* @brief Spawn a savePoint entity
+* @param position The screen position to spawn the transitoin object at.
+* @param spriteSheet The name of the file the sprite we are looking for can be found at.
+* @param frameNum The frame of the sprite we are looking for.
+* @param spriteWidth The width of sprites in the sprite sheet.
+* @param spriteHeight The height of sprites in the sprite sheet.
+* @param spriteHeight Frames per line in the sprite sheet.
+* @param scale How much to scale the sprite by.
+* @param currentLevel The name of the current level file.
+* @return NULL on error, or a pointer to a new transition entity.
+*/
+Entity *savePoint_spawn(Vector2D position, char *spriteSheet, int frameNum, int spriteWidth, int spriteHeight, int fpl, int scale, char *currentLevel);
 
+/**
+* @brief Update a moving wall entity
+* @param self The savePoint that is being updated
+*/
+void savePoint_update(Entity *self);
 
+/**
+* @brief Free a savePoint entity
+* @param self The savePoint that is being freed.
+*/
+void savePoint_free(Entity *self);
+
+/**
+* @brief Change the name of the player's save file
+* @param filename Name of the save file to chagne to.
+*/
+void change_save_file(const char *filename);
+
+/**
+* @brief Save the player to the appropriate save file
+* @param self A pointer to the save point you are saving at.
+*/
+void save_player_from_savePoint(Entity *self);
 
 /**
 * @brief Load a menu format
@@ -209,5 +250,11 @@ void menu_save_level(MenuComponent *self);
 * @param pos The position you want to put the new tile
 */
 void add_to_level(int code, Vector2D pos);
+
+/**
+* @brief Load the game from a saved state
+* @param self The menu component calling the function
+*/
+void menu_load_save_game(MenuComponent *self);
 
 #endif

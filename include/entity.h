@@ -93,6 +93,13 @@ void entity_manager_draw_entities();
 Entity *check_collision(Entity *self);
 
 /**
+* @brief Checks to see if entity collided with a player
+* @param self The entity to check collision against.
+* @return SDL_TRUE on collision with player, SDL_FALSE on error or no collision
+*/
+SDL_bool check_collision_with_player(Entity *self);
+
+/**
 * @brief Checks to see if attack hit any valid entities
 * @param atk The hitbox of the attack to check for hits.
 * @param owner The owner of the attack.

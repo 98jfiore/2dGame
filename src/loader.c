@@ -23,7 +23,8 @@
 #include "ent_upgrade.h"
 
 static Level *thisLevel = { NULL };
-static char *saveFile = "saves/save.json";
+static char *playerFile = "saves/save.json";
+static char *saveFile = "";
 static int levelEditCode = 0;
 
 Level *level_load(const char *filename)
@@ -32,14 +33,14 @@ Level *level_load(const char *filename)
 	SJson *json, *leveljs;
 	Entity *player;
 	const char *string;
-	//char *saveFile;
+	//char *playerFile;
 	SJson *objjs;
 	int objx, objy;
 
 	Vector2D position;
 
 	level = level_jsonload(filename);
-	//saveFile = "saves/save.json";
+	//playerFile = "saves/save.json";
 
 	json = sj_load(filename);
 	if (json == NULL)
@@ -71,7 +72,7 @@ Level *level_load(const char *filename)
 			position = vector2d(objx * level->tileSet->frame_w * level->scaleAmount, objy * level->tileSet->frame_h * level->scaleAmount);
 
 			player = player_spawn(position);
-			load_player(player, saveFile);
+			load_player(player, playerFile);
 
 			string = sj_get_string_value(sj_object_get_value(leveljs, "uiFormat"));
 			ui_format_load(string, player);
@@ -171,7 +172,7 @@ Level *level_jsonload(const char *filename)
 	//Entity *test;
 	//Upgrade *upTest;
 
-	savedjs = sj_load(saveFile);
+	savedjs = sj_load(playerFile);
 
 	if (filename == NULL)
 	{
@@ -508,14 +509,18 @@ Level *level_jsonload(const char *filename)
 					goldDoor_spawn(position, (char *)string, goldDoorCode - 1, level->tileWidth, level->tileHeight, level->tileFramesPerLine, level->scaleAmount);
 				}
 
-
-
 				else if (strcmp(objType, "transition") == 0)
 				{
 					transPoint = sj_get_string_value(sj_object_get_value(objjs, "toPoint"));
 					transLevel = sj_get_string_value(sj_object_get_value(objjs, "toLevel"));
 					sj_get_integer_value(sj_object_get_value(objjs, "spriteFrame"), &spriteFrame);
 					transition_spawn(position, (char *)string, spriteFrame - 1, level->tileWidth, level->tileHeight, level->tileFramesPerLine, level->scaleAmount, transLevel, transPoint, level);
+				}
+
+				else if (strcmp(objType, "savePoint") == 0)
+				{
+					sj_get_integer_value(sj_object_get_value(objjs, "spriteFrame"), &spriteFrame);
+					savePoint_spawn(position, (char *)string, spriteFrame - 1, level->tileWidth, level->tileHeight, level->tileFramesPerLine, level->scaleAmount, filename);
 				}
 			}
 		}
@@ -758,7 +763,7 @@ void level_transition(const char *nextLevel)
 
 void level_transition_no_player(const char *nextLevel)
 {
-
+	saveFile = "";
 	level_unload_no_player(thisLevel);
 	level_load(nextLevel);
 }
@@ -769,7 +774,7 @@ void level_transitionNewGame(const char *nextLevel)
 	SJson *baseJson;
 
 	baseJson = sj_object_new();
-	sj_save(baseJson, saveFile);
+	sj_save(baseJson, playerFile);
 
 	level_unload(thisLevel);
 	level_load(nextLevel);
@@ -783,7 +788,8 @@ void menu_level_transition(MenuComponent *self)
 
 void menu_level_transitionNewGame(MenuComponent *self)
 {
-	level_transitionNewGame(self->action_specification);
+	change_save_file(self->action_specification);
+	level_transitionNewGame("defs/room1_1.json");
 	resume_game();
 }
 
@@ -895,6 +901,148 @@ void transition_free(Entity *self)
 	free(trans->nextLevel);
 	free(trans->nextPos);
 	free(trans);
+}
+
+Entity *savePoint_spawn(Vector2D position, char *spriteSheet, int frameNum, int spriteWidth, int spriteHeight, int fpl, int scale, char *currentLevel)
+{
+	Entity *ent;
+	Rect *hitbox;
+	SavePoint *sp;
+
+	ent = environment_spawn(position, spriteSheet, frameNum, spriteWidth, spriteHeight, fpl, scale);
+	if (ent == NULL)
+	{
+		slog("Failed to create entity");
+		return NULL;
+	}
+
+	hitbox = (Rect *)malloc(sizeof(Rect));
+	if (hitbox == NULL)
+	{
+		slog("Could not create hitbox");
+		free(ent);
+		return NULL;
+	}
+
+	hitbox->x = position.x + 5;
+	hitbox->y = position.y + 5;
+	hitbox->width = spriteWidth * scale - 10;
+	hitbox->height = spriteHeight * scale - 10;
+	ent->hitbox = hitbox;
+
+	ent->flags = 0;
+
+	sp = (SavePoint *)malloc(sizeof(SavePoint));
+	if (sp == NULL)
+	{
+		slog("Could not allocate space for savePoint");
+		entity_free(ent);
+		return NULL;
+	}
+	sp->active = SDL_TRUE;
+	sp->currentLevel = malloc((strlen(currentLevel) + 1) * sizeof(char));
+	strcpy(sp->currentLevel, currentLevel);
+	slog(currentLevel);
+	ent->data = sp;
+
+	ent->free = savePoint_free;
+	ent->update = savePoint_update;
+
+	return ent;
+}
+
+void savePoint_update(Entity *self)
+{
+	SDL_bool collided;
+	SavePoint *sp;
+	int clickX, clickY;
+
+	if (self == NULL)
+	{
+		slog("Can't update a null entity");
+		return;
+	}
+
+	sp = (SavePoint *)self->data;
+	if (sp == NULL || sp->active == SDL_FALSE)
+	{
+		return;
+	}
+
+	if (self->hitbox != NULL)
+	{
+		if (SDL_GetMouseState(&clickX, &clickY) & SDL_BUTTON(SDL_BUTTON_LEFT))
+		{
+			collided = check_collision_with_player(self);
+			if (collided == SDL_TRUE)
+			{
+				save_player_from_savePoint(self);
+				sp->active = SDL_FALSE;
+				self->baseFrame++;
+				self->frame++;
+			}
+		}
+	}
+}
+
+void savePoint_free(Entity *self)
+{
+	SavePoint *sp;
+
+	if (self == NULL)
+	{
+		slog("Can't free a null entity");
+		return;
+	}
+
+	sp = (SavePoint *)self->data;
+	if (sp == NULL)
+	{
+		slog("Can't free nonexistent point");
+		return;
+	}
+	free(sp->currentLevel);
+	free(sp);
+}
+
+void save_player_from_savePoint(Entity *self)
+{
+	SJson *playerJson, *saveJson;
+	SavePoint *sp;
+
+	if (self == NULL)
+	{
+		slog("Can't update a null entity");
+		return;
+	}
+
+	sp = (SavePoint *)self->data;
+	if (sp == NULL || sp->active == SDL_FALSE)
+	{
+		return;
+	}
+
+	playerJson = sj_load(playerFile);
+	if (playerJson == NULL)
+	{
+		playerJson = sj_object_new();
+	}
+	if (saveFile == NULL || strlen(saveFile) == 0)
+	{
+		slog("No place to save game");
+		return;
+	}
+
+	saveJson = sj_object_new();
+	sj_object_insert(saveJson, "player", playerJson);
+	sj_object_insert(saveJson, "location", sj_new_str(sp->currentLevel));
+	sj_save(saveJson, saveFile);
+}
+
+void change_save_file(const char *filename)
+{
+	saveFile = malloc((strlen(filename) + 1) * sizeof(char));
+	strcpy(saveFile, filename);
 }
 
 void menu_format_load(const char *filename)
@@ -1057,31 +1205,7 @@ void menu_format_load(const char *filename)
 
 MenuComponent *menu_component_create(char *text, char *fontFile, Uint32 text_ptsize, Color text_color, const char *spriteFile, int sprite_w, int sprite_h, int sprite_fpl, int sprite_count, int sprite_num, int sprite_scale, int menu_x, int menu_y, int offset_x, int offset_y, int x, int y, char *action, char *specification)
 {
-	MenuComponent *comp;
-	comp = menu_component_new(menu_x, menu_y);
-	if (comp == NULL)
-	{
-		slog("Failed to create component");
-		return NULL;
-	}
-
-	comp->position = vector2d(x, y);
-	comp->sprite = gf2d_sprite_load_all(spriteFile, sprite_w, sprite_h, sprite_fpl);
-	if (comp->sprite == NULL)
-	{
-		slog("UI sprite couldn't load");
-		free(comp);
-		return NULL;
-	}
-	comp->frameCount = sprite_count;
-	comp->baseFrame = sprite_num;
-	comp->scale = vector2d(sprite_scale, sprite_scale);
-	comp->frameRate = 0;
-	comp->color = NULL;
-
-	comp->draw = NULL;
-	comp->update = NULL;
-	comp->free = NULL;
+	MenuComponent *comp = menu_component_create_no_text(spriteFile, sprite_w, sprite_h, sprite_fpl, sprite_count, sprite_num, sprite_scale, menu_x, menu_y, x, y, action, specification);
 
 	comp->text = malloc(sizeof(MenuText));
 
@@ -1091,44 +1215,6 @@ MenuComponent *menu_component_create(char *text, char *fontFile, Uint32 text_pts
 	strcpy(comp->text->text, text);
 
 	comp->text->textPosition = vector2d(x + offset_x, y + offset_y);
-
-
-	comp->action_specification = malloc((strlen(specification) + 1) * sizeof(char));
-	strcpy(comp->action_specification, specification);
-
-	//printf("%s\n%s\n", comp->text, comp->action_specification);
-	if (strcmp(action, "load_game") == 0)
-	{
-		comp->action = menu_level_transition;
-	}
-	else if (strcmp(action, "new_game") == 0)
-	{
-		comp->action = menu_level_transitionNewGame;
-	}
-	else if (strcmp(action, "add_to_level") == 0)
-	{
-		comp->action = menu_add_to_level;
-	}
-	else if (strcmp(action, "change_code") == 0)
-	{
-		comp->action = menu_change_edit_code;
-	}
-	else if (strcmp(action, "save_level") == 0)
-	{
-		comp->action = menu_save_level;
-	}
-	else if (strcmp(action, "resume_game") == 0)
-	{
-		comp->action = menu_resume_game;
-	}
-	else if (strcmp(action, "quit_game") == 0)
-	{
-		comp->action = menu_quit_game;
-	}
-	else
-	{
-		comp->action = menu_do_nothing;
-	}
 
 	return comp;
 }
@@ -1195,6 +1281,10 @@ MenuComponent *menu_component_create_no_text(const char *spriteFile, int sprite_
 	{
 		comp->action = menu_quit_game;
 	}
+	else if (strcmp(action, "load_save_game") == 0)
+	{
+		comp->action = menu_load_save_game;
+	}
 	else
 	{
 		comp->action = menu_do_nothing;
@@ -1231,5 +1321,38 @@ void add_to_level(int code, Vector2D pos)
 	thisLevel->tileMap[ypos * thisLevel->levelWidth + xpos] = code;
 }
 
+void menu_load_save_game(MenuComponent *self)
+{
+	SJson *savejs, *playerjs;
+	char *location;
+
+	change_save_file(self->action_specification);
+
+	savejs = sj_load(saveFile);
+	if (savejs == NULL)
+	{
+		//If there is no save, this is a new game
+		menu_level_transitionNewGame(self);
+		return;
+	}
+
+	playerjs = sj_object_get_value(savejs, "player");
+	if (playerjs == NULL)
+	{
+		playerjs = sj_object_new();
+	}
+	sj_save(playerjs, playerFile);
+
+	location = sj_get_string_value(sj_object_get_value(savejs, "location"));
+	if (location == NULL || strlen(location) == 0)
+	{
+		level_transition("defs/room1_1.json");
+	}
+	else
+	{
+		level_transition(location);
+	}
+	resume_game();
+}
 
 /*eol@eof*/

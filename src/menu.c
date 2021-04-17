@@ -88,7 +88,7 @@ void menu_manager_free()
 
 void menu_manager_update()
 {
-	int i;
+	int i, clickX, clickY;
 	Uint8 *state;
 	MenuComponent selected;
 
@@ -147,7 +147,7 @@ void menu_manager_update()
 		menu_manager.component_list[menu_manager.at_y * menu_manager.max_comp_across + menu_manager.at_x].flags = MENU_SELECTED;
 		menu_manager.actionWait = 30;
 	}
-	else if (state[SDL_SCANCODE_RETURN])
+	else if (state[SDL_SCANCODE_RETURN] || state[SDL_SCANCODE_KP_ENTER] || SDL_GetMouseState(&clickX, &clickY) & SDL_BUTTON(SDL_BUTTON_LEFT))
 	{
 		selected = menu_manager.component_list[menu_manager.at_y * menu_manager.max_comp_across + menu_manager.at_x];
 		menu_manager.actionWait = 30;

@@ -1,11 +1,11 @@
 {
 	"menu": {
-		"width": 4,
-		"height": 1,
+		"width": 1,
+		"height": 4,
 		"components": [
 			{
-				"action": "load_game",
-				"text": "Load Game",
+				"action": "load_save_game",
+				"text": "Save File 1",
 				"font" : "fonts/RETRO_SPACE_INV.ttf",
 				"pt_size": 32,
 				"color" : {
@@ -23,15 +23,15 @@
 				"scale" : 1,
 				"menux": 0,
 				"menuy": 0,
-				"x": 25,
-				"y": 600,
+				"x": 50,
+				"y": 142,
 				"offsetx": 10,
 				"offsety": 20,
-				"specification": "defs/load_game_screen.json"
+				"specification": "saves/save_1.json"
 			},
 			{
-				"action": "load_game",
-				"text": "New Game",
+				"action": "load_save_game",
+				"text" : "Save File 2",
 				"font" : "fonts/RETRO_SPACE_INV.ttf",
 				"pt_size": 32,
 				"color" : {
@@ -47,17 +47,17 @@
 				"frame_count" : 2,
 				"frame_num" : 1,
 				"scale" : 1,
-				"menux": 1,
-				"menuy": 0,
-				"x": 323,
-				"y": 600,
+				"menux": 0,
+				"menuy": 1,
+				"x": 50,
+				"y": 266,
 				"offsetx": 10,
-				"offsety": 20,
-				"specification": "defs/new_game_screen.json"
+				"offsety" : 20,
+				"specification" : "saves/save_2.json"
 			},
 			{
-				"action": "load_game",
-				"text": "Level Editor",
+				"action": "load_save_game",
+				"text" : "Save File 3",
 				"font" : "fonts/RETRO_SPACE_INV.ttf",
 				"pt_size": 32,
 				"color" : {
@@ -73,17 +73,17 @@
 				"frame_count" : 2,
 				"frame_num" : 1,
 				"scale" : 1,
-				"menux": 2,
-				"menuy": 0,
-				"x": 621,
-				"y": 600,
+				"menux": 0,
+				"menuy": 2,
+				"x": 50,
+				"y": 390,
 				"offsetx": 10,
-				"offsety": 20,
-				"specification": "defs/level_editor.json"
+				"offsety" : 20,
+				"specification" : "saves/save_3.json"
 			},
 			{
 				"action": "load_game",
-				"text": "Custom Level",
+				"text": "Back",
 				"font" : "fonts/RETRO_SPACE_INV.ttf",
 				"pt_size": 32,
 				"color" : {
@@ -99,13 +99,13 @@
 				"frame_count" : 2,
 				"frame_num" : 1,
 				"scale" : 1,
-				"menux": 3,
-				"menuy": 0,
-				"x": 919,
-				"y": 600,
+				"menux": 0,
+				"menuy": 3,
+				"x": 50,
+				"y": 514,
 				"offsetx": 10,
-				"offsety": 20,
-				"specification": "defs/saved_level.json"
+				"offsety" : 20,
+				"specification" : "defs/home_screen.json"
 			}
 		]
 	}

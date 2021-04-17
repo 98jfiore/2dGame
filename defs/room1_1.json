@@ -67,6 +67,12 @@
 				"type": "goldDoor",
 				"x" : 4,
 				"y" : 12
+			},
+			{
+				"type": "savePoint",
+				"x" : 30,
+				"y" : 14,
+				"spriteFrame" : 20
 			}
 		],
 		"items": [

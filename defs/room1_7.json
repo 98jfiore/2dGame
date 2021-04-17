@@ -49,6 +49,12 @@
 				"toLevel" : "defs/room1_2.json",
 				"toPoint" : "North",
 				"spriteFrame" : 19
+			},
+			{
+				"type": "savePoint",
+				"x" : 16,
+				"y" : 6,
+				"spriteFrame" : 20
 			}
 		],
 		"upgrades": [

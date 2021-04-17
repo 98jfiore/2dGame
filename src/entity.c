@@ -210,6 +210,44 @@ Entity *check_collision(Entity *self)
 	return NULL;
 }
 
+SDL_bool check_collision_with_player(Entity *self)
+{
+	int i;
+	SDL_bool intersection;
+
+	if (self == NULL)
+	{
+		slog("Cannot check colision against nonexistent entity");
+		return SDL_FALSE;
+	}
+
+	if (self->hitbox == NULL)
+	{
+		slog("Entity has no hitbox, cannot check collision against it");
+		return SDL_FALSE;
+	}
+
+	if (entity_manager.entity_list == NULL)
+	{
+		slog("Entity manager not initialized");
+		return SDL_FALSE;
+	}
+
+	for (i = 0; i < entity_manager.max_entities; ++i)
+	{
+		if (&entity_manager.entity_list[i] == self) continue;
+		if (entity_manager.entity_list[i]._inuse == 0 || entity_manager.entity_list[i].hitbox == NULL || !(entity_manager.entity_list[i].flags & ENT_PLAYER)) continue;
+		intersection = IntersectRect(self->hitbox, entity_manager.entity_list[i].hitbox);
+		if (intersection == SDL_TRUE)
+		{
+			return SDL_TRUE;
+		}
+	}
+
+	return SDL_FALSE;
+
+}
+
 Entity *check_attackHit(Rect *atk, Entity *owner)
 {
 	int i;
