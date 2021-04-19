@@ -106,6 +106,13 @@ Entity *check_collision(Entity *self);
 SDL_bool check_collision_with_player(Entity *self);
 
 /**
+* @brief Checks to see if rectangle collided with a player
+* @param rect The rectangle to check for collision against
+* @return SDL_TRUE on collision with player, SDL_FALSE on error or no collision
+*/
+SDL_bool check_rect_collision_with_player(Rect *rect);
+
+/**
 * @brief Checks to see if attack hit any valid entities
 * @param atk The hitbox of the attack to check for hits.
 * @param owner The owner of the attack.

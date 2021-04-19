@@ -90,6 +90,15 @@
 				"y" : 14
 			}
 		],
+		"events": [
+			{
+				"event" : "defs/events/test_event.json",
+				"x" : 2,
+				"y" : 2,
+				"width": 30,
+				"height": 6
+			}
+		],
 		"floorCode" : 1,
 		"wallCode" : 2,
 		"pitCode" : 3,

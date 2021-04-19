@@ -21,6 +21,7 @@
 #include "ent_npc_orb.h"
 #include "ent_item.h"
 #include "ent_upgrade.h"
+#include "event.h"
 
 static Level *thisLevel = { NULL };
 static char *playerFile = "saves/save.json";
@@ -160,7 +161,7 @@ Level *level_jsonload(const char *filename)
 	SJson *objectsjs, *objjs;
 	Sound *music;
 	int objCount;
-	int objx, objy;
+	int objx, objy, objwidth, objheight;
 	int objSpeed, objCycle, objRange;
 	const char *objType, *objStartDir, *objTag;
 	const char *transPoint, *transLevel;
@@ -563,6 +564,49 @@ Level *level_jsonload(const char *filename)
 				else if (strcmp(objType, "invin2") == 0)
 				{
 					invin2_spawn(position);
+				}
+			}
+		}
+
+
+		//Load in events
+		objectsjs = sj_object_get_value(leveljs, "events");
+		if (objectsjs != NULL)
+		{
+			objCount = sj_array_get_count(objectsjs);
+			for (i = 0; i < objCount; i++)
+			{
+				objjs = sj_array_get_nth(objectsjs, i);
+				if (objjs == NULL)
+				{
+					slog("EVENT Not found");
+					continue;
+				}
+				objType = sj_get_string_value(sj_object_get_value(objjs, "event"));
+				sj_get_integer_value(sj_object_get_value(objjs, "x"), &objx);
+				sj_get_integer_value(sj_object_get_value(objjs, "y"), &objy);
+				sj_get_integer_value(sj_object_get_value(objjs, "width"), &objwidth);
+				sj_get_integer_value(sj_object_get_value(objjs, "height"), &objheight);
+				position = vector2d(objx * level->tileSet->frame_w * level->scaleAmount, objy * level->tileSet->frame_h * level->scaleAmount);
+				if (savedjs == NULL)
+				{
+					event_trigger_spawn(position, objwidth * level->tileSet->frame_w * level->scaleAmount, objheight * level->tileSet->frame_h * level->scaleAmount, objType);
+				}
+				else
+				{
+					savedObjjs = sj_object_get_value(savedjs, objType);
+					if (savedObjjs == NULL)
+					{
+						event_trigger_spawn(position, objwidth * level->tileSet->frame_w * level->scaleAmount, objheight * level->tileSet->frame_h * level->scaleAmount, objType);
+					}
+					else
+					{
+						sj_get_integer_value(savedObjjs, &saveFound);
+						if (saveFound != 1)
+						{
+							event_trigger_spawn(position, objwidth * level->tileSet->frame_w * level->scaleAmount, objheight * level->tileSet->frame_h * level->scaleAmount, objType);
+						}
+					}
 				}
 			}
 		}
