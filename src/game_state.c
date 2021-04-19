@@ -28,6 +28,11 @@ void resume_game()
 	state = 0;
 }
 
+void start_cutscene_game()
+{
+	state = GS_CUTSCENE;
+}
+
 void quit_game()
 {
 	state = GS_QUIT;

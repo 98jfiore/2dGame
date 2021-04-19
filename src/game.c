@@ -16,6 +16,7 @@
 #include "level.h"
 #include "ui.h"
 #include "menu.h"
+#include "event.h"
 #include "font.h"
 #include "game_state.h"
 
@@ -76,6 +77,10 @@ int main(int argc, char * argv[])
 		if (!(game_state & GS_PAUSED))
 		{
 			entity_manager_update_entities();
+			if (game_state & GS_CUTSCENE)
+			{
+				event_manager_update();
+			}
 		}
 		ui_manager_update_components();
 		menu_manager_update();
@@ -89,6 +94,8 @@ int main(int argc, char * argv[])
 			ui_manager_draw_components();
 
 			menu_manager_draw_components();
+
+			event_manager_draw();
 
             //UI elements last
             gf2d_sprite_draw(

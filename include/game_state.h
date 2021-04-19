@@ -10,6 +10,7 @@ enum gamestate_flags {
 	GS_RESUME = 0,
 	GS_PAUSED = 1,
 	GS_QUIT = 2,
+	GS_CUTSCENE = 4,
 };
 
 
@@ -33,6 +34,11 @@ void pause_game();
 * @brief Pause the game
 */
 void resume_game();
+
+/**
+* @brief Pause the game
+*/
+void start_cutscene_game();
 
 /**
 * @brief Pause the game

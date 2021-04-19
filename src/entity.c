@@ -3,6 +3,7 @@
 #include "simple_logger.h"
 
 #include "entity.h"
+#include "game_state.h"
 
 typedef struct
 {
@@ -108,6 +109,8 @@ void entity_update(Entity *self)
 	self->frame += self->frameRate;
 	if (self->frame >= self->frameCount + self->baseFrame) self->frame = self->baseFrame;
 	//Specific updates
+	//If there's a cutscene, don't update besides animation
+	if (get_gameState() & GS_CUTSCENE) return;
 	if (self->update == NULL) return;
 	self->update(self);
 }
