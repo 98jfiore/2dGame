@@ -15,6 +15,7 @@ typedef struct
 	CutsceneItem *background_items;
 	CutsceneItem *foreground_items;
 	SJson		*event_actions;
+	SJson		*current_event;
 	Uint32		event_point;
 	Uint32		event_length;
 	Uint32		action_wait;
@@ -25,6 +26,8 @@ static EventManager event_manager = { 0 };
 
 void event_manager_init(char *eventFile)
 {
+	SJson *basejs;
+
 	if (event_manager.background_items != NULL || event_manager.foreground_items != NULL)
 	{
 		event_manager_free();
@@ -43,11 +46,19 @@ void event_manager_init(char *eventFile)
 		return;
 	}
 	event_manager.action_wait = 40;
-	event_manager.event_actions = sj_load(eventFile);
+	basejs = sj_load(eventFile);
+
+	event_manager.event_actions = sj_object_get_value(basejs, "events");;
 	event_manager.event_point = 0;
 	event_manager.event_length = sj_array_get_count(event_manager.event_actions);
+	//slog("%i", event_manager.event_length);
+	//slog(eventFile);
+	event_manager.current_event = NULL;
 	event_manager.actor = NULL;
 	slog("Event initialized");
+
+	next_event_point(0);
+
 }
 
 void event_manager_free()
@@ -65,11 +76,11 @@ void event_manager_free()
 
 void event_manager_update()
 {
-	//int i;
+	int i;
 	int clickX, clickY;
 	Uint8 *state;
 
-	/*if (event_manager.background_items == NULL)
+	if (event_manager.background_items == NULL)
 	{
 		slog("Event manager not initialized");
 		return;
@@ -89,7 +100,7 @@ void event_manager_update()
 	{
 		if (event_manager.foreground_items[i]._inuse == 0) continue;
 		cutscene_item_update(&event_manager.foreground_items[i]);
-	}*/
+	}
 
 
 	//IF USER MOVE FORWARD, MOVE FORWARD
@@ -109,8 +120,7 @@ void event_manager_update()
 	{
 		event_manager.action_wait = 30;
 		event_manager.event_point++;
-		event_manager_free();
-		resume_game();
+		next_event_point(event_manager.event_point);
 	}
 }
 
@@ -138,6 +148,159 @@ void event_manager_draw()
 	{
 		if (event_manager.foreground_items[i]._inuse == 0) continue;
 		cutscene_item_draw(&event_manager.foreground_items[i]);
+	}
+}
+
+void next_event_point(int next_point)
+{
+	SJson *event_point;
+	char *action_type;
+
+	if (next_point < 0 || next_point >= event_manager.event_length)
+	{
+		event_manager_free();
+		resume_game();
+		return;
+	}
+	event_manager_clear();
+	event_point = sj_array_get_nth(event_manager.event_actions, next_point);
+
+	action_type = sj_get_string_value(sj_object_get_value(event_point, "action"));
+	if (strcmp(action_type, "dialogue") == 0)
+	{
+		start_dialogue_event_point(event_point);
+	}
+
+	event_manager.current_event = event_point;
+	
+	sj_get_integer_value(sj_object_get_value(event_point, "wait"), &event_manager.action_wait);
+}
+
+void start_dialogue_event_point(SJson *event_point)
+{
+	SJson *event_format, *colorjs, *linesjs;
+	int x, y, sprite_w, sprite_h, sprite_fpl, sprite_num, frame_count, sprite_scale;
+	int textx, texty;
+	int ptsize, color_r, color_g, color_b, color_a;
+	int linespacing, linecount, i;
+	Color text_color;
+	float sprite_frameRate;
+	char *sprite_file, *fontFile, *speaker, *line;
+
+	event_format = sj_load("defs/events/event_formats/dialogue_scene.json");
+	if (event_format == NULL)
+	{
+		slog("Dialogue format not loading");
+		return;
+	}
+
+	sprite_file = sj_get_string_value(sj_object_get_value(event_format, "backing"));
+	sj_get_integer_value(sj_object_get_value(event_format, "x"), &x);
+	sj_get_integer_value(sj_object_get_value(event_format, "y"), &y);
+	sj_get_integer_value(sj_object_get_value(event_format, "sprite_w"), &sprite_w);
+	sj_get_integer_value(sj_object_get_value(event_format, "sprite_h"), &sprite_h);
+	sj_get_integer_value(sj_object_get_value(event_format, "sprite_fpl"), &sprite_fpl);
+	sj_get_integer_value(sj_object_get_value(event_format, "sprite_num"), &sprite_num);
+	sj_get_float_value(sj_object_get_value(event_format, "sprite_frameRate"), &sprite_frameRate);
+	sj_get_integer_value(sj_object_get_value(event_format, "frame_count"), &frame_count);
+	sj_get_integer_value(sj_object_get_value(event_format, "sprite_scale"), &sprite_scale);
+	cutscene_item_spawn_sprite(sprite_file, sprite_w, sprite_h, sprite_fpl, sprite_num, sprite_frameRate, frame_count, sprite_scale, x, y, SDL_TRUE);
+
+
+	fontFile = sj_get_string_value(sj_object_get_value(event_format, "namefont"));
+	sj_get_integer_value(sj_object_get_value(event_format, "nameptsize"), &ptsize);
+
+	colorjs = sj_object_get_value(event_format, "namecolor");
+	if (colorjs != NULL)
+	{
+		sj_get_integer_value(sj_object_get_value(colorjs, "r"), &color_r);
+		sj_get_integer_value(sj_object_get_value(colorjs, "g"), &color_g);
+		sj_get_integer_value(sj_object_get_value(colorjs, "b"), &color_b);
+		sj_get_integer_value(sj_object_get_value(colorjs, "a"), &color_a);
+	}
+	else
+	{
+		color_r = 0;
+		color_g = 0;
+		color_b = 0;
+		color_a = 255;
+	}
+	sj_get_integer_value(sj_object_get_value(event_format, "namex"), &textx);
+	sj_get_integer_value(sj_object_get_value(event_format, "namey"), &texty);
+
+	text_color = gfc_color8(color_r, color_g, color_b, color_a);
+
+	speaker = sj_get_string_value(sj_object_get_value(event_point, "speaker"));
+
+	cutscene_item_spawn_text(speaker, fontFile, ptsize, text_color, x + textx, y + texty, SDL_FALSE);
+
+
+
+	fontFile = sj_get_string_value(sj_object_get_value(event_format, "linefont"));
+	sj_get_integer_value(sj_object_get_value(event_format, "lineptsize"), &ptsize);
+
+	colorjs = sj_object_get_value(event_format, "linecolor");
+	if (colorjs != NULL)
+	{
+		sj_get_integer_value(sj_object_get_value(colorjs, "r"), &color_r);
+		sj_get_integer_value(sj_object_get_value(colorjs, "g"), &color_g);
+		sj_get_integer_value(sj_object_get_value(colorjs, "b"), &color_b);
+		sj_get_integer_value(sj_object_get_value(colorjs, "a"), &color_a);
+	}
+	else
+	{
+		color_r = 0;
+		color_g = 0;
+		color_b = 0;
+		color_a = 255;
+	}
+	sj_get_integer_value(sj_object_get_value(event_format, "linesx"), &textx);
+	sj_get_integer_value(sj_object_get_value(event_format, "linesy"), &texty);
+	sj_get_integer_value(sj_object_get_value(event_format, "linespacing"), &linespacing);
+
+	text_color = gfc_color8(color_r, color_g, color_b, color_a);
+
+	linesjs = sj_object_get_value(event_point, "lines");
+	if (linesjs != NULL)
+	{
+		linecount = sj_array_get_count(linesjs);
+		for (i = 0; i < linecount; i++)
+		{
+			line = sj_get_string_value(sj_array_get_nth(linesjs, i));
+			if (line == NULL)
+			{
+				slog("LINE Not found");
+				continue;
+			}
+			cutscene_item_spawn_text(line, fontFile, ptsize, text_color, x + textx, y + texty + (linespacing * i), SDL_FALSE);
+		}
+	}
+}
+
+void event_manager_clear()
+{
+	int i;
+
+	if (event_manager.background_items == NULL)
+	{
+		//slog("Event manager not initialized");
+		return;
+	}
+	for (i = 0; i < 5; ++i)
+	{
+		if (event_manager.background_items[i]._inuse == 0) continue;
+		cutscene_item_free(&event_manager.background_items[i]);
+	}
+
+	if (event_manager.foreground_items == NULL)
+	{
+		slog("Event manager not initialized");
+		return;
+	}
+	for (i = 0; i < 5; ++i)
+	{
+		if (event_manager.foreground_items[i]._inuse == 0) continue;
+		cutscene_item_free(&event_manager.foreground_items[i]);
 	}
 }
 

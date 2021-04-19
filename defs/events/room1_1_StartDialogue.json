@@ -1,0 +1,29 @@
+{
+	"events" : [
+		{
+			"action" : "dialogue",
+			"speaker" : "Clyde",
+			"lines" : [
+				"What Happened?",
+				"Where the hell am I?"
+			],
+			"wait" : 40
+		},
+		{
+			"action" : "dialogue",
+			"speaker" : "Clyde",
+			"lines" : [
+				"..."
+			],
+			"wait" : 40
+		},
+		{
+			"action" : "dialogue",
+			"speaker" : "Clyde",
+			"lines" : [
+				"God... My head hurts like hell..."
+			],
+			"wait" : 40
+		}
+	]
+}

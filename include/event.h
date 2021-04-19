@@ -49,6 +49,23 @@ void event_manager_update();
 void event_manager_draw();
 
 /**
+* @brief Load the next event point
+* @param next_point The next point to load
+*/
+void next_event_point(int next_point);
+
+/**
+* @brief Start a dialogue event specified in the json
+* @param dialogue_event The dialogue moment to show.
+*/
+void start_dialogue_event_point(SJson *event_point);
+
+/**
+* @brief Clear entities from the event.
+*/
+void event_manager_clear();
+
+/**
 * @brief Allocate a cutscene item in the background and return a pointer to it.
 * @return NULL on error or a pointer to an initialized item.
 */

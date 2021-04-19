@@ -92,7 +92,7 @@
 		],
 		"events": [
 			{
-				"event" : "defs/events/test_event.json",
+				"event" : "defs/events/room1_1_StartDialogue.json",
 				"x" : 2,
 				"y" : 2,
 				"width": 30,

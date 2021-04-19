@@ -1,0 +1,33 @@
+{
+	"backing" : "images/dialogue_back.png",
+	"sprite_w" : 1200, 
+	"sprite_h" : 180, 
+	"sprite_fpl" : 1,
+	"sprite_num" : 0,
+	"sprite_frameRate" : 0,
+	"frame_count" : 1,
+	"sprite_scale" : 0,
+	"x" : 0,
+	"y" : 500,
+	"namex" : 25,
+	"namey" : 15,
+	"namefont" : "fonts/RETRO_SPACE_INV.ttf",
+	"nameptsize" : 16,
+	"namecolor" : {
+		"r": 0,
+		"g": 0,
+		"b": 0,
+		"a": 255
+	},
+	"linesx" : 25,
+	"linesy" : 50,
+	"linespacing" : 20,
+	"linefont" : "fonts/RETRO_SPACE_INV.ttf",
+	"lineptsize" : 25,
+	"linecolor" : {
+		"r": 5,
+		"g": 5,
+		"b": 5,
+		"a": 255
+	}
+}
