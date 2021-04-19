@@ -207,7 +207,7 @@ CutsceneItem *cutscene_item_spawn_text(char *text, char *fontFile, Uint32 text_p
 	return item;
 }
 
-CutsceneItem *cutscene_item_spawn_sprite(const char *spriteFile, int sprite_w, int sprite_h, int sprite_fpl, int sprite_num, int sprite_scale, int x, int y, SDL_bool background)
+CutsceneItem *cutscene_item_spawn_sprite(const char *spriteFile, int sprite_w, int sprite_h, int sprite_fpl, int sprite_num, float sprite_frameRate, int frame_count, int sprite_scale, int x, int y, SDL_bool background)
 {
 	CutsceneItem *item;
 
@@ -230,6 +230,9 @@ CutsceneItem *cutscene_item_spawn_sprite(const char *spriteFile, int sprite_w, i
 		return NULL;
 	}
 	item->sprite_frame = sprite_num;
+	item->baseFrame = sprite_num;
+	item->frameCount = frame_count;
+	item->frameRate = sprite_frameRate;
 	item->scale = vector2d(sprite_scale, sprite_scale);
 
 	item->text = NULL;
@@ -274,7 +277,7 @@ void cutscene_item_draw(CutsceneItem *self)
 				NULL,
 				NULL,
 				NULL,
-				self->sprite_frame);
+				(Uint32)self->sprite_frame);
 		}
 		else
 		{
@@ -286,12 +289,23 @@ void cutscene_item_draw(CutsceneItem *self)
 				NULL,
 				NULL,
 				NULL,
-				self->sprite_frame);
+				(Uint32)self->sprite_frame);
 		}
 	}
 	if (self->text != NULL && self->font != NULL)
 	{
 		font_render(self->font, self->text, self->text_color, self->position);
+	}
+}
+
+void cutscene_item_update(CutsceneItem *self)
+{
+	if (!self) return;
+	//Generic updates
+	if (self->sprite != NULL)
+	{
+		self->sprite_frame += self->frameRate;
+		if (self->sprite_frame  >= self->frameCount + self->baseFrame) self->sprite_frame = self->baseFrame;
 	}
 }
 

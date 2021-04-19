@@ -10,7 +10,10 @@ typedef struct
 	Bool		_inuse;
 	Vector2D	position;
 	Sprite		*sprite;
-	Uint32		sprite_frame;
+	float		sprite_frame;
+	float		frameRate;
+	int			frameCount;
+	int			baseFrame;
 	Vector2D	scale;
 	char		*text;
 	Font		*font;
@@ -78,13 +81,15 @@ CutsceneItem *cutscene_item_spawn_text(char *text, char *fontFile, Uint32 text_p
 * @param sprite_h The height of sprites on the file
 * @param sprite_fpl The number of sprites per like on the file
 * @param sprite_num The initial sprite this sprite can be found on
+* @param sprite_frameRate The frame rate to advance the sprite's animation
+* @param frame_count The number of frames in the sprite's animation
 * @param sprite_scale The scale this component is rendered at
 * @param x The x position this component will be on
 * @param y The y position this component will be on
 * @param background Whether or not this item is in the background (if not, it's in the foreground).
 * @return NULL on error or a pointer to a new UI Component
 */
-CutsceneItem *cutscene_item_spawn_sprite(const char *spriteFile, int sprite_w, int sprite_h, int sprite_fpl, int sprite_num, int sprite_scale, int x, int y, SDL_bool background);
+CutsceneItem *cutscene_item_spawn_sprite(const char *spriteFile, int sprite_w, int sprite_h, int sprite_fpl, int sprite_num, float sprite_frameRate, int frame_count, int sprite_scale, int x, int y, SDL_bool background);
 
 
 /**
@@ -96,6 +101,11 @@ void cutscene_item_free(CutsceneItem *self);
 * @brief Draw a cutscene item
 */
 void cutscene_item_draw(CutsceneItem *self);
+
+/**
+* @brief update a cutscene item
+*/
+void cutscene_item_update(CutsceneItem *self);
 
 /**
 * @brief Spawn an event trigger entity
