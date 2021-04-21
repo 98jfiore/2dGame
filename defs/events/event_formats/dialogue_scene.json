@@ -6,7 +6,7 @@
 	"sprite_num" : 0,
 	"sprite_frameRate" : 0,
 	"frame_count" : 1,
-	"sprite_scale" : 0,
+	"sprite_scale" : 1,
 	"x" : 0,
 	"y" : 500,
 	"namex" : 25,
@@ -29,5 +29,7 @@
 		"g": 5,
 		"b": 5,
 		"a": 255
-	}
+	},
+	"speaker_spritex" : 10,
+	"speaker_spritey" : 10
 }

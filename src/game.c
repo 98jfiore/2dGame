@@ -93,11 +93,10 @@ int main(int argc, char * argv[])
 
 			ui_manager_draw_components();
 
-			menu_manager_draw_components();
-
 			event_manager_draw();
 
-            //UI elements last
+			menu_manager_draw_components();
+
             gf2d_sprite_draw(
                 mouse,
                 vector2d(mx,my),

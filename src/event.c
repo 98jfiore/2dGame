@@ -178,7 +178,7 @@ void next_event_point(int next_point)
 
 void start_dialogue_event_point(SJson *event_point)
 {
-	SJson *event_format, *colorjs, *linesjs;
+	SJson *event_format, *colorjs, *linesjs, *spritejs;
 	int x, y, sprite_w, sprite_h, sprite_fpl, sprite_num, frame_count, sprite_scale;
 	int textx, texty;
 	int ptsize, color_r, color_g, color_b, color_a;
@@ -193,6 +193,24 @@ void start_dialogue_event_point(SJson *event_point)
 		slog("Dialogue format not loading");
 		return;
 	}
+
+
+	spritejs = sj_object_get_value(event_point, "sprite");
+	if (spritejs != NULL)
+	{
+		sj_get_integer_value(sj_object_get_value(event_format, "speaker_spritex"), &x);
+		sj_get_integer_value(sj_object_get_value(event_format, "speaker_spritey"), &y);
+		sprite_file = sj_get_string_value(sj_object_get_value(spritejs, "file"));
+		sj_get_integer_value(sj_object_get_value(spritejs, "sprite_w"), &sprite_w);
+		sj_get_integer_value(sj_object_get_value(spritejs, "sprite_h"), &sprite_h);
+		sj_get_integer_value(sj_object_get_value(spritejs, "sprite_fpl"), &sprite_fpl);
+		sj_get_integer_value(sj_object_get_value(spritejs, "sprite_num"), &sprite_num);
+		sj_get_float_value(sj_object_get_value(spritejs, "sprite_frameRate"), &sprite_frameRate);
+		sj_get_integer_value(sj_object_get_value(spritejs, "frame_count"), &frame_count);
+		sj_get_integer_value(sj_object_get_value(spritejs, "sprite_scale"), &sprite_scale);
+		cutscene_item_spawn_sprite(sprite_file, sprite_w, sprite_h, sprite_fpl, sprite_num, sprite_frameRate, frame_count, sprite_scale, x, y, SDL_TRUE);
+	}
+
 
 	sprite_file = sj_get_string_value(sj_object_get_value(event_format, "backing"));
 	sj_get_integer_value(sj_object_get_value(event_format, "x"), &x);
