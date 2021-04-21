@@ -21,6 +21,7 @@
 #include "ent_npc_orb.h"
 #include "ent_item.h"
 #include "ent_upgrade.h"
+#include "bosses.h"
 #include "event.h"
 
 static Level *thisLevel = { NULL };
@@ -436,6 +437,34 @@ Level *level_jsonload(const char *filename)
 					{
 						orb_spawn(position, MOV_WEST, objCycle);
 					}
+				}
+			}
+		}
+
+		//Load in bosses
+		objectsjs = sj_object_get_value(leveljs, "bosses");
+		if (objectsjs != NULL)
+		{
+			objCount = sj_array_get_count(objectsjs);
+			for (i = 0; i < objCount; i++)
+			{
+				objjs = sj_array_get_nth(objectsjs, i);
+				if (objjs == NULL)
+				{
+					slog("BOSS Not found");
+					continue;
+				}
+				objType = sj_get_string_value(sj_object_get_value(objjs, "type"));
+				sj_get_integer_value(sj_object_get_value(objjs, "x"), &objx);
+				sj_get_integer_value(sj_object_get_value(objjs, "y"), &objy);
+
+				//printf("%s %i,%i %s\n", enemyType, enemyx, enemyy, enemyStartDir);
+
+				position = vector2d(objx * level->tileSet->frame_w * level->scaleAmount, objy * level->tileSet->frame_h * level->scaleAmount);
+
+				if (strcmp(objType, "boss1") == 0)
+				{
+					boss1_spawn(position);
 				}
 			}
 		}

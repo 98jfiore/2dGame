@@ -22,6 +22,7 @@ enum entity_flags {
 	ENT_UPGRADE = 128,
 	ENT_LOCKED = 256,
 	ENT_TRANSITION = 512,
+	ENT_HASHEALTH = 1024,
 };
 
 typedef enum{
@@ -45,6 +46,7 @@ typedef struct Entity_s
 	int			frameCount;
 	int			baseFrame;
 	int			damage;
+	int			health;
 	void		(*update)(struct Entity_s *self);
 	void		(*think)(struct Entity_s *self);
 	void		(*draw)(struct Entity_s *self);
