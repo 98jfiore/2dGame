@@ -193,7 +193,7 @@ void attack_update(Attack *self)
 				}
 				else if (hit->flags & ENT_HASHEALTH)
 				{
-					hit->health--;
+					hasHealth_doDamage(hit, 1);
 
 					attack_free(self);
 				}

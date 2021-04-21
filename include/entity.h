@@ -47,6 +47,7 @@ typedef struct Entity_s
 	int			baseFrame;
 	int			damage;
 	int			health;
+	int			iframes;
 	void		(*update)(struct Entity_s *self);
 	void		(*think)(struct Entity_s *self);
 	void		(*draw)(struct Entity_s *self);
@@ -160,6 +161,13 @@ void entity_update(Entity *self);
 * @param damage The amound of damage to do to the player.
 */
 void player_doDamage(Entity *player, int damage);
+
+/**
+* @brief Do some damage to an entity that has health
+* @param ent A pointer to an ent to do damage to
+* @param damage The amount of damage to do to the ent.
+*/
+void hasHealth_doDamage(Entity *ent, int damage);
 
 
 #endif

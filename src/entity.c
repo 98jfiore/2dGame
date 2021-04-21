@@ -108,6 +108,7 @@ void entity_update(Entity *self)
 	//Generic updates
 	self->frame += self->frameRate;
 	if (self->frame >= self->frameCount + self->baseFrame) self->frame = self->baseFrame;
+	if (self->iframes > 0) self->iframes--;
 	//Specific updates
 	//If there's a cutscene, don't update besides animation
 	if (get_gameState() & GS_CUTSCENE) return;
@@ -364,6 +365,10 @@ void check_explosionHit(Rect *explosion, Entity *owner)
 			{
 				entity_free(&entity_manager.entity_list[i]);
 			}
+			else if (entity_manager.entity_list[i].flags & ENT_HASHEALTH)
+			{
+				hasHealth_doDamage(&entity_manager.entity_list[i], 1);
+			}
 		}
 	}
 }
@@ -384,6 +389,7 @@ Entity *entity_new()
 		entity_manager.entity_list[i].free = NULL;
 		entity_manager.entity_list[i].hitbox = NULL;
 		entity_manager.entity_list[i].sprite = NULL;
+		entity_manager.entity_list[i].iframes = 0;
 		return &entity_manager.entity_list[i];
 	}
 	slog("No free entities available");
@@ -412,6 +418,20 @@ void entity_free(Entity *ent)
 		ent->hitbox = NULL;
 	}
 	ent->_inuse = 0;
+}
+
+
+void hasHealth_doDamage(Entity *ent, int damage)
+{
+	if (ent == NULL || !(ent->flags & ENT_HASHEALTH) || ent->iframes > 0)
+	{
+		return;
+	}
+	else
+	{
+		ent->health -= damage;
+		ent->iframes = 30;
+	}
 }
 
 

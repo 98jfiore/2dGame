@@ -8,6 +8,8 @@
 #include "ent_npc.h"
 #include "shapes.h"
 
+static char *playerFile = "saves/save.json";
+
 Entity *boss1_spawn(Vector2D position)
 {
 	Entity *ent;
@@ -73,7 +75,6 @@ Entity *boss1_spawn(Vector2D position)
 	subent->scale = vector2d(2, 2);
 	subent->flags = 0;
 	boss->subents[1] = subent;
-	slog("SPAWN");
 
 	vector2d_copy(subent_pos, position);
 	subent_pos.x = subent_pos.x - (15 * 2);
@@ -88,7 +89,6 @@ Entity *boss1_spawn(Vector2D position)
 	}
 	subent->position = subent_pos;
 
-
 	subent->sprite = gf2d_sprite_load_all("images/boss1_sprites.png", 16, 16, 3);
 	subent->frameCount = 2;
 	subent->baseFrame = 1;
@@ -97,7 +97,7 @@ Entity *boss1_spawn(Vector2D position)
 	subent->scale = vector2d(2, 2);
 	subent->damage = 1;
 	subent->health = 3;
-	subent->flags = ENT_DEADLY | ENT_HASHEALTH;
+	subent->flags = ENT_DEADLY |  ENT_HITTABLE | ENT_HASHEALTH;
 
 	hitbox = (Rect *)malloc(sizeof(Rect));
 	hitbox->x = subent_pos.x - 1;
@@ -110,8 +110,10 @@ Entity *boss1_spawn(Vector2D position)
 
 
 	vector2d_copy(subent_pos, position);
-	subent_pos.x = subent_pos.x + 16 * 2 + (8 * 2);
-	subent_pos.y = subent_pos.y + (24 * 2);
+
+
+
+
 
 	subent = entity_new();
 	if (subent == NULL)
@@ -120,9 +122,11 @@ Entity *boss1_spawn(Vector2D position)
 		entity_free(ent);
 		return NULL;
 	}
-	subent->position = subent_pos;
 
 	subent->sprite = gf2d_sprite_load_all("images/boss1_sprites.png", 16, 16, 3);
+	subent_pos.x = subent_pos.x + ent->sprite->frame_w * 2 - (8 * 2);
+	subent_pos.y = subent_pos.y + (24 * 2);
+	subent->position = subent_pos;
 	subent->frameCount = 1;
 	subent->baseFrame = 0;
 	subent->frame = 0;
@@ -131,10 +135,10 @@ Entity *boss1_spawn(Vector2D position)
 	subent->flags = 0;
 	boss->subents[3] = subent;
 
-	vector2d_copy(subent_pos, position);
-	subent_pos.x = subent_pos.x + 16 * 2 + (15 * 2);
-	subent_pos.y = subent_pos.y + (35 * 2);
 
+
+	vector2d_copy(subent_pos, position);
+	
 	subent = entity_new();
 	if (subent == NULL)
 	{
@@ -142,9 +146,11 @@ Entity *boss1_spawn(Vector2D position)
 		entity_free(ent);
 		return NULL;
 	}
-	subent->position = subent_pos;
 
 	subent->sprite = gf2d_sprite_load_all("images/boss1_sprites.png", 16, 16, 3);
+	subent_pos.x = subent_pos.x + ent->sprite->frame_w * 2;
+	subent_pos.y = subent_pos.y + (35 * 2);
+	subent->position = subent_pos;
 	subent->frameCount = 2;
 	subent->baseFrame = 1;
 	subent->frame = 1;
@@ -152,7 +158,7 @@ Entity *boss1_spawn(Vector2D position)
 	subent->scale = vector2d(2, 2);
 	subent->damage = 1;
 	subent->health = 3;
-	subent->flags = ENT_DEADLY | ENT_HASHEALTH;
+	subent->flags = ENT_DEADLY | ENT_HITTABLE | ENT_HASHEALTH;
 
 	hitbox = (Rect *)malloc(sizeof(Rect));
 	hitbox->x = subent_pos.x - 1;
@@ -180,7 +186,38 @@ Entity *boss1_spawn(Vector2D position)
 
 void boss1_update(Entity *self)
 {
-	return;
+	Boss_One *boss;
+
+	boss = (Boss_One *)self->data;
+	if (boss == NULL)
+	{
+		return;
+	}
+
+	if (boss->subents[0] == NULL && boss->subents[2] == NULL)
+	{
+		save_playerUpgrade(playerFile, boss->tag);
+		entity_free(self);
+	}
+	else
+	{
+		if (boss->subents[0] != NULL)
+		{
+			if (boss->subents[0]->health <= 0)
+			{
+				entity_free(boss->subents[0]);
+				boss->subents[0] = NULL;
+			}
+		}
+		if (boss->subents[2] != NULL)
+		{
+			if (boss->subents[2]->health <= 0)
+			{
+				entity_free(boss->subents[2]);
+				boss->subents[2] = NULL;
+			}
+		}
+	}
 }
 
 void boss1_free(Entity *self)
@@ -195,6 +232,7 @@ void boss1_free(Entity *self)
 	}
 	for (i = 0; i < boss->num_subents; ++i)
 	{
+		if (boss->subents[i] == NULL) continue;
 		entity_free(boss->subents[i]);
 	}
 	free(self->data);
