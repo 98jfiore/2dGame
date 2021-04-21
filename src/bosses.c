@@ -5,7 +5,9 @@
 #include "gfc_vector.h"
 
 #include "bosses.h"
+#include "player.h"
 #include "ent_npc.h"
+#include "ent_bomb.h"
 #include "shapes.h"
 
 static char *playerFile = "saves/save.json";
@@ -187,6 +189,7 @@ Entity *boss1_spawn(Vector2D position)
 void boss1_update(Entity *self)
 {
 	Boss_One *boss;
+	Vector2D pos;
 
 	boss = (Boss_One *)self->data;
 	if (boss == NULL)
@@ -197,7 +200,11 @@ void boss1_update(Entity *self)
 	if (boss->subents[0] == NULL && boss->subents[2] == NULL)
 	{
 		save_playerUpgrade(playerFile, boss->tag);
+		vector2d_copy(pos, self->position);
+		pos.x = pos.x - self->scale.x * (self->sprite->frame_w / 2);
+		pos.y = pos.y - self->scale.y * (self->sprite->frame_h / 2);
 		entity_free(self);
+		explosion_spawn(pos, NULL);
 	}
 	else
 	{

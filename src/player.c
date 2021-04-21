@@ -289,53 +289,13 @@ void player_update(Entity *self)
 
 		if (player->flags & PLR_INVIN)
 		{
-			if (self->hitbox != NULL)
-			{
-				self->hitbox->x += self->velocity.x;
-				self->hitbox->y += self->velocity.y;
-				//Check if player is coliding with something, find out what it is, and do something about it.
-				collided = check_collision(self);
-				if (collided)
-				{
-					//If you collided with a door, see if you can open it
-					if (collided->flags & ENT_LOCKED)
-					{
-						door = (Door *)collided->data;
-						if (door == NULL)
-						{
-							slog("Locked object does not have information on that");
-							return;
-						}
-
-						//Go through inventory
-						inv = player->inventory;
-						while (inv != NULL)
-						{
-							if (strcmp(inv->name, door->keyType) == 0)
-							{
-								entity_free(collided);
-								break;
-							}
-
-							inv = inv->next;
-						}
-					}
-					else if (collided->flags & ENT_SOLID)
-					{
-						self->hitbox->x -= self->velocity.x;
-						self->hitbox->y -= self->velocity.y;
-						self->velocity = vector2d(0, 0);
-					}
-				}
-			}
-
 			if (player->iframesRemaining > 0)
 			{
 				player->iframesRemaining--;
 			}
 			else
 			{
-				player->flags = PLR_ALIVE;
+				player->flags = player->flags ^ PLR_INVIN;
 			}
 		}
 		
