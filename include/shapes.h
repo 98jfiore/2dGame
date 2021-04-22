@@ -31,4 +31,28 @@ SDL_bool IntersectRect(Rect *a, Rect *b);
 */
 double PointsAngle(Vector2D origin, Vector2D dest);
 
+/**
+* @brief Get the angle between the x-axis and the line from origin to dest in radians
+* @param origin The first point
+* @param dest The second point
+* @return A double representing the angle found
+*/
+double PointsAngle_Rad(Vector2D origin, Vector2D dest);
+
+/**
+* @brief Get the distance between two points
+* @param origin The first point
+* @param dest The second point
+* @return A float representing the distance
+*/
+float PointsDistance(Vector2D origin, Vector2D dest);
+
+/**
+* @brief Get the midpoint between two points
+* @param a The first point
+* @param b The second point
+* @return A vector representing the midpoint
+*/
+Vector2D GetMidpoint(Vector2D a, Vector2D b);
+
 #endif

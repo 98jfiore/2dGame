@@ -2,6 +2,7 @@
 #define __PLAYER_H__
 
 #include "simple_json.h"
+#include "gfc_audio.h"
 
 #include "entity.h"
 #include "shapes.h"
@@ -26,6 +27,7 @@ typedef struct
 	Uint32		attackWait;
 	Uint32		specialWait;
 	Inventory	*inventory;
+	Sound		*attack_sound;
 }Player;
 
 /**

@@ -72,3 +72,20 @@ double PointsAngle(Vector2D origin, Vector2D dest)
 		}
 	}
 }
+
+double PointsAngle_Rad(Vector2D origin, Vector2D dest)
+{
+	return PointsAngle(origin, dest) * PI / 180;
+}
+
+float PointsDistance(Vector2D origin, Vector2D dest)
+{
+	return sqrtf(powf(origin.x - dest.x, 2) + powf(origin.y - dest.y, 2));
+}
+
+Vector2D GetMidpoint(Vector2D a, Vector2D b)
+{
+	return vector2d(fabs(a.x - b.x) / 2 + min(a.x, b.x), fabs(a.y - b.y) / 2 + min(a.y, b.y));
+}
+
+

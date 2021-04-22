@@ -60,6 +60,8 @@ Entity *player_spawn(Vector2D position)
 	player->attackWait = 0;
 	player->specialWait = 0;
 
+	player->attack_sound = gfc_sound_load("music/swish_4.mp3", 0.75, 2);
+
 	ent->data = player;
 
 	ent->draw = player_draw;
@@ -126,6 +128,9 @@ void player_think(Entity *self)
 				}
 
 				player->attackWait = 50;
+
+				if (player->attack_sound != NULL) gfc_sound_play(player->attack_sound, 1, 0.75, 2, -1);
+
 				player->flags = player->flags | PLR_ATTACKING;
 			}
 		}

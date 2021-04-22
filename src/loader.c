@@ -462,9 +462,34 @@ Level *level_jsonload(const char *filename)
 
 				position = vector2d(objx * level->tileSet->frame_w * level->scaleAmount, objy * level->tileSet->frame_h * level->scaleAmount);
 
-				if (strcmp(objType, "boss1") == 0)
+				if (savedjs == NULL)
 				{
-					boss1_spawn(position);
+					if (strcmp(objType, "boss_one") == 0)
+					{
+						boss1_spawn(position);
+					}
+				}
+				else
+				{
+					savedObjjs = sj_object_get_value(savedjs, objType);
+					if (savedObjjs == NULL)
+					{
+						if (strcmp(objType, "boss_one") == 0)
+						{
+							boss1_spawn(position);
+						}
+					}
+					else
+					{
+						sj_get_integer_value(savedObjjs, &saveFound);
+						if (saveFound != 1)
+						{
+							if (strcmp(objType, "boss_one") == 0)
+							{
+								boss1_spawn(position);
+							}
+						}
+					}
 				}
 			}
 		}
@@ -1015,7 +1040,6 @@ Entity *savePoint_spawn(Vector2D position, char *spriteSheet, int frameNum, int 
 	sp->active = SDL_TRUE;
 	sp->currentLevel = malloc((strlen(currentLevel) + 1) * sizeof(char));
 	strcpy(sp->currentLevel, currentLevel);
-	slog(currentLevel);
 	ent->data = sp;
 
 	ent->free = savePoint_free;

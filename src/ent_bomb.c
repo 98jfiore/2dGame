@@ -103,7 +103,14 @@ Entity *explosion_spawn(Vector2D position, Entity *owner)
 	ent->sprite = gf2d_sprite_load_all("images/bomb.png", 16, 16, 3);
 	ent->frameCount = 12;
 	ent->frame = 3;
-	ent->scale = owner->scale;
+	if (owner)
+	{
+		ent->scale = owner->scale;
+	}
+	else
+	{
+		ent->scale = vector2d(2, 2);
+	}
 	ent->flags = 0;
 	ent->frameRate = 0;
 

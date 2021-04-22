@@ -7,6 +7,11 @@
 typedef struct
 {
 	Entity **subents;
+	Uint16	flags;
+	Uint32	cycle;
+	int		head1_cycle;
+	int		head2_cycle;
+	Uint8	chase_head;
 	Uint32 num_subents;
 	Entity *player;
 	char	*tag;
@@ -30,5 +35,12 @@ void boss1_update(Entity *self);
 * @param self A pointer to the automata entity.
 */
 void boss1_free(Entity *self);
+
+
+/**
+* @brief Update hitboxes of boss1
+* @param self A pointer to the boss1 entity.
+*/
+void boss1_updateHitboxes(Entity *self);
 
 #endif

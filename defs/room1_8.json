@@ -53,7 +53,7 @@
 		],
 		"bosses" : [
 			{
-				"type": "boss1",
+				"type": "boss_one",
 				"x" : 17,
 				"y" : 4
 			}
