@@ -74,7 +74,7 @@ int main(int argc, char * argv[])
         mf+=0.1;
         if (mf >= 16.0)mf = 0;
         
-		if (!(game_state & GS_PAUSED))
+		if (!(game_state & GS_PAUSED) && menu_manager_active() == SDL_FALSE)
 		{
 			entity_manager_update_entities();
 			if (game_state & GS_CUTSCENE)

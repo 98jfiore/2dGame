@@ -27,7 +27,7 @@
 				"y": 328,
 				"offsetx": 10,
 				"offsety": 20,
-				"specification": "defs/room1_1.json"
+				"specification": "defs/floor1_room1.json"
 			},
 			{
 				"action": "quit_game",
@@ -53,7 +53,7 @@
 				"y": 328,
 				"offsetx": 10,
 				"offsety": 20,
-				"specification": "defs/room1_1.json"
+				"specification": "defs/floor1_room1.json"
 			},
 			{
 				"action": "load_game",

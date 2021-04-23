@@ -21,6 +21,7 @@
 #include "ent_npc_orb.h"
 #include "ent_item.h"
 #include "ent_upgrade.h"
+#include "game_state.h"
 #include "bosses.h"
 #include "event.h"
 
@@ -28,6 +29,7 @@ static Level *thisLevel = { NULL };
 static char *playerFile = "saves/save.json";
 static char *saveFile = "";
 static int levelEditCode = 0;
+static int levelEditEnemyCode = -1;
 
 Level *level_load(const char *filename)
 {
@@ -887,7 +889,7 @@ void menu_level_transition(MenuComponent *self)
 void menu_level_transitionNewGame(MenuComponent *self)
 {
 	change_save_file(self->action_specification);
-	level_transitionNewGame("defs/room1_1.json");
+	level_transitionNewGame("defs/floor1_room1.json");
 	resume_game();
 }
 
@@ -1300,6 +1302,10 @@ void menu_format_load(const char *filename)
 		}
 	}
 	sj_free(json);
+
+	levelEditCode = 0;
+	levelEditEnemyCode = -1;
+	clear_enemies_js();
 }
 
 
@@ -1369,6 +1375,10 @@ MenuComponent *menu_component_create_no_text(const char *spriteFile, int sprite_
 	{
 		comp->action = menu_change_edit_code;
 	}
+	else if (strcmp(action, "change_enemy_code") == 0)
+	{
+		comp->action = menu_change_enemy_edit_code;
+	}
 	else if (strcmp(action, "save_level") == 0)
 	{
 		comp->action = menu_save_level;
@@ -1404,6 +1414,12 @@ void menu_add_to_level(MenuComponent *self)
 void menu_change_edit_code(MenuComponent *self)
 {
 	levelEditCode = atoi(self->action_specification);
+	levelEditEnemyCode = -1;
+}
+
+void menu_change_enemy_edit_code(MenuComponent *self)
+{
+	levelEditEnemyCode = atoi(self->action_specification);
 }
 
 void menu_save_level(MenuComponent *self)
@@ -1414,11 +1430,41 @@ void menu_save_level(MenuComponent *self)
 void add_to_level(int code, Vector2D pos)
 {
 	Uint32 xpos, ypos;
+	Vector2D position;
 
 	xpos = (Uint32)pos.x;
 	ypos = (Uint32)pos.y;
 
-	thisLevel->tileMap[ypos * thisLevel->levelWidth + xpos] = code;
+	if (levelEditEnemyCode == -1)
+	{
+		thisLevel->tileMap[ypos * thisLevel->levelWidth + xpos] = code;
+	}
+	else
+	{
+		add_enemy_customLevel(levelEditEnemyCode, xpos, ypos);
+		position = vector2d(xpos * thisLevel->tileSet->frame_w * thisLevel->scaleAmount, ypos * thisLevel->tileSet->frame_h * thisLevel->scaleAmount);
+
+		if (levelEditEnemyCode == 0)
+		{
+			robot_spawn(position, MOV_NORTH);
+		}
+		else if (levelEditEnemyCode == 1)
+		{
+			drone_spawn(position, MOV_NORTH);
+		}
+		else if (levelEditEnemyCode == 2)
+		{
+			sweeper_spawn(position, MOV_NORTH, 0);
+		}
+		else if (levelEditEnemyCode == 3)
+		{
+			automata_spawn(position, MOV_NORTH, 0);
+		}
+		else if (levelEditEnemyCode == 4)
+		{
+			orb_spawn(position, MOV_NORTH, 0);
+		}
+	}
 }
 
 void menu_load_save_game(MenuComponent *self)
@@ -1446,7 +1492,7 @@ void menu_load_save_game(MenuComponent *self)
 	location = sj_get_string_value(sj_object_get_value(savejs, "location"));
 	if (location == NULL || strlen(location) == 0)
 	{
-		level_transition("defs/room1_1.json");
+		level_transition("defs/floor1_room1.json");
 	}
 	else
 	{

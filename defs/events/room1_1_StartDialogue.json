@@ -1,6 +1,10 @@
 {
 	"events" : [
 		{
+			"action" : "nothing",
+			"wait" : 200
+		},
+		{
 			"action" : "dialogue",
 			"speaker" : "Clark",
 			"sprite" : {

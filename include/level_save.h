@@ -17,4 +17,17 @@
 */
 void save_level(Level *level, char *saveFile);
 
+/**
+* @brief Clears the enemiesjs SJson
+*/
+void clear_enemies_js();
+
+/**
+* @brief Add an enemy to the custom level
+* @param enemyCode The code identifying the type of enemy
+* @param xpos The x position of the enemy
+* @param ypos The y position of the enemy
+*/
+void add_enemy_customLevel(int enemyCode, int xpos, int ypos);
+
 #endif

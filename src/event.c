@@ -23,6 +23,7 @@ typedef struct
 }EventManager;
 
 static EventManager event_manager = { 0 };
+static SDL_bool advance_scene = SDL_FALSE;
 
 void event_manager_init(char *eventFile)
 {
@@ -56,6 +57,7 @@ void event_manager_init(char *eventFile)
 	event_manager.current_event = NULL;
 	event_manager.actor = NULL;
 	slog("Event initialized");
+	advance_scene = SDL_FALSE;
 
 	next_event_point(0);
 
@@ -116,7 +118,7 @@ void event_manager_update()
 	{
 		event_manager.action_wait--;
 	}
-	else if (state[SDL_SCANCODE_RETURN] || state[SDL_SCANCODE_KP_ENTER] || SDL_GetMouseState(&clickX, &clickY) & SDL_BUTTON(SDL_BUTTON_LEFT))
+	else if (state[SDL_SCANCODE_RETURN] || state[SDL_SCANCODE_KP_ENTER] || SDL_GetMouseState(&clickX, &clickY) & SDL_BUTTON(SDL_BUTTON_LEFT) || advance_scene == SDL_TRUE)
 	{
 		event_manager.action_wait = 30;
 		event_manager.event_point++;
@@ -156,6 +158,8 @@ void next_event_point(int next_point)
 	SJson *event_point;
 	char *action_type;
 
+	advance_scene = SDL_FALSE;
+
 	if (next_point < 0 || next_point >= event_manager.event_length)
 	{
 		event_manager_free();
@@ -169,6 +173,10 @@ void next_event_point(int next_point)
 	if (strcmp(action_type, "dialogue") == 0)
 	{
 		start_dialogue_event_point(event_point);
+	}
+	if (strcmp(action_type, "nothing") == 0)
+	{
+		advance_scene = SDL_TRUE;
 	}
 
 	event_manager.current_event = event_point;

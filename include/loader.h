@@ -227,7 +227,7 @@ MenuComponent *menu_component_create(char *text, char *fontFile, Uint32 text_pts
 MenuComponent *menu_component_create_no_text(const char *spriteFile, int sprite_w, int sprite_h, int sprite_fpl, int sprite_count, int sprite_num, int sprite_scale, int menu_x, int menu_y, int x, int y, char *action, char *specification);
 
 /**
-* @brief Creates a component containing text from menu component
+* @brief Add something to a level
 * @param self The menu component calling the function
 */
 void menu_add_to_level(MenuComponent *self);
@@ -237,6 +237,12 @@ void menu_add_to_level(MenuComponent *self);
 * @param self The menu component calling the function
 */
 void menu_change_edit_code(MenuComponent *self);
+
+/**
+* @brief Change the enemy edit code used for level editing
+* @param self The menu component calling the function
+*/
+void menu_change_enemy_edit_code(MenuComponent *self);
 
 /**
 * @brief Save the level
