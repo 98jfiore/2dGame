@@ -12,6 +12,7 @@ static char *playerFile = "saves/save.json";
 
 typedef struct
 {
+	CutsceneActor *actors;
 	CutsceneItem *background_items;
 	CutsceneItem *foreground_items;
 	SJson		*event_actions;
@@ -19,7 +20,8 @@ typedef struct
 	Uint32		event_point;
 	Uint32		event_length;
 	Uint32		action_wait;
-	Entity		*actor;
+	Uint32		num_actors;
+	Uint32		cur_actor;
 }EventManager;
 
 static EventManager event_manager = { 0 };
@@ -27,7 +29,11 @@ static SDL_bool advance_scene = SDL_FALSE;
 
 void event_manager_init(char *eventFile)
 {
-	SJson *basejs;
+	SJson *basejs, *actorsjs, *actorlistjs, *jsactor;
+	int actNum, initialActNum, i;
+	int x, y, sprite_w, sprite_h, sprite_fpl, sprite_num, frame_count, sprite_scale;
+	float sprite_frameRate;
+	char *sprite_file, *tag;
 
 	if (event_manager.background_items != NULL || event_manager.foreground_items != NULL)
 	{
@@ -49,13 +55,54 @@ void event_manager_init(char *eventFile)
 	event_manager.action_wait = 40;
 	basejs = sj_load(eventFile);
 
-	event_manager.event_actions = sj_object_get_value(basejs, "events");;
+	event_manager.event_actions = sj_object_get_value(basejs, "events");
 	event_manager.event_point = 0;
 	event_manager.event_length = sj_array_get_count(event_manager.event_actions);
 	//slog("%i", event_manager.event_length);
 	//slog(eventFile);
+
+	actorsjs = sj_object_get_value(basejs, "actors");
+	if (actorsjs != NULL)
+	{
+		sj_get_integer_value(sj_object_get_value(actorsjs, "num_actors"), &actNum);
+		sj_get_integer_value(sj_object_get_value(actorsjs, "num_initial_actors"), &initialActNum);
+
+		event_manager.actors = (CutsceneActor *)gfc_allocate_array(sizeof(CutsceneActor), actNum);
+		event_manager.num_actors = actNum;
+
+		if (initialActNum > 0)
+		{
+			actorlistjs = sj_object_get_value(actorsjs, "init_actors");
+			for (i = 0; i < initialActNum; ++i)
+			{
+				jsactor = sj_array_get_nth(actorlistjs, i);
+				if (jsactor == NULL) continue;
+				sj_get_integer_value(sj_object_get_value(jsactor, "x"), &x);
+				sj_get_integer_value(sj_object_get_value(jsactor, "y"), &y);
+				sprite_file = sj_get_string_value(sj_object_get_value(jsactor, "sprite_file"));
+				tag = sj_get_string_value(sj_object_get_value(jsactor, "tag"));
+				sj_get_integer_value(sj_object_get_value(jsactor, "sprite_w"), &sprite_w);
+				sj_get_integer_value(sj_object_get_value(jsactor, "sprite_h"), &sprite_h);
+				sj_get_integer_value(sj_object_get_value(jsactor, "sprite_fpl"), &sprite_fpl);
+				sj_get_integer_value(sj_object_get_value(jsactor, "sprite_num"), &sprite_num);
+				sj_get_float_value(sj_object_get_value(jsactor, "sprite_frameRate"), &sprite_frameRate);
+				sj_get_integer_value(sj_object_get_value(jsactor, "sprite_frame_count"), &frame_count);
+				sj_get_integer_value(sj_object_get_value(jsactor, "sprite_scale"), &sprite_scale);
+
+				cutscene_actor_spawn(sprite_file, sprite_w, sprite_h, sprite_fpl, sprite_num, sprite_frameRate, frame_count, sprite_scale, x, y, tag);
+				//cutscene_item_spawn_sprite(sprite_file, sprite_w, sprite_h, sprite_fpl, sprite_num, sprite_frameRate, frame_count, sprite_scale, x * 32, y * 32, SDL_TRUE);
+
+			}
+		}
+	}
+	else
+	{
+		event_manager.actors = NULL;
+		event_manager.num_actors = 0;
+	}
+
 	event_manager.current_event = NULL;
-	event_manager.actor = NULL;
+	event_manager.cur_actor = 0;
 	slog("Event initialized");
 	advance_scene = SDL_FALSE;
 
@@ -72,6 +119,10 @@ void event_manager_free()
 	if (event_manager.foreground_items != NULL)
 	{
 		free(event_manager.foreground_items);
+	}
+	if (event_manager.actors != NULL)
+	{
+		free(event_manager.actors);
 	}
 	memset(&event_manager, 0, sizeof(EventManager));
 }
@@ -105,11 +156,20 @@ void event_manager_update()
 	}
 
 
+	if (event_manager.actors != NULL)
+	{
+		for (i = 0; i < event_manager.num_actors; ++i)
+		{
+			if (event_manager.actors[i]._inuse == 0) continue;
+			cutscene_actor_update(&event_manager.actors[i]);
+		}
+	}
+
+
 	//IF USER MOVE FORWARD, MOVE FORWARD
 
 	if (event_manager.foreground_items == NULL || event_manager.background_items == NULL)
 	{
-		//slog("UI manager not initialized");
 		return;
 	}
 
@@ -129,6 +189,19 @@ void event_manager_update()
 void event_manager_draw()
 {
 	int i;
+
+
+	if (event_manager.actors != NULL)
+	{
+		for (i = 0; i < event_manager.num_actors; ++i)
+		{
+			if (event_manager.actors[i]._inuse == 0)
+			{
+				continue;
+			}
+			cutscene_actor_draw(&event_manager.actors[i]);
+		}
+	}
 
 	if (event_manager.background_items == NULL)
 	{
@@ -153,6 +226,19 @@ void event_manager_draw()
 	}
 }
 
+
+SDL_bool event_manager_active()
+{
+	if (event_manager.background_items == NULL)
+	{
+		return SDL_FALSE;
+	}
+	else
+	{
+		return SDL_TRUE;
+	}
+}
+
 void next_event_point(int next_point)
 {
 	SJson *event_point;
@@ -162,11 +248,12 @@ void next_event_point(int next_point)
 
 	if (next_point < 0 || next_point >= event_manager.event_length)
 	{
+		event_manager_clear();
 		event_manager_free();
 		resume_game();
 		return;
 	}
-	event_manager_clear();
+	event_manager_clear_notActor();
 	event_point = sj_array_get_nth(event_manager.event_actions, next_point);
 
 	action_type = sj_get_string_value(sj_object_get_value(event_point, "action"));
@@ -328,6 +415,43 @@ void event_manager_clear()
 		if (event_manager.foreground_items[i]._inuse == 0) continue;
 		cutscene_item_free(&event_manager.foreground_items[i]);
 	}
+
+	if (event_manager.actors != NULL)
+	{
+		for (i = 0; i < event_manager.num_actors; ++i)
+		{
+			if (event_manager.actors[i]._inuse == 0) continue;
+			cutscene_actor_free(&event_manager.actors[i]);
+		}
+	}
+}
+
+
+void event_manager_clear_notActor()
+{
+	int i;
+
+	if (event_manager.background_items == NULL)
+	{
+		//slog("Event manager not initialized");
+		return;
+	}
+	for (i = 0; i < 5; ++i)
+	{
+		if (event_manager.background_items[i]._inuse == 0) continue;
+		cutscene_item_free(&event_manager.background_items[i]);
+	}
+
+	if (event_manager.foreground_items == NULL)
+	{
+		slog("Event manager not initialized");
+		return;
+	}
+	for (i = 0; i < 5; ++i)
+	{
+		if (event_manager.foreground_items[i]._inuse == 0) continue;
+		cutscene_item_free(&event_manager.foreground_items[i]);
+	}
 }
 
 CutsceneItem *cutscene_new_background()
@@ -341,7 +465,7 @@ CutsceneItem *cutscene_new_background()
 	for (i = 0; i < 5; ++i)
 	{
 		if (event_manager.background_items[i]._inuse) continue; //Entity space is in use
-		memset(&event_manager.background_items[i], 0, sizeof(Entity));
+		memset(&event_manager.background_items[i], 0, sizeof(CutsceneItem));
 		event_manager.background_items[i]._inuse = 1;
 		event_manager.background_items[i].text = NULL;
 		event_manager.background_items[i].font = NULL;
@@ -363,7 +487,7 @@ CutsceneItem *cutscene_new_foreground()
 	for (i = 0; i < 5; ++i)
 	{
 		if (event_manager.foreground_items[i]._inuse) continue; //Entity space is in use
-		memset(&event_manager.foreground_items[i], 0, sizeof(Entity));
+		memset(&event_manager.foreground_items[i], 0, sizeof(CutsceneItem));
 		event_manager.foreground_items[i]._inuse = 1;
 		event_manager.foreground_items[i].text = NULL;
 		event_manager.foreground_items[i].font = NULL;
@@ -372,6 +496,126 @@ CutsceneItem *cutscene_new_foreground()
 	}
 	slog("No free entities available");
 	return NULL;
+}
+
+CutsceneActor *cutscene_new_actor()
+{
+	int i;
+	if (event_manager.actors == NULL)
+	{
+		slog("Event system does not exist");
+		return NULL;
+	}
+	for (i = 0; i < event_manager.num_actors; ++i)
+	{
+		if (event_manager.actors[i]._inuse) continue; //Entity space is in use
+		memset(&event_manager.actors[i], 0, sizeof(CutsceneActor));
+		event_manager.actors[i]._inuse = 1;
+		event_manager.actors[i].sprite = NULL;
+		event_manager.actors[i].tag = NULL;
+		return &event_manager.actors[i];
+	}
+	slog("No free entities available");
+	return NULL;
+}
+
+CutsceneActor *cutscene_actor_spawn(const char *spriteFile, int sprite_w, int sprite_h, int sprite_fpl, int sprite_num, float sprite_frameRate, int frame_count, int sprite_scale, int x, int y, char *tag)
+{
+	CutsceneActor *actor;
+
+	actor = cutscene_new_actor();
+	if (actor == NULL)
+	{
+		slog("Cannot get actor");
+		return NULL;
+	}
+
+	actor->position = vector2d(x * sprite_w * sprite_scale, y * sprite_h * sprite_scale);
+
+	actor->sprite = gf2d_sprite_load_all(spriteFile, sprite_w, sprite_h, sprite_fpl);
+	if (actor->sprite == NULL)
+	{
+		slog("Event sprite couldn't load");
+		cutscene_actor_free(actor);
+		return NULL;
+	}
+	actor->sprite_frame = sprite_num;
+	actor->baseFrame = sprite_num;
+	actor->frameCount = frame_count;
+	actor->frameRate = sprite_frameRate;
+	actor->scale = vector2d(sprite_scale, sprite_scale);
+
+	actor->tag = (char *)malloc((strlen(tag)+1) * sizeof(char));
+	strcpy(actor->tag, tag);
+
+	return actor;
+}
+
+void cutscene_actor_free(CutsceneActor *self)
+{
+	if (self == NULL)
+	{
+		slog("Cannot free a NULL component");
+		self->_inuse = 0;
+		return;
+	}
+	if (self->sprite != NULL)
+	{
+		gf2d_sprite_free(self->sprite);
+		self->sprite = NULL;
+	}
+	if (self->tag != NULL)
+	{
+		free(self->tag);
+		self->sprite = NULL;
+	}
+	self->_inuse = 0;
+}
+
+void cutscene_actor_draw(CutsceneActor *self)
+{
+	Vector2D upperLeft;
+
+
+	if (self->sprite != NULL)
+	{
+		if (self->scale.x != 0 || self->scale.y != 0)
+		{
+			upperLeft = vector2d(0, 0);
+			gf2d_sprite_draw(
+				self->sprite,
+				self->position,
+				&self->scale,
+				&upperLeft,
+				NULL,
+				NULL,
+				NULL,
+				(Uint32)self->sprite_frame);
+		}
+		else
+		{
+			gf2d_sprite_draw(
+				self->sprite,
+				self->position,
+				NULL,
+				NULL,
+				NULL,
+				NULL,
+				NULL,
+				(Uint32)self->sprite_frame);
+		}
+	}
+}
+
+void cutscene_actor_update(CutsceneActor *self)
+{
+	if (!self) return;
+	//Generic updates
+	if (self->sprite != NULL)
+	{
+		self->sprite_frame += self->frameRate;
+		if (self->sprite_frame >= self->frameCount + self->baseFrame) self->sprite_frame = self->baseFrame;
+	}
 }
 
 CutsceneItem *cutscene_item_spawn_text(char *text, char *fontFile, Uint32 text_ptsize, Color text_color, int x, int y, SDL_bool background)
@@ -485,6 +729,8 @@ void cutscene_item_draw(CutsceneItem *self)
 	{
 		font_render(self->font, self->text, self->text_color, self->position);
 	}
+
+
 }
 
 void cutscene_item_update(CutsceneItem *self)
@@ -520,7 +766,7 @@ Entity *event_trigger_spawn(Vector2D position, int width, int height, char *even
 	evt->triggerArea->y = position.y;
 	evt->triggerArea->width = width;
 	evt->triggerArea->height = height;
-	evt->eventFile = (char *)malloc(strlen(eventFile) * sizeof(char));
+	evt->eventFile = (char *)malloc((strlen(eventFile) + 1) * sizeof(char));
 	strcpy(evt->eventFile, eventFile);
 	ent->data = evt;
 

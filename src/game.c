@@ -112,7 +112,7 @@ int main(int argc, char * argv[])
         
 		if (keys[SDL_SCANCODE_ESCAPE])
 		{
-			if (menu_manager_active() == SDL_FALSE)
+			if (menu_manager_active() == SDL_FALSE && event_manager_active() == SDL_FALSE)
 			{
 				pause_game();
 				menu_format_load("defs/menus/pause_menu.json");

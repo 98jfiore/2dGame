@@ -883,6 +883,7 @@ void level_transitionNewGame(const char *nextLevel)
 void menu_level_transition(MenuComponent *self)
 {
 	level_transition_no_player(self->action_specification);
+	event_manager_clear();
 	resume_game();
 }
 
@@ -890,6 +891,7 @@ void menu_level_transitionNewGame(MenuComponent *self)
 {
 	change_save_file(self->action_specification);
 	level_transitionNewGame("defs/floor1_room1.json");
+	event_manager_clear();
 	resume_game();
 }
 
@@ -1473,6 +1475,7 @@ void menu_load_save_game(MenuComponent *self)
 	char *location;
 
 	change_save_file(self->action_specification);
+	event_manager_clear();
 
 	savejs = sj_load(saveFile);
 	if (savejs == NULL)

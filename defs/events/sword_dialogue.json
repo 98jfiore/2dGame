@@ -1,0 +1,154 @@
+{
+	"events" : [
+		{
+			"action" : "dialogue",
+			"speaker" : "Clark",
+			"sprite" : {
+				"file": "images/clark_speaking.png",
+				"sprite_w" : 240,
+				"sprite_h" : 500,
+				"sprite_fpl" : 1,
+				"sprite_num" : 0,
+				"sprite_frameRate" : 0,
+				"frame_count" : 1,
+				"sprite_scale" : 0
+			},
+			"lines" : [
+				"Oh thank god! Finally!",
+				"Something to defend myself!"
+			],
+			"wait" : 40
+		},
+		{
+			"action" : "dialogue",
+			"speaker" : "Clark",
+			"sprite" : {
+				"file": "images/clark_speaking.png",
+				"sprite_w" : 240,
+				"sprite_h" : 500,
+				"sprite_fpl" : 1,
+				"sprite_num" : 0,
+				"sprite_frameRate" : 0,
+				"frame_count" : 1,
+				"sprite_scale" : 0
+			},
+			"lines" : [
+				"..."
+			],
+			"wait" : 40
+		},
+		{
+			"action" : "dialogue",
+			"speaker" : "Clark",
+			"sprite" : {
+				"file": "images/clark_speaking.png",
+				"sprite_w" : 240,
+				"sprite_h" : 500,
+				"sprite_fpl" : 1,
+				"sprite_num" : 0,
+				"sprite_frameRate" : 0,
+				"frame_count" : 1,
+				"sprite_scale" : 0
+			},
+			"lines" : [
+				"Huh...",
+				"What's this enscription?"
+			],
+			"wait" : 40
+		},
+		{
+			"action" : "dialogue",
+			"speaker" : "Clark",
+			"sprite" : {
+				"file": "images/clark_speaking.png",
+				"sprite_w" : 240,
+				"sprite_h" : 500,
+				"sprite_fpl" : 1,
+				"sprite_num" : 0,
+				"sprite_frameRate" : 0,
+				"frame_count" : 1,
+				"sprite_scale" : 0
+			},
+			"lines" : [
+				"..."
+			],
+			"wait" : 40
+		},
+		{
+			"action" : "dialogue",
+			"speaker" : "Clark",
+			"sprite" : {
+				"file": "images/clark_speaking.png",
+				"sprite_w" : 240,
+				"sprite_h" : 500,
+				"sprite_fpl" : 1,
+				"sprite_num" : 0,
+				"sprite_frameRate" : 0,
+				"frame_count" : 1,
+				"sprite_scale" : 0
+			},
+			"lines" : [
+				"`SWORD OF KNOCKBACK`",
+				"`Hitting anything with this sword will result in you being",
+				"violently knocked backwards`"
+			],
+			"wait" : 40
+		},
+		{
+			"action" : "dialogue",
+			"speaker" : "Clark",
+			"sprite" : {
+				"file": "images/clark_speaking.png",
+					"sprite_w" : 240,
+					"sprite_h" : 500,
+					"sprite_fpl" : 1,
+					"sprite_num" : 0,
+					"sprite_frameRate" : 0,
+					"frame_count" : 1,
+					"sprite_scale" : 0
+			},
+			"lines" : [
+				"..."
+			],
+			"wait" : 40
+		},
+		{
+			"action" : "dialogue",
+			"speaker" : "Clark",
+			"sprite" : {
+				"file": "images/clark_speaking.png",
+					"sprite_w" : 240,
+					"sprite_h" : 500,
+					"sprite_fpl" : 1,
+					"sprite_num" : 0,
+					"sprite_frameRate" : 0,
+					"frame_count" : 1,
+					"sprite_scale" : 0
+			},
+			"lines" : [
+				"*sigh*",
+				"I don't know what I expected."
+			],
+			"wait" : 40
+		},
+		{
+			"action" : "dialogue",
+			"speaker" : "Clark",
+			"sprite" : {
+				"file": "images/clark_speaking.png",
+					"sprite_w" : 240,
+					"sprite_h" : 500,
+					"sprite_fpl" : 1,
+					"sprite_num" : 0,
+					"sprite_frameRate" : 0,
+					"frame_count" : 1,
+					"sprite_scale" : 0
+			},
+			"lines" : [
+				"Oh well.",
+				"Beggars can't be choosers I guess."
+			],
+			"wait" : 40
+		}
+	]
+}

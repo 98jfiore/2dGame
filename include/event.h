@@ -1,6 +1,8 @@
 #ifndef __EVENT_H__
 #define __EVENT_H__
 
+#include "SDL_stdinc.h"
+
 #include "entity.h"
 #include "simple_json.h"
 #include "font.h"
@@ -20,6 +22,19 @@ typedef struct
 	Uint32		text_size;
 	Color		text_color;
 }CutsceneItem;
+
+typedef struct
+{
+	Bool		_inuse;
+	Vector2D	position;
+	Sprite		*sprite;
+	char		*tag;
+	float		sprite_frame;
+	float		frameRate;
+	int			frameCount;
+	int			baseFrame;
+	Vector2D	scale;
+}CutsceneActor;
 
 typedef struct
 {
@@ -49,6 +64,12 @@ void event_manager_update();
 void event_manager_draw();
 
 /**
+* @brief Is there a event manager active
+* @return Boolean referencing if there is a event
+*/
+SDL_bool event_manager_active();
+
+/**
 * @brief Load the next event point
 * @param next_point The next point to load
 */
@@ -66,6 +87,11 @@ void start_dialogue_event_point(SJson *event_point);
 void event_manager_clear();
 
 /**
+* @brief Clear entities from the event.
+*/
+void event_manager_clear_notActor();
+
+/**
 * @brief Allocate a cutscene item in the background and return a pointer to it.
 * @return NULL on error or a pointer to an initialized item.
 */
@@ -76,6 +102,44 @@ CutsceneItem *cutscene_new_background();
 * @return NULL on error or a pointer to an initialized item.
 */
 CutsceneItem *cutscene_new_foreground();
+
+/**
+* @brief Allocate a cutscene actor return a pointer to it.
+* @return NULL on error or a pointer to an initialized actor.
+*/
+CutsceneActor *cutscene_new_actor();
+
+/**
+* @brief Creates an actor containing info given
+* @param spriteFile The file the sprite can be found on
+* @param sprite_w The width of sprites on the file
+* @param sprite_h The height of sprites on the file
+* @param sprite_fpl The number of sprites per like on the file
+* @param sprite_num The initial sprite this sprite can be found on
+* @param sprite_frameRate The frame rate to advance the sprite's animation
+* @param frame_count The number of frames in the sprite's animation
+* @param sprite_scale The scale this component is rendered at
+* @param x The x position this component will be on
+* @param y The y position this component will be on
+* @param tag The tag for the actor
+* @return NULL on error or a pointer to a new actor
+*/
+CutsceneActor *cutscene_actor_spawn(const char *spriteFile, int sprite_w, int sprite_h, int sprite_fpl, int sprite_num, float sprite_frameRate, int frame_count, int sprite_scale, int x, int y, char *tag);
+
+/**
+* @brief Free a cutscene actor
+*/
+void cutscene_actor_free(CutsceneActor *self);
+
+/**
+* @brief Draw a cutscene actor
+*/
+void cutscene_actor_draw(CutsceneActor *self);
+
+/**
+* @brief update a cutscene actor
+*/
+void cutscene_actor_update(CutsceneActor *self);
 
 /**
 * @brief Creates a component containing text from info given

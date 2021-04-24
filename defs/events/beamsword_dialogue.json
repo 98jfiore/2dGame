@@ -1,10 +1,6 @@
 {
 	"events" : [
 		{
-			"action" : "nothing",
-			"wait" : 50
-		},
-		{
 			"action" : "dialogue",
 			"speaker" : "Clark",
 			"sprite" : {
@@ -18,8 +14,7 @@
 				"sprite_scale" : 0
 			},
 			"lines" : [
-				"What Happened?",
-				"Where the hell am I?"
+				"What's this?"
 			],
 			"wait" : 40
 		},
@@ -37,7 +32,7 @@
 				"sprite_scale" : 0
 			},
 			"lines" : [
-				"..."
+				"There's a label..."
 			],
 			"wait" : 40
 		},
@@ -55,7 +50,26 @@
 				"sprite_scale" : 0
 			},
 			"lines" : [
-				"God... My head hurts like hell..."
+				"...`Sword upgrade`",
+				"`When sword wielder is healthy, unlock extra power`"
+			],
+			"wait" : 40
+		},
+		{
+			"action" : "dialogue",
+			"speaker" : "Clark",
+			"sprite" : {
+				"file": "images/clark_speaking.png",
+				"sprite_w" : 240,
+				"sprite_h" : 500,
+				"sprite_fpl" : 1,
+				"sprite_num" : 0,
+				"sprite_frameRate" : 0,
+				"frame_count" : 1,
+				"sprite_scale" : 0
+			},
+			"lines" : [
+				"Tight."
 			],
 			"wait" : 40
 		}

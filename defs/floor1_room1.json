@@ -36,9 +36,46 @@
 			["0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0"],
 			["0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0"]
 		],
+		"obstacles" : [
+			{
+				"type": "transition",
+				"x" : 17,
+				"y" : 6,
+				"toLevel" : "defs/floor1_room2.json",
+				"toPoint" : "South",
+				"spriteFrame" : 14
+			},
+			{
+				"type": "transition",
+				"x" : 18,
+				"y" : 6,
+				"toLevel" : "defs/floor1_room2.json",
+				"toPoint" : "South",
+				"spriteFrame" : 15
+			},
+			{
+				"type": "savePoint",
+				"x" : 18,
+				"y" : 9,
+				"spriteFrame" : 20
+			}
+		],
+		"events": [
+			{
+				"event" : "defs/events/room1_1_StartDialogue.json",
+				"x" : 14,
+				"y" : 6,
+				"width": 8,
+				"height": 7
+			}
+		],
 		"player spawn":{
-			"x":"15",
-			"y":"7"
+			"x":"17",
+			"y":"9",
+			"North" : {
+				"x": 17,
+				"y" : 7
+			}
 		}
 	}
 }
