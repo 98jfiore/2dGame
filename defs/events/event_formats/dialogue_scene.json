@@ -21,7 +21,7 @@
 	},
 	"linesx" : 25,
 	"linesy" : 50,
-	"linespacing" : 20,
+	"linespacing" : 25,
 	"linefont" : "fonts/RETRO_SPACE_INV.ttf",
 	"lineptsize" : 25,
 	"linecolor" : {

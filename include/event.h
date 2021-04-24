@@ -82,6 +82,18 @@ void next_event_point(int next_point);
 void start_dialogue_event_point(SJson *event_point);
 
 /**
+* @brief Start a movement event
+* @param event_point The point with information on the move.
+*/
+void start_movement_event_point(SJson *event_point);
+
+/**
+* @brief Start a delete actor event
+* @param event_point The point with information on the delete
+*/
+void start_deleteActor_event_point(SJson *event_point);
+
+/**
 * @brief Clear entities from the event.
 */
 void event_manager_clear();
@@ -140,6 +152,26 @@ void cutscene_actor_draw(CutsceneActor *self);
 * @brief update a cutscene actor
 */
 void cutscene_actor_update(CutsceneActor *self);
+
+/**
+* @brief Move current actor south
+*/
+void move_actor_south();
+
+/**
+* @brief Move current actor north
+*/
+void move_actor_north();
+
+/**
+* @brief Move current actor east
+*/
+void move_actor_east();
+
+/**
+* @brief Move current actor west
+*/
+void move_actor_west();
 
 /**
 * @brief Creates a component containing text from info given

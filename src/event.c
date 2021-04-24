@@ -22,6 +22,8 @@ typedef struct
 	Uint32		action_wait;
 	Uint32		num_actors;
 	Uint32		cur_actor;
+	float		action_speed;
+	void		(*curr_action)();
 }EventManager;
 
 static EventManager event_manager = { 0 };
@@ -44,12 +46,16 @@ void event_manager_init(char *eventFile)
 	if (event_manager.background_items == NULL)
 	{
 		slog("Failed to allocate event component list");
+		event_manager_free();
+		resume_game();
 		return;
 	}
 	event_manager.foreground_items = (CutsceneItem *)gfc_allocate_array(sizeof(CutsceneItem), 5);
 	if (event_manager.foreground_items == NULL)
 	{
 		slog("Failed to allocate event component list");
+		event_manager_free();
+		resume_game();
 		return;
 	}
 	event_manager.action_wait = 40;
@@ -102,6 +108,7 @@ void event_manager_init(char *eventFile)
 	}
 
 	event_manager.current_event = NULL;
+	event_manager.curr_action = NULL;
 	event_manager.cur_actor = 0;
 	slog("Event initialized");
 	advance_scene = SDL_FALSE;
@@ -184,6 +191,11 @@ void event_manager_update()
 		event_manager.event_point++;
 		next_event_point(event_manager.event_point);
 	}
+
+	if (event_manager.curr_action != NULL)
+	{
+		event_manager.curr_action();
+	}
 }
 
 void event_manager_draw()
@@ -256,12 +268,22 @@ void next_event_point(int next_point)
 	event_manager_clear_notActor();
 	event_point = sj_array_get_nth(event_manager.event_actions, next_point);
 
+	event_manager.curr_action = NULL;
+
 	action_type = sj_get_string_value(sj_object_get_value(event_point, "action"));
 	if (strcmp(action_type, "dialogue") == 0)
 	{
 		start_dialogue_event_point(event_point);
 	}
-	if (strcmp(action_type, "nothing") == 0)
+	else if (strcmp(action_type, "move") == 0)
+	{
+		start_movement_event_point(event_point);
+	}
+	else if (strcmp(action_type, "delete_actor") == 0)
+	{
+		start_deleteActor_event_point(event_point);
+	}
+	else if (strcmp(action_type, "nothing") == 0)
 	{
 		advance_scene = SDL_TRUE;
 	}
@@ -386,6 +408,65 @@ void start_dialogue_event_point(SJson *event_point)
 				continue;
 			}
 			cutscene_item_spawn_text(line, fontFile, ptsize, text_color, x + textx, y + texty + (linespacing * i), SDL_FALSE);
+		}
+	}
+}
+
+void start_movement_event_point(SJson *event_point)
+{
+	float speed;
+	char *tag, *dir;
+	int i;
+
+	advance_scene = SDL_TRUE;
+	sj_get_float_value(sj_object_get_value(event_point, "speed"), &speed);
+	event_manager.action_speed = speed;
+	
+	tag = sj_get_string_value(sj_object_get_value(event_point, "actor"));
+	for (i = 0; i < event_manager.num_actors; ++i)
+	{
+		if (event_manager.actors[i]._inuse == 0) continue;
+		else if (strcmp(event_manager.actors[i].tag, tag) == 0)
+		{
+			event_manager.cur_actor = i;
+			break;
+		}
+	}
+
+	dir = sj_get_string_value(sj_object_get_value(event_point, "direction"));
+	if (strcmp(dir, "north") == 0)
+	{
+		event_manager.curr_action = move_actor_north;
+	}
+	else if (strcmp(dir, "south") == 0)
+	{
+		event_manager.curr_action = move_actor_south;
+	}
+	else if (strcmp(dir, "east") == 0)
+	{
+		event_manager.curr_action = move_actor_east;
+	}
+	else if (strcmp(dir, "west") == 0)
+	{
+		event_manager.curr_action = move_actor_west;
+	}
+}
+
+void start_deleteActor_event_point(SJson *event_point)
+{
+	char *tag;
+	int i;
+
+	advance_scene = SDL_TRUE;
+
+	tag = sj_get_string_value(sj_object_get_value(event_point, "actor"));
+	for (i = 0; i < event_manager.num_actors; ++i)
+	{
+		if (event_manager.actors[i]._inuse == 0) continue;
+		else if (strcmp(event_manager.actors[i].tag, tag) == 0)
+		{
+			cutscene_actor_free(&event_manager.actors[i]);
+			continue;
 		}
 	}
 }
@@ -616,6 +697,34 @@ void cutscene_actor_update(CutsceneActor *self)
 		self->sprite_frame += self->frameRate;
 		if (self->sprite_frame >= self->frameCount + self->baseFrame) self->sprite_frame = self->baseFrame;
 	}
+}
+
+void move_actor_south()
+{
+	if (event_manager.actors[event_manager.cur_actor]._inuse == 0) return;
+
+	event_manager.actors[event_manager.cur_actor].position.y += event_manager.action_speed;
+}
+
+void move_actor_north()
+{
+	if (event_manager.actors[event_manager.cur_actor]._inuse == 0) return;
+
+	event_manager.actors[event_manager.cur_actor].position.y -= event_manager.action_speed;
+}
+
+void move_actor_east()
+{
+	if (event_manager.actors[event_manager.cur_actor]._inuse == 0) return;
+
+	event_manager.actors[event_manager.cur_actor].position.x += event_manager.action_speed;
+}
+
+void move_actor_west()
+{
+	if (event_manager.actors[event_manager.cur_actor]._inuse == 0) return;
+
+	event_manager.actors[event_manager.cur_actor].position.x -= event_manager.action_speed;
 }
 
 CutsceneItem *cutscene_item_spawn_text(char *text, char *fontFile, Uint32 text_ptsize, Color text_color, int x, int y, SDL_bool background)
