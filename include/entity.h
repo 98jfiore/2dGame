@@ -138,6 +138,12 @@ void check_explosionHit(Rect *explosion, Entity *owner);
 Entity *entity_new();
 
 /**
+* @brief Allocate an entity in the entity list starting from the back of the array and return a pointer to it.
+* @return NULL on error or a pointer to an initialized entity.
+*/
+Entity *entity_new_back();
+
+/**
  * @brief Frees the provided entity
  * @param ent The entity to free
  */

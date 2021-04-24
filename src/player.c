@@ -22,7 +22,7 @@ Entity *player_spawn(Vector2D position)
 	Rect *hitbox;
 	Player *player;
 
-	ent = entity_new();
+	ent = entity_new_back();
 	if (ent == NULL)
 	{
 		slog("Failed to create entity");

@@ -396,6 +396,29 @@ Entity *entity_new()
 	return NULL;
 }
 
+Entity *entity_new_back()
+{
+	int i;
+	if (entity_manager.entity_list == NULL)
+	{
+		slog("Entity system does not exist");
+		return NULL;
+	}
+	for (i = entity_manager.max_entities - 1; i >= 0; --i)
+	{
+		if (entity_manager.entity_list[i]._inuse) continue; //Entity space is in use
+		memset(&entity_manager.entity_list[i], 0, sizeof(Entity));
+		entity_manager.entity_list[i]._inuse = 1;
+		entity_manager.entity_list[i].free = NULL;
+		entity_manager.entity_list[i].hitbox = NULL;
+		entity_manager.entity_list[i].sprite = NULL;
+		entity_manager.entity_list[i].iframes = 0;
+		return &entity_manager.entity_list[i];
+	}
+	slog("No free entities available");
+	return NULL;
+}
+
 void entity_free(Entity *ent)
 {
 	if (ent == NULL)

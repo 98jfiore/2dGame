@@ -66,6 +66,22 @@
 				"spriteFrame" : 19
 			},
 			{
+				"type": "transition",
+				"x" : 16,
+				"y" : 7,
+				"toLevel" : "defs/floor1_room12.json",
+				"toPoint" : "South",
+				"spriteFrame" : 14
+			},
+			{
+				"type": "transition",
+				"x" : 17,
+				"y" : 7,
+				"toLevel" : "defs/floor1_room12.json",
+				"toPoint" : "South",
+				"spriteFrame" : 15
+			},
+			{
 				"type": "savePoint",
 				"x" : 17,
 				"y" : 10,
