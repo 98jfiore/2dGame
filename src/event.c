@@ -33,6 +33,7 @@ typedef struct
 {
 	EventSpawnedEntity *spawnedEnts;
 	Uint32				max_spawns;
+	Uint32				wait_start;
 }SpawnedEntManager;
 
 static EventManager event_manager = { 0 };
@@ -159,6 +160,7 @@ void spawned_manager_init(int numEnts)
 		slog("Failed to allocate spawned ents list");
 		spawned_manager_free();
 	}
+	spawned_manager.wait_start = 60;
 }
 
 void spawned_manager_free()
@@ -181,6 +183,41 @@ void free_spawned_ent(char *tag)
 		{
 			entity_free(spawned_manager.spawnedEnts[i].ent);
 			spawned_manager.spawnedEnts[i]._inuse = 0;
+		}
+	}
+}
+
+void check_spawned_ents()
+{
+	int i;
+
+	if (spawned_manager.spawnedEnts == NULL) return;
+
+	for (i = 0; i < spawned_manager.max_spawns; ++i)
+	{
+		if (spawned_manager.spawnedEnts[i]._inuse == 0) continue;
+		if (spawned_manager.spawnedEnts[i].ent->_inuse == 0)
+		{
+			if (spawned_manager.spawnedEnts[i].deathEventFile != NULL)
+			{
+				if (spawned_manager.wait_start > 0)
+				{
+					spawned_manager.wait_start--;
+				}
+				else
+				{
+					spawned_manager.spawnedEnts[i]._inuse = 0;
+					event_manager_init(spawned_manager.spawnedEnts[i].deathEventFile);
+					spawned_manager.wait_start = 60;
+
+					start_cutscene_game();
+				}
+				return;
+			}
+			else
+			{
+				spawned_manager.spawnedEnts[i]._inuse = 0;
+			}
 		}
 	}
 }
@@ -398,6 +435,10 @@ void next_event_point(int next_point)
 	else if (strcmp(action_type, "start_bgmusic") == 0)
 	{
 		start_start_bgmusic_point(event_point);
+	}
+	else if (strcmp(action_type, "actor_spawn") == 0)
+	{
+		start_actor_spawn_point(event_point);
 	}
 	else if (strcmp(action_type, "nothing") == 0)
 	{
@@ -652,6 +693,29 @@ void start_start_bgmusic_point(SJson *event_point)
 			gfc_set_background_music(music);
 		}
 	}
+}
+
+void start_actor_spawn_point(SJson *event_point)
+{
+	int x, y, sprite_w, sprite_h, sprite_fpl, sprite_num, frame_count, sprite_scale;
+	float sprite_frameRate;
+	char *sprite_file, *tag;
+
+	if (event_point == NULL) return;
+	advance_scene = SDL_TRUE;
+	sj_get_integer_value(sj_object_get_value(event_point, "x"), &x);
+	sj_get_integer_value(sj_object_get_value(event_point, "y"), &y);
+	sprite_file = sj_get_string_value(sj_object_get_value(event_point, "sprite_file"));
+	tag = sj_get_string_value(sj_object_get_value(event_point, "tag"));
+	sj_get_integer_value(sj_object_get_value(event_point, "sprite_w"), &sprite_w);
+	sj_get_integer_value(sj_object_get_value(event_point, "sprite_h"), &sprite_h);
+	sj_get_integer_value(sj_object_get_value(event_point, "sprite_fpl"), &sprite_fpl);
+	sj_get_integer_value(sj_object_get_value(event_point, "sprite_num"), &sprite_num);
+	sj_get_float_value(sj_object_get_value(event_point, "sprite_frameRate"), &sprite_frameRate);
+	sj_get_integer_value(sj_object_get_value(event_point, "sprite_frame_count"), &frame_count);
+	sj_get_integer_value(sj_object_get_value(event_point, "sprite_scale"), &sprite_scale);
+	
+	cutscene_actor_spawn(sprite_file, sprite_w, sprite_h, sprite_fpl, sprite_num, sprite_frameRate, frame_count, sprite_scale, x, y, tag);
 }
 
 void event_manager_clear()

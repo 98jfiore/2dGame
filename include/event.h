@@ -94,6 +94,11 @@ void store_spawned_ent(Entity *ent, const char *tag);
 void store_spawned_ent_with_death(Entity *ent, const char *tag, const char *deathEvent);
 
 /**
+* @brief Check up on spawned ents, see what's going on
+*/
+void check_spawned_ents();
+
+/**
 * @brief Update all entities in the system
 */
 void event_manager_update();
@@ -155,6 +160,12 @@ void start_stop_bgmusic_point();
 * @param event_point The point with information on the music
 */
 void start_start_bgmusic_point(SJson *event_point);
+
+/**
+* @brief Start a start actor spawn event
+* @param event_point The point with information on the actor
+*/
+void start_actor_spawn_point(SJson *event_point);
 
 /**
 * @brief Clear entities from the event.

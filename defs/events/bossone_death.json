@@ -1,0 +1,127 @@
+{
+	"actors" : {
+		"num_actors" : 1,
+		"num_initial_actors" : 0
+	}
+	"events" : [
+		{
+			"action" : "dialogue",
+			"speaker" : "Clark",
+			"sprite" : {
+				"file": "images/clark_speaking.png",
+				"sprite_w" : 240,
+				"sprite_h" : 500,
+				"sprite_fpl" : 1,
+				"sprite_num" : 0,
+				"sprite_frameRate" : 0,
+				"frame_count" : 1,
+				"sprite_scale" : 0
+			},
+			"lines" : [
+				"I....I..."
+			],
+			"wait" : 40
+		},
+		{
+			"action" : "dialogue",
+			"speaker" : "Clark",
+			"sprite" : {
+				"file": "images/clark_speaking.png",
+				"sprite_w" : 240,
+				"sprite_h" : 500,
+				"sprite_fpl" : 1,
+				"sprite_num" : 0,
+				"sprite_frameRate" : 0,
+				"frame_count" : 1,
+				"sprite_scale" : 0
+			},
+			"lines" : [
+				"I did it."
+			],
+			"wait" : 40
+		},
+		{
+			"action" : "dialogue",
+			"speaker" : "Clark",
+			"sprite" : {
+				"file": "images/clark_speaking.png",
+				"sprite_w" : 240,
+				"sprite_h" : 500,
+				"sprite_fpl" : 1,
+				"sprite_num" : 0,
+				"sprite_frameRate" : 0,
+				"frame_count" : 1,
+				"sprite_scale" : 0
+			},
+			"lines" : [
+				"I... did it?",
+				"HA HA HA!  TAKE THAT!"
+			],
+			"wait" : 40
+		},
+		{
+			"action" : "dialogue",
+			"speaker" : "Clark",
+			"sprite" : {
+				"file": "images/clark_speaking.png",
+				"sprite_w" : 240,
+				"sprite_h" : 500,
+				"sprite_fpl" : 1,
+				"sprite_num" : 0,
+				"sprite_frameRate" : 0,
+				"frame_count" : 1,
+				"sprite_scale" : 0
+			},
+			"lines" : [
+				"Haaaa.... I think I'm gonna throw up"
+			],
+			"wait" : 40
+		},
+		{
+			"action" : "nothing",
+			"wait" : 70
+		},
+		{
+			"action" : "delete_ent",
+			"tag" : "wall1",
+			"wait" : 70
+		},
+		{
+			"action" : "delete_ent",
+			"tag" : "wall2",
+			"wait" : 70
+		},
+		{
+			"action" : "delete_ent",
+			"tag" : "wall3",
+			"wait" : 70
+		},
+		{
+			"action" : "delete_ent",
+			"tag" : "wall4",
+			"wait" : 70
+		},
+		{
+			"action" : "nothing",
+			"wait" : 70
+		},
+		{
+			"action": "actor_spawn",
+			"tag" : "Ava",
+			"x" : 16,
+			"y" : 17,
+			"sprite_file" : "images/ava.png",
+			"sprite_w" : 16,
+			"sprite_h" : 16,
+			"sprite_fpl" : 4,
+			"sprite_num" : 0,
+			"sprite_frameRate" : 0.05,
+			"sprite_frame_count" : 4,
+			"sprite_scale" : 2
+		},
+		{
+			"action" : "nothing",
+			"wait" : 200
+		}
+	]
+}

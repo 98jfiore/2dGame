@@ -77,6 +77,7 @@ int main(int argc, char * argv[])
 		if (!(game_state & GS_PAUSED) && menu_manager_active() == SDL_FALSE)
 		{
 			entity_manager_update_entities();
+			check_spawned_ents();
 			if (game_state & GS_CUTSCENE)
 			{
 				event_manager_update();

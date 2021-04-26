@@ -15,6 +15,7 @@
 
 static char *playerFile = "saves/save.json";
 int head_maxCycle = 180;
+int head_health = 2;
 
 Entity *boss1_spawn(Vector2D position)
 {
@@ -107,7 +108,7 @@ Entity *boss1_spawn(Vector2D position)
 	subent->frameRate = 0.05;
 	subent->scale = vector2d(2, 2);
 	subent->damage = 1;
-	subent->health = 6;
+	subent->health = head_health;
 	subent->flags = ENT_DEADLY |  ENT_HITTABLE | ENT_HASHEALTH;
 
 	hitbox = (Rect *)malloc(sizeof(Rect));
@@ -165,7 +166,7 @@ Entity *boss1_spawn(Vector2D position)
 	subent->frameRate = 0.05;
 	subent->scale = vector2d(2, 2);
 	subent->damage = 1;
-	subent->health = 6;
+	subent->health = head_health;
 	subent->flags = ENT_DEADLY | ENT_HITTABLE | ENT_HASHEALTH;
 
 	hitbox = (Rect *)malloc(sizeof(Rect));
