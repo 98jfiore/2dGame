@@ -3,10 +3,13 @@
 #include "gf2d_sprite.h"
 #include "gfc_types.h"
 #include "gfc_vector.h"
+#include "gfc_audio.h"
 
 #include "event.h"
 #include "game_state.h"
 #include "player.h"
+#include "bosses.h"
+#include "ent_environ.h"
 
 static char *playerFile = "saves/save.json";
 
@@ -26,7 +29,14 @@ typedef struct
 	void		(*curr_action)();
 }EventManager;
 
+typedef struct
+{
+	EventSpawnedEntity *spawnedEnts;
+	Uint32				max_spawns;
+}SpawnedEntManager;
+
 static EventManager event_manager = { 0 };
+static SpawnedEntManager spawned_manager = { 0 };
 static SDL_bool advance_scene = SDL_FALSE;
 
 void event_manager_init(char *eventFile)
@@ -132,6 +142,96 @@ void event_manager_free()
 		free(event_manager.actors);
 	}
 	memset(&event_manager, 0, sizeof(EventManager));
+}
+
+
+void spawned_manager_init(int numEnts)
+{
+	if (spawned_manager.spawnedEnts != NULL)
+	{
+		spawned_manager_free();
+	}
+
+	spawned_manager.spawnedEnts = (EventSpawnedEntity *)gfc_allocate_array(sizeof(EventSpawnedEntity), numEnts);
+	spawned_manager.max_spawns = numEnts;
+	if (spawned_manager.spawnedEnts == NULL)
+	{
+		slog("Failed to allocate spawned ents list");
+		spawned_manager_free();
+	}
+}
+
+void spawned_manager_free()
+{
+	if (spawned_manager.spawnedEnts != NULL)
+	{
+		free(spawned_manager.spawnedEnts);
+	}
+	memset(&spawned_manager, 0, sizeof(EventSpawnedEntity));
+}
+
+void free_spawned_ent(char *tag)
+{
+	int i;
+
+	for (i = 0; i < spawned_manager.max_spawns; ++i)
+	{
+		if (spawned_manager.spawnedEnts[i]._inuse == 0) continue;
+		if (strcmp(spawned_manager.spawnedEnts[i].tag, tag) == 0)
+		{
+			entity_free(spawned_manager.spawnedEnts[i].ent);
+			spawned_manager.spawnedEnts[i]._inuse = 0;
+		}
+	}
+}
+
+void store_spawned_ent(Entity *ent, const char *tag)
+{
+	int i;
+
+	if (spawned_manager.spawnedEnts == NULL)
+	{
+		spawned_manager_init(10);
+	}
+
+	for (i = 0; i < spawned_manager.max_spawns; ++i)
+	{
+		if (spawned_manager.spawnedEnts[i]._inuse == 1) continue;
+		memset(&spawned_manager.spawnedEnts[i], 0, sizeof(EventSpawnedEntity));
+		spawned_manager.spawnedEnts[i]._inuse = 1;
+		spawned_manager.spawnedEnts[i].ent = ent;
+		spawned_manager.spawnedEnts[i].tag = (char *)malloc(strlen(tag) * sizeof(char));
+		strcpy(spawned_manager.spawnedEnts[i].tag, tag);
+		spawned_manager.spawnedEnts[i]. deathEventFile = NULL;
+		return;
+	}
+	slog("No space for spawned ent");
+	return;
+}
+
+void store_spawned_ent_with_death(Entity *ent, const char *tag, const char *deathEvent)
+{
+	int i;
+
+	if (spawned_manager.spawnedEnts == NULL)
+	{
+		spawned_manager_init(10);
+	}
+
+	for (i = 0; i < spawned_manager.max_spawns; ++i)
+	{
+		if (spawned_manager.spawnedEnts[i]._inuse == 1) continue;
+		memset(&spawned_manager.spawnedEnts[i], 0, sizeof(EventSpawnedEntity));
+		spawned_manager.spawnedEnts[i]._inuse = 1;
+		spawned_manager.spawnedEnts[i].ent = ent;
+		spawned_manager.spawnedEnts[i].tag = (char *)malloc(strlen(tag) * sizeof(char));
+		strcpy(spawned_manager.spawnedEnts[i].tag, tag);
+		spawned_manager.spawnedEnts[i].deathEventFile = (char *)malloc(strlen(deathEvent) * sizeof(char));
+		strcpy(spawned_manager.spawnedEnts[i].deathEventFile, deathEvent);
+		return;
+	}
+	slog("No space for spawned ent");
+	return;
 }
 
 void event_manager_update()
@@ -282,6 +382,22 @@ void next_event_point(int next_point)
 	else if (strcmp(action_type, "delete_actor") == 0)
 	{
 		start_deleteActor_event_point(event_point);
+	}
+	else if (strcmp(action_type, "spawn") == 0)
+	{
+		start_spawn_event_point(event_point);
+	}
+	else if (strcmp(action_type, "delete_ent") == 0)
+	{
+		start_deleteEnt_event_point(event_point);
+	}
+	else if (strcmp(action_type, "stop_bgmusic") == 0)
+	{
+		start_stop_bgmusic_point();
+	}
+	else if (strcmp(action_type, "start_bgmusic") == 0)
+	{
+		start_start_bgmusic_point(event_point);
 	}
 	else if (strcmp(action_type, "nothing") == 0)
 	{
@@ -467,6 +583,73 @@ void start_deleteActor_event_point(SJson *event_point)
 		{
 			cutscene_actor_free(&event_manager.actors[i]);
 			continue;
+		}
+	}
+}
+
+
+void start_spawn_event_point(SJson *event_point)
+{
+	Entity *ent;
+	char *type, *tag, *deathEvent;
+	int x, y;
+
+	type = sj_get_string_value(sj_object_get_value(event_point, "type"));
+	tag = sj_get_string_value(sj_object_get_value(event_point, "tag"));
+	sj_get_integer_value(sj_object_get_value(event_point, "x"), &x);
+	sj_get_integer_value(sj_object_get_value(event_point, "y"), &y);
+
+	if (strcmp(type, "wall") == 0)
+	{
+		ent = wall_spawn(vector2d(x * 16 * 2, y * 16 * 2), "images/level_1_tiles.png", 1, 16, 16, 30, 2);
+		store_spawned_ent(ent, tag);
+	}
+	else if (strcmp(type, "boss_one") == 0)
+	{
+		deathEvent = sj_get_string_value(sj_object_get_value(event_point, "deathEvent"));
+		ent = boss1_spawn(vector2d(x * 16 * 2, y * 16 * 2));
+		store_spawned_ent_with_death(ent, tag, deathEvent);
+	}
+
+	advance_scene = SDL_TRUE;
+}
+
+void start_deleteEnt_event_point(SJson *event_point)
+{
+	char *tag;
+
+	tag = sj_get_string_value(sj_object_get_value(event_point, "tag"));
+	free_spawned_ent(tag);
+
+	advance_scene = SDL_TRUE;
+}
+
+
+void start_stop_bgmusic_point()
+{
+	gfc_stop_background_music();
+	advance_scene = SDL_TRUE;
+}
+
+void start_start_bgmusic_point(SJson *event_point)
+{
+	char *string;
+	Sound *music;
+
+	advance_scene = SDL_TRUE;
+
+	string = sj_get_string_value(sj_object_get_value(event_point, "music_file"));
+	if (string)
+	{
+		music = gfc_sound_load(string, 1, -1);
+		if (music == NULL)
+		{
+			slog("Music file could not be loaded");
+			return;
+		}
+		else
+		{
+			gfc_set_background_music(music);
 		}
 	}
 }

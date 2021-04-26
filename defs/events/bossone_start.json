@@ -1,0 +1,106 @@
+{
+	"events" : [
+		{
+			"action" : "nothing",
+			"wait" : 40
+		},
+		{
+			"action" : "stop_bgmusic",
+			"wait" : 20
+		},
+		{
+			"action" : "spawn",
+			"type" : "wall",
+			"x" : 16,
+			"y" : 15,
+			"tag" : "wall1",
+			"wait" : 70
+		},
+		{
+			"action" : "spawn",
+			"type" : "wall",
+			"x" : 17,
+			"y" : 15,
+			"tag" : "wall2",
+			"wait" : 70
+		},
+		{
+			"action" : "spawn",
+			"type" : "wall",
+			"x" : 16,
+			"y" : 2,
+			"tag" : "wall3",
+			"wait" : 70
+		},
+		{
+			"action" : "spawn",
+			"type" : "wall",
+			"x" : 17,
+			"y" : 2,
+			"tag" : "wall4",
+			"wait" : 70
+		},
+		{
+			"action" : "nothing",
+			"wait" : 70
+		},
+		{
+			"action" : "dialogue",
+			"speaker" : "Clark",
+			"sprite" : {
+				"file": "images/clark_speaking.png",
+				"sprite_w" : 240,
+				"sprite_h" : 500,
+				"sprite_fpl" : 1,
+				"sprite_num" : 0,
+				"sprite_frameRate" : 0,
+				"frame_count" : 1,
+				"sprite_scale" : 0
+			},
+			"lines" : [
+				"That's not good"
+			],
+			"wait" : 40
+		},
+		{
+			"action" : "nothing",
+			"wait" : 70
+		},
+		{
+			"action" : "spawn",
+			"type" : "boss_one",
+			"x" : 16,
+			"y" : 7,
+			"tag" : "boss1",
+			"deathEvent" : "defs/events/bossone_death.json"
+			"wait" : 70
+		},
+		{
+			"action" : "nothing",
+			"wait" : 70
+		},
+		{
+			"action" : "dialogue",
+			"speaker" : "Clark",
+			"sprite" : {
+				"file": "images/clark_speaking.png",
+				"sprite_w" : 240,
+				"sprite_h" : 500,
+				"sprite_fpl" : 1,
+				"sprite_num" : 0,
+				"sprite_frameRate" : 0,
+				"frame_count" : 1,
+				"sprite_scale" : 0
+			},
+			"lines" : [
+				"That's even worse"
+			],
+			"wait" : 40
+		},
+		{
+			"action" : "start_bgmusic",
+			"music_file" : "music/boss_music.mp3",
+			"wait" : 70
+		}
+	]
+}

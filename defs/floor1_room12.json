@@ -65,6 +65,15 @@
 				"toPoint" : "North",
 				"spriteFrame" : 19
 			}
+		],
+		"events": [
+			{
+				"event" : "defs/events/bossone_start.json",
+				"x" : 11,
+				"y" : 2,
+				"width" : 10,
+				"height" : 12
+			}
 		]
 	}
 }

@@ -38,6 +38,14 @@ typedef struct
 
 typedef struct
 {
+	Bool		_inuse;
+	char		*tag;
+	Entity		*ent;
+	char		*deathEventFile;
+}EventSpawnedEntity;
+
+typedef struct
+{
 	Rect	*triggerArea;
 	char	*eventFile;
 }Event;
@@ -52,6 +60,38 @@ void event_manager_init(char *eventFile);
 * @brief Free everything in the event system
 */
 void event_manager_free();
+
+/**
+* @brief Initialize the spawned entity manager
+* @param numEnts The number of entities that can be spawned
+*/
+void spawned_manager_init(int numEnts);
+
+/**
+* @brief Free everything in the spawned entity system
+*/
+void spawned_manager_free();
+
+/**
+* @brief Free some tagged entity
+* @param tag The tag of the entity to delete
+*/
+void free_spawned_ent(char *tag);
+
+/**
+* @brief Store some entity with a tag
+* @param ent The enity to store
+* @param tag The tag of the entity to delete
+*/
+void store_spawned_ent(Entity *ent, const char *tag);
+
+/**
+* @brief Store some entity with a tag
+* @param ent The enity to store
+* @param tag The tag of the entity to delete
+* @param deathEvent The name of the file with the event to play upon death
+*/
+void store_spawned_ent_with_death(Entity *ent, const char *tag, const char *deathEvent);
 
 /**
 * @brief Update all entities in the system
@@ -92,6 +132,29 @@ void start_movement_event_point(SJson *event_point);
 * @param event_point The point with information on the delete
 */
 void start_deleteActor_event_point(SJson *event_point);
+
+/**
+* @brief Start a spawn event
+* @param event_point The point with information on the spawn
+*/
+void start_spawn_event_point(SJson *event_point);
+
+/**
+* @brief Start a delete entity event
+* @param event_point The point with information on the delete
+*/
+void start_deleteEnt_event_point(SJson *event_point);
+
+/**
+* @brief Start a stop music
+*/
+void start_stop_bgmusic_point();
+
+/**
+* @brief Start a start bgmusic event
+* @param event_point The point with information on the music
+*/
+void start_start_bgmusic_point(SJson *event_point);
 
 /**
 * @brief Clear entities from the event.

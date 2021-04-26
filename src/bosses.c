@@ -14,7 +14,7 @@
 #include "shapes.h"
 
 static char *playerFile = "saves/save.json";
-int head_maxCycle = 90;
+int head_maxCycle = 180;
 
 Entity *boss1_spawn(Vector2D position)
 {
@@ -59,7 +59,7 @@ Entity *boss1_spawn(Vector2D position)
 	boss->num_subents = 4;
 	boss->subents = (Entity **)gfc_allocate_array(sizeof(Entity *), boss->num_subents);
 	boss->flags = MOV_NORTH;
-	boss->cycle = 20;
+	boss->cycle = 60;
 	boss->head1_cycle = 70;
 	boss->head2_cycle = 90;
 	boss->chase_head = 3;
@@ -107,7 +107,7 @@ Entity *boss1_spawn(Vector2D position)
 	subent->frameRate = 0.05;
 	subent->scale = vector2d(2, 2);
 	subent->damage = 1;
-	subent->health = 3;
+	subent->health = 6;
 	subent->flags = ENT_DEADLY |  ENT_HITTABLE | ENT_HASHEALTH;
 
 	hitbox = (Rect *)malloc(sizeof(Rect));
@@ -121,9 +121,6 @@ Entity *boss1_spawn(Vector2D position)
 
 
 	vector2d_copy(subent_pos, position);
-
-
-
 
 
 	subent = entity_new();
@@ -168,7 +165,7 @@ Entity *boss1_spawn(Vector2D position)
 	subent->frameRate = 0.05;
 	subent->scale = vector2d(2, 2);
 	subent->damage = 1;
-	subent->health = 3;
+	subent->health = 6;
 	subent->flags = ENT_DEADLY | ENT_HITTABLE | ENT_HASHEALTH;
 
 	hitbox = (Rect *)malloc(sizeof(Rect));
@@ -228,6 +225,7 @@ void boss1_update(Entity *self)
 			if (boss->head1_cycle == 0)
 			{
 				boss->head1_cycle = head_maxCycle;
+				if (boss->chase_head & 1) boss->head1_cycle = boss->head1_cycle / 2;
 				boss->chase_head = boss->chase_head ^ 1;
 			}
 
@@ -248,19 +246,19 @@ void boss1_update(Entity *self)
 					playerpos = vector2d(boss->player->position.x + (boss->player->sprite->frame_w * boss->player->scale.x) / 2, boss->player->position.y + (boss->player->sprite->frame_h * boss->player->scale.y) / 2);
 					line = vector2d(playerpos.x - pa.x, playerpos.y - pa.y);
 					dist = PointsDistance(playerpos, pa);
-					mov = vector2d(0.5 * line.x / dist, 0.5 * line.y / dist);
+					mov = vector2d(1.3 * line.x / dist, 1.3 * line.y / dist);
 
 					vector2d_add(boss->subents[0]->position, boss->subents[0]->position, mov);
 					pa = vector2d(boss->subents[0]->position.x + (boss->subents[0]->sprite->frame_w * boss->subents[0]->scale.x) / 2, boss->subents[0]->position.y + (boss->subents[0]->sprite->frame_h * boss->subents[0]->scale.y) / 2);
 					dist = PointsDistance(pa, pb);
-					if (dist > 70)
+					if (dist > 170)
 					{
 						line = vector2d(pb.x - pa.x, pb.y - pa.y);
 						dist = PointsDistance(pb, pa);
 						mov = vector2d(((dist - 90)/dist) * line.x / dist, ((dist - 90)/dist) * line.y / dist);
 						vector2d_add(boss->subents[0]->position, boss->subents[0]->position, mov);
 					}
-					else if (dist < 40)
+					else if (dist < 30)
 					{
 						line = vector2d(pb.x - pa.x, pb.y - pa.y);
 						dist = PointsDistance(pb, pa);
@@ -272,9 +270,9 @@ void boss1_update(Entity *self)
 				{
 					line = vector2d(pb.x - pa.x, pb.y - pa.y);
 					dist = PointsDistance(pb, pa);
-					if (dist > 40)
+					if (dist > 30)
 					{
-						mov = vector2d(0.5 * line.x / dist, 0.5 * line.y / dist);
+						mov = vector2d(0.8 * line.x / dist, 0.8 * line.y / dist);
 
 						vector2d_add(boss->subents[0]->position, boss->subents[0]->position, mov);
 					}
@@ -288,6 +286,7 @@ void boss1_update(Entity *self)
 			if (boss->head2_cycle == 0)
 			{
 				boss->head2_cycle = head_maxCycle;
+				if (boss->chase_head & 2) boss->head2_cycle = boss->head2_cycle / 2;
 				boss->chase_head = boss->chase_head ^ 2;
 			}
 
@@ -307,19 +306,19 @@ void boss1_update(Entity *self)
 					playerpos = vector2d(boss->player->position.x + (boss->player->sprite->frame_w * boss->player->scale.x) / 2, boss->player->position.y + (boss->player->sprite->frame_h * boss->player->scale.y) / 2);
 					line = vector2d(playerpos.x - pa.x, playerpos.y - pa.y);
 					dist = PointsDistance(playerpos, pa);
-					mov = vector2d(0.5 * line.x / dist, 0.5 * line.y / dist);
+					mov = vector2d(1.3 * line.x / dist, 1.3 * line.y / dist);
 
 					vector2d_add(boss->subents[2]->position, boss->subents[2]->position, mov);
 					pa = vector2d(boss->subents[2]->position.x + (boss->subents[2]->sprite->frame_w * boss->subents[2]->scale.x) / 2, boss->subents[2]->position.y + (boss->subents[2]->sprite->frame_h * boss->subents[2]->scale.y) / 2);
 					dist = PointsDistance(pa, pb);
-					if (dist > 70)
+					if (dist > 170)
 					{
 						line = vector2d(pb.x - pa.x, pb.y - pa.y);
 						dist = PointsDistance(pb, pa);
 						mov = vector2d(((dist - 90) / dist) * line.x / dist, ((dist - 90) / dist) * line.y / dist);
 						vector2d_add(boss->subents[2]->position, boss->subents[2]->position, mov);
 					}
-					else if (dist < 40)
+					else if (dist < 30)
 					{
 						line = vector2d(pb.x - pa.x, pb.y - pa.y);
 						dist = PointsDistance(pb, pa);
@@ -335,7 +334,7 @@ void boss1_update(Entity *self)
 					dist = PointsDistance(pb, pa);
 					if (dist > 40)
 					{
-						mov = vector2d(0.5 * line.x / dist, 0.5 * line.y / dist);
+						mov = vector2d(0.8 * line.x / dist, 0.8 * line.y / dist);
 
 						vector2d_add(boss->subents[2]->position, boss->subents[2]->position, mov);
 					}
@@ -391,7 +390,7 @@ void boss1_update(Entity *self)
 			boss->flags = MOV_NORTH;
 		}
 
-		boss->cycle = 40;
+		boss->cycle = 120;
 	}
 
 	boss1_updateHitboxes(self);

@@ -858,6 +858,7 @@ void level_draw()
 void level_transition(const char *nextLevel)
 {
 	level_unload(thisLevel);
+	spawned_manager_free();
 	level_load(nextLevel);
 }
 
@@ -865,6 +866,7 @@ void level_transition_no_player(const char *nextLevel)
 {
 	saveFile = "";
 	level_unload_no_player(thisLevel);
+	spawned_manager_free();
 	level_load(nextLevel);
 }
 
@@ -877,6 +879,7 @@ void level_transitionNewGame(const char *nextLevel)
 	sj_save(baseJson, playerFile);
 
 	level_unload(thisLevel);
+	spawned_manager_free();
 	level_load(nextLevel);
 }
 
@@ -884,6 +887,7 @@ void menu_level_transition(MenuComponent *self)
 {
 	level_transition_no_player(self->action_specification);
 	event_manager_clear();
+	spawned_manager_free();
 	resume_game();
 }
 
@@ -891,6 +895,7 @@ void menu_level_transitionNewGame(MenuComponent *self)
 {
 	change_save_file(self->action_specification);
 	level_transitionNewGame("defs/floor1_room1.json");
+	spawned_manager_free();
 	event_manager_clear();
 	resume_game();
 }
@@ -902,6 +907,7 @@ void level_transitionWithPlayer(const char *nextLevel, char *nextPos, Level *cur
 	player = level_unload(currentLevel);
 	//entity_free(player);
 	level_loadWithPlayer(nextLevel, player, nextPos);
+	spawned_manager_free();
 }
 
 Entity *transition_spawn(Vector2D position, char *spriteSheet, int frameNum, int spriteWidth, int spriteHeight, int fpl, int scale, char *nextLevel, char *nextPos, Level *level)
