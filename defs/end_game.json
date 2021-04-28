@@ -1,0 +1,9 @@
+{
+	"level": {
+		"bgImage": "images/backgrounds/void.png",
+		"isPlayer" : "False",
+		"menu" : "defs/menus/end_game_menu.json",
+		"music" : "music/titleScreen.mp3",
+		"startInMenu" : "True"
+	}
+}

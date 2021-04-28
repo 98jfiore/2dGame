@@ -42,6 +42,10 @@
 			"wait" : 40
 		},
 		{
+			"action" : "stop_bgmusic",
+			"wait" : 20
+		},
+		{
 			"action" : "dialogue",
 			"speaker" : "???",
 			"sprite" : {
@@ -65,6 +69,11 @@
 			"direction" : "south",
 			"speed" : 0.5,
 			"wait" : 128
+		},
+		{
+			"action" : "start_bgmusic",
+			"music_file" : "music/life_is_beautiful.mp3",
+			"wait" : 70
 		},
 		{
 			"action" : "dialogue",
@@ -382,6 +391,11 @@
 		{
 			"action" : "delete_actor",
 			"actor" : "Ava",
+			"wait" : 70
+		},
+		{
+			"action" : "start_bgmusic",
+			"music_file" : "music/genericRoom.mp3",
 			"wait" : 70
 		},
 		{

@@ -15,7 +15,7 @@
 
 static char *playerFile = "saves/save.json";
 int head_maxCycle = 180;
-int head_health = 2;
+int head_health = 5;
 
 Entity *boss1_spawn(Vector2D position)
 {

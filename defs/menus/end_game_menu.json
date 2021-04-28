@@ -1,0 +1,54 @@
+{
+	"menu": {
+		"width": 1,
+		"height": 3,
+		"components": [
+			{
+				"action": "load_game",
+				"text": "Main Menu",
+				"font" : "fonts/RETRO_SPACE_INV.ttf",
+				"pt_size": 32,
+				"color" : {
+					"r": 0,
+					"g": 0,
+					"b": 0,
+					"a": 255
+				}
+				"sprite" : "images/menu_bar.png",
+				"sprWidth" : 256,
+				"sprHeight" : 64,
+				"frames_per_line" : 2,
+				"frame_count" : 2,
+				"frame_num" : 1,
+				"scale" : 1,
+				"menux": 0,
+				"menuy": 0,
+				"x": 472,
+				"y": 600,
+				"offsetx": 10,
+				"offsety": 20,
+				"specification": "defs/home_screen.json"
+			},
+			{
+				"action": "nothing",
+				"text": "End of Demo",
+				"font" : "fonts/RETRO_SPACE_INV.ttf",
+				"pt_size": 48,
+				"color" : {
+					"r": 255,
+					"g": 255,
+					"b": 255,
+					"a": 255
+				},
+				"sprite" : "nothing",
+				"menux": 0,
+				"menuy": 2,
+				"x": 425,
+				"y": 200,
+				"offsetx": 10,
+				"offsety": 20,
+				"specification": "defs/new_game_screen.json"
+			}
+		]
+	}
+}

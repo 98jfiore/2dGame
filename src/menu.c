@@ -211,39 +211,38 @@ void menu_component_draw(MenuComponent *comp)
 	}
 	else
 	{
-		if (comp->sprite == NULL)
+		if (comp->sprite != NULL)
 		{
-			return; //Nothing to draw
+			frame = (Uint32)comp->frame;
+			if (comp->flags & MENU_SELECTED) frame++;
+
+			if (comp->scale.x != 0 || comp->scale.y != 0)
+			{
+				upperLeft = vector2d(0, 0);
+				gf2d_sprite_draw(
+					comp->sprite,
+					comp->position,
+					&comp->scale,
+					&upperLeft,
+					NULL,
+					NULL,
+					NULL,
+					frame);
+			}
+			else
+			{
+				gf2d_sprite_draw(
+					comp->sprite,
+					comp->position,
+					NULL,
+					NULL,
+					NULL,
+					NULL,
+					NULL,
+					frame);
+			}
 		}
 
-		frame = (Uint32)comp->frame;
-		if (comp->flags & MENU_SELECTED) frame++;
-
-		if (comp->scale.x != 0 || comp->scale.y != 0)
-		{
-			upperLeft = vector2d(0, 0);
-			gf2d_sprite_draw(
-				comp->sprite,
-				comp->position,
-				&comp->scale,
-				&upperLeft,
-				NULL,
-				NULL,
-				NULL,
-				frame);
-		}
-		else
-		{
-			gf2d_sprite_draw(
-				comp->sprite,
-				comp->position,
-				NULL,
-				NULL,
-				NULL,
-				NULL,
-				NULL,
-				frame);
-		}
 
 		if (comp->text != NULL)
 		{

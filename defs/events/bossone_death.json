@@ -23,6 +23,10 @@
 			"wait" : 40
 		},
 		{
+			"action" : "stop_bgmusic",
+			"wait" : 20
+		},
+		{
 			"action" : "dialogue",
 			"speaker" : "Clark",
 			"sprite" : {
@@ -58,6 +62,11 @@
 				"HA HA HA!  TAKE THAT!"
 			],
 			"wait" : 40
+		},
+		{
+			"action" : "start_bgmusic",
+			"music_file" : "music/genericRoom.mp3",
+			"wait" : 70
 		},
 		{
 			"action" : "dialogue",
@@ -121,7 +130,283 @@
 		},
 		{
 			"action" : "nothing",
-			"wait" : 200
+			"wait" : 40
+		},
+		{
+			"action" : "move",
+			"actor" : "Ava",
+			"direction" : "north",
+			"speed" : 1.6,
+			"wait" : 60
+		},
+		{
+			"action" : "nothing",
+			"wait" : 40
+		},
+		{
+			"action" : "start_bgmusic",
+			"music_file" : "music/life_is_beautiful.mp3",
+			"wait" : 20
+		},
+		{
+			"action" : "dialogue",
+			"speaker" : "Ava",
+			"sprite" : {
+				"file": "images/ava_speaking.png",
+					"sprite_w" : 240,
+					"sprite_h" : 500,
+					"sprite_fpl" : 1,
+					"sprite_num" : 0,
+					"sprite_frameRate" : 0,
+					"frame_count" : 1,
+					"sprite_scale" : 0
+			},
+			"lines" : [
+				"Woah!  What happened here?"
+			],
+			"wait" : 40
+		},
+		{
+			"action" : "nothing",
+			"wait" : 40
+		},
+		{
+			"action" : "dialogue",
+			"speaker" : "Ava",
+			"sprite" : {
+				"file": "images/ava_speaking.png",
+					"sprite_w" : 240,
+					"sprite_h" : 500,
+					"sprite_fpl" : 1,
+					"sprite_num" : 0,
+					"sprite_frameRate" : 0,
+					"frame_count" : 1,
+					"sprite_scale" : 0
+			},
+			"lines" : [
+				"Clark???"
+			],
+			"wait" : 40
+		},
+		{
+			"action" : "dialogue",
+			"speaker" : "Clark",
+			"sprite" : {
+				"file": "images/clark_speaking.png",
+				"sprite_w" : 240,
+				"sprite_h" : 500,
+				"sprite_fpl" : 1,
+				"sprite_num" : 0,
+				"sprite_frameRate" : 0,
+				"frame_count" : 1,
+				"sprite_scale" : 0
+			},
+			"lines" : [
+				"Hey Ava.."
+			],
+			"wait" : 40
+		},
+		{
+			"action" : "dialogue",
+			"speaker" : "Ava",
+			"sprite" : {
+				"file": "images/ava_speaking.png",
+					"sprite_w" : 240,
+					"sprite_h" : 500,
+					"sprite_fpl" : 1,
+					"sprite_num" : 0,
+					"sprite_frameRate" : 0,
+					"frame_count" : 1,
+					"sprite_scale" : 0
+			},
+			"lines" : [
+				"I can't believe it!",
+				"I heard a loud noise and didn't expect it to be you!",
+				"What happened here???"
+			],
+			"wait" : 40
+		},
+		{
+			"action" : "dialogue",
+			"speaker" : "Clark",
+			"sprite" : {
+				"file": "images/clark_speaking.png",
+				"sprite_w" : 240,
+				"sprite_h" : 500,
+				"sprite_fpl" : 1,
+				"sprite_num" : 0,
+				"sprite_frameRate" : 0,
+				"frame_count" : 1,
+				"sprite_scale" : 0
+			},
+			"lines" : [
+				"It was some big, monster... robot... dragon... thing"
+			],
+			"wait" : 40
+		},
+		{
+			"action" : "dialogue",
+			"speaker" : "Ava",
+			"sprite" : {
+				"file": "images/ava_speaking.png",
+					"sprite_w" : 240,
+					"sprite_h" : 500,
+					"sprite_fpl" : 1,
+					"sprite_num" : 0,
+					"sprite_frameRate" : 0,
+					"frame_count" : 1,
+					"sprite_scale" : 0
+			},
+			"lines" : [
+				"And you killed it?!?!  That's awesome!"
+			],
+			"wait" : 40
+		},
+		{
+			"action" : "dialogue",
+			"speaker" : "Clark",
+			"sprite" : {
+				"file": "images/clark_speaking.png",
+				"sprite_w" : 240,
+				"sprite_h" : 500,
+				"sprite_fpl" : 1,
+				"sprite_num" : 0,
+				"sprite_frameRate" : 0,
+				"frame_count" : 1,
+				"sprite_scale" : 0
+			},
+			"lines" : [
+				"Uhhhh... Thanks...",
+				"That's actually realy nice to hear...",
+				"Thank you."
+			],
+			"wait" : 40
+		},
+		{
+			"action" : "dialogue",
+			"speaker" : "Ava",
+			"sprite" : {
+				"file": "images/ava_speaking.png",
+				"sprite_w" : 240,
+				"sprite_h" : 500,
+				"sprite_fpl" : 1,
+				"sprite_num" : 0,
+				"sprite_frameRate" : 0,
+				"frame_count" : 1,
+				"sprite_scale" : 0
+			},
+			"lines" : [
+				"Well as excited as I am to catch up,",
+				"Let's wait until we meet up with the others!"
+			],
+			"wait" : 40
+		},
+		{
+			"action" : "dialogue",
+			"speaker" : "Clark",
+			"sprite" : {
+				"file": "images/clark_speaking.png",
+				"sprite_w" : 240,
+				"sprite_h" : 500,
+				"sprite_fpl" : 1,
+				"sprite_num" : 0,
+				"sprite_frameRate" : 0,
+				"frame_count" : 1,
+				"sprite_scale" : 0
+			},
+			"lines" : [
+				"Others?"
+			],
+			"wait" : 40
+		},
+		{
+			"action" : "dialogue",
+			"speaker" : "Ava",
+			"sprite" : {
+				"file": "images/ava_speaking.png",
+				"sprite_w" : 240,
+				"sprite_h" : 500,
+				"sprite_fpl" : 1,
+				"sprite_num" : 0,
+				"sprite_frameRate" : 0,
+				"frame_count" : 1,
+				"sprite_scale" : 0
+			},
+			"lines" : [
+				"Yeah I mentioned them earlier, don't you remember?",
+				"They should be just up ahead",
+				"Come on, I'll introduce you"
+			],
+			"wait" : 40
+		},
+		{
+			"action" : "nothing",
+			"wait" : 40
+		},
+		{
+			"action" : "move",
+			"actor" : "Ava",
+			"direction" : "west",
+			"speed" : 1.6,
+			"wait" : 40
+		},
+		{
+			"action" : "move",
+			"actor" : "Ava",
+			"direction" : "north",
+			"speed" : 1.6,
+			"wait" : 220
+		},
+		{
+			"action" : "move",
+			"actor" : "Ava",
+			"direction" : "east",
+			"speed" : 1.6,
+			"wait" : 40
+		},
+		{
+			"action" : "move",
+			"actor" : "Ava",
+			"direction" : "north",
+			"speed" : 0.5,
+			"wait" : 96
+		},
+		{
+			"action" : "delete_actor",
+			"actor" : "Ava",
+			"wait" : 90
+		},
+		{
+			"action" : "stop_bgmusic",
+			"wait" : 70
+		},
+		{
+			"action" : "start_bgmusic",
+			"music_file" : "music/genericRoom.mp3",
+			"wait" : 70
+		},
+		{
+			"action" : "dialogue",
+			"speaker" : "Clark",
+			"sprite" : {
+				"file": "images/clark_speaking.png",
+				"sprite_w" : 240,
+				"sprite_h" : 500,
+				"sprite_fpl" : 1,
+				"sprite_num" : 0,
+				"sprite_frameRate" : 0,
+				"frame_count" : 1,
+				"sprite_scale" : 0
+			},
+			"lines" : [
+				"Not like I have much of a choice,",
+				"there's only one way forward"
+			],
+			"wait" : 40
+		},
+		{
+			"action" : "nothing",
+			"wait" : 40
 		}
 	]
 }

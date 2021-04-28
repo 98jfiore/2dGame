@@ -64,6 +64,22 @@
 				"toLevel" : "defs/floor1_room9.json",
 				"toPoint" : "North",
 				"spriteFrame" : 19
+			},
+			{
+				"type": "transition",
+				"x" : 16,
+				"y" : 1,
+				"toLevel" : "defs/end_game.json",
+				"toPoint" : "North",
+				"spriteFrame" : 14
+			},
+			{
+				"type": "transition",
+				"x" : 17,
+				"y" : 1,
+				"toLevel" : "defs/end_game.json",
+				"toPoint" : "North",
+				"spriteFrame" : 15
 			}
 		],
 		"events": [
