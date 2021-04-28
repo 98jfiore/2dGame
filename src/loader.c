@@ -1503,9 +1503,13 @@ void add_to_level(int code, Vector2D pos)
 {
 	Uint32 xpos, ypos;
 	Vector2D position;
+	Sound *sound;
 
 	xpos = (Uint32)pos.x;
 	ypos = (Uint32)pos.y;
+
+	sound = gfc_sound_load("music/small_boom.mp3", 0.25, 2);
+	gfc_sound_play(sound, 0, 0.35, 2, -1);
 
 	if (levelEditEnemyCode == -1)
 	{

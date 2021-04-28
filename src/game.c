@@ -51,7 +51,7 @@ int main(int argc, char * argv[])
     SDL_ShowCursor(SDL_DISABLE);
 	
 	/*Start audio*/
-	gfc_audio_init(200, 4, 2, 4, SDL_TRUE, SDL_FALSE);
+	gfc_audio_init(10, 4, 2, 4, SDL_TRUE, SDL_FALSE);
 
 	font_init(5);
 

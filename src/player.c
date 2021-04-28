@@ -129,7 +129,7 @@ void player_think(Entity *self)
 
 				player->attackWait = 50;
 
-				if (player->attack_sound != NULL) gfc_sound_play(player->attack_sound, 1, 0.75, 2, -1);
+				if (player->attack_sound != NULL) gfc_sound_play(player->attack_sound, 0, 0.35, 2, -1);
 
 				player->flags = player->flags | PLR_ATTACKING;
 			}

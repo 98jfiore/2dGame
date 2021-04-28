@@ -632,6 +632,7 @@ void start_deleteActor_event_point(SJson *event_point)
 void start_spawn_event_point(SJson *event_point)
 {
 	Entity *ent;
+	Sound *sound;
 	char *type, *tag, *deathEvent;
 	int x, y;
 
@@ -653,14 +654,21 @@ void start_spawn_event_point(SJson *event_point)
 	}
 
 	advance_scene = SDL_TRUE;
+
+	sound = gfc_sound_load("music/small_boom.mp3", 0.15, 2);
+	gfc_sound_play(sound, 0, 0.15, 2, -1);
 }
 
 void start_deleteEnt_event_point(SJson *event_point)
 {
 	char *tag;
+	Sound *sound;
 
 	tag = sj_get_string_value(sj_object_get_value(event_point, "tag"));
 	free_spawned_ent(tag);
+
+	sound = gfc_sound_load("music/small_boom.mp3", 0.15, 2);
+	gfc_sound_play(sound, 0, 0.15, 2, -1);
 
 	advance_scene = SDL_TRUE;
 }
