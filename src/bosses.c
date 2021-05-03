@@ -15,7 +15,7 @@
 
 static char *playerFile = "saves/save.json";
 int head_maxCycle = 180;
-int head_health = 5;
+int head_health = 2;
 
 Entity *boss1_spawn(Vector2D position)
 {
@@ -26,6 +26,7 @@ Entity *boss1_spawn(Vector2D position)
 	Rect *hitbox;
 	Vector2D velocity;
 	const char *name = "boss_one";
+	Shape shape;
 
 	ent = npc_spawn(position);
 	if (ent == NULL)
@@ -189,6 +190,42 @@ Entity *boss1_spawn(Vector2D position)
 	ent->damage = 1;
 
 	ent->data = boss;
+
+
+	shape = gf2d_shape_circle(0, 0, 8);
+	/*boss->pe = gf2d_particle_emitter_new_full(
+		500,
+		100,
+		5,
+		PT_Shape,
+		vector2d(500, 340),
+		vector2d(2, 2),
+		vector2d(0, -3),
+		vector2d(2, 1),
+		vector2d(0, 0.05),
+		vector2d(0, 0.01),
+		gfc_color(0.85, 0.55, 0, 1),
+		gfc_color(-0.01, -0.02, 0, 0),
+		gfc_color(0.1, 0.1, 0, 0.1),
+		&shape,
+		0,
+		0,
+		0,
+		"images/cloud.png",
+		32,
+		32,
+		1,
+		0,
+		//        SDL_BLENDMODE_BLEND);
+		SDL_BLENDMODE_ADD);*/
+
+	/*boss->ps = particle_source_new(8000, 0, 3, 1000, 20, vector2d(200, 300),
+		vector2d(150, 5), vector2d(0, 20), vector2d(0, 1), vector2d(0.2, 0.2), vector2d(0.1, 0.1),
+		gfc_color(120, 120, 120, 255), gfc_color(0, 0, 0, 0), gfc_color(0.1, 0.1, 0.1, 0.1),
+		"images/oil.png", 8, 8, 1, 3, 41, 0.1, 0.05, SDL_BLENDMODE_BLEND, PART_MODE_A, -20, 5, 0, 0);*/
+	boss->pe = NULL;
+	boss->ps = NULL;
+	ent->draw = boss1_draw;
 
 	return ent;
 }
@@ -395,6 +432,75 @@ void boss1_update(Entity *self)
 	}
 
 	boss1_updateHitboxes(self);
+
+	if (boss->pe != NULL)
+	{
+
+		//gf2d_particle_emitter_update(boss->pe);
+		//gf2d_particle_new_default(boss->pe, 20);
+	}
+
+	if (boss->ps != NULL)
+	{
+		particle_source_update(boss->ps);
+	}
+}
+
+void boss1_draw(Entity *self)
+{
+	Vector2D upperLeft;
+	Boss_One *boss;
+
+	if (self == NULL)
+	{
+		slog("CAnnot draw a NULL entity");
+		return;
+	}
+
+	boss = (Boss_One *)self->data;
+	if (boss == NULL)
+	{
+		return;
+	}
+
+	if (self->sprite == NULL)
+	{
+		return; //Nothing to draw
+	}
+	if (self->scale.x != 0 || self->scale.y != 0)
+	{
+		upperLeft = vector2d(0, 0);
+		gf2d_sprite_draw(
+			self->sprite,
+			self->position,
+			&self->scale,
+			&upperLeft,
+			NULL,
+			NULL,
+			NULL,
+			(Uint32)self->frame);
+	}
+	else
+	{
+		gf2d_sprite_draw(
+			self->sprite,
+			self->position,
+			NULL,
+			NULL,
+			NULL,
+			NULL,
+			NULL,
+			(Uint32)self->frame);
+	}
+	if (boss->pe != NULL)
+	{
+		//gf2d_particle_emitter_draw(boss->pe);
+	}
+	if (boss->ps != NULL)
+	{
+		particle_source_draw(boss->ps);
+	}
+
 }
 
 void boss1_free(Entity *self)
@@ -406,6 +512,14 @@ void boss1_free(Entity *self)
 	if (boss == NULL)
 	{
 		return;
+	}
+	if (boss->pe != NULL)
+	{
+		//gf2d_particle_emitter_free(boss->pe);
+	}
+	if (boss->ps != NULL)
+	{
+		particle_source_free(boss->ps);
 	}
 	for (i = 0; i < boss->num_subents; ++i)
 	{

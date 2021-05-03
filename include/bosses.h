@@ -2,6 +2,8 @@
 #define __BOSSES_H__
 
 #include "entity.h"
+#include "gf2d_particles.h"
+#include "particles.h"
 #include "ent_npc.h"
 
 typedef struct
@@ -15,6 +17,8 @@ typedef struct
 	Uint32 num_subents;
 	Entity *player;
 	char	*tag;
+	ParticleEmitter *pe;
+	ParticleSource *ps;
 }Boss_One;
 
 /**
@@ -29,6 +33,12 @@ Entity *boss1_spawn(Vector2D position);
 * @param self A pointer to the automata entity.
 */
 void boss1_update(Entity *self);
+
+/**
+* @brief Draw the boss1 entity
+* @param self A pointer to the automata entity.
+*/
+void boss1_draw(Entity *self);
 
 /**
 * @brief Free the automata entity
