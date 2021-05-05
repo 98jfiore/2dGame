@@ -17,7 +17,6 @@ typedef struct
 	Uint32 num_subents;
 	Entity *player;
 	char	*tag;
-	ParticleEmitter *pe;
 	ParticleSource *ps;
 }Boss_One;
 

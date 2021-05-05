@@ -15,7 +15,7 @@
 
 static char *playerFile = "saves/save.json";
 int head_maxCycle = 180;
-int head_health = 2;
+int head_health = 4;
 
 Entity *boss1_spawn(Vector2D position)
 {
@@ -26,7 +26,6 @@ Entity *boss1_spawn(Vector2D position)
 	Rect *hitbox;
 	Vector2D velocity;
 	const char *name = "boss_one";
-	Shape shape;
 
 	ent = npc_spawn(position);
 	if (ent == NULL)
@@ -192,38 +191,11 @@ Entity *boss1_spawn(Vector2D position)
 	ent->data = boss;
 
 
-	shape = gf2d_shape_circle(0, 0, 8);
-	/*boss->pe = gf2d_particle_emitter_new_full(
-		500,
-		100,
-		5,
-		PT_Shape,
-		vector2d(500, 340),
-		vector2d(2, 2),
-		vector2d(0, -3),
-		vector2d(2, 1),
-		vector2d(0, 0.05),
-		vector2d(0, 0.01),
-		gfc_color(0.85, 0.55, 0, 1),
-		gfc_color(-0.01, -0.02, 0, 0),
-		gfc_color(0.1, 0.1, 0, 0.1),
-		&shape,
-		0,
-		0,
-		0,
-		"images/cloud.png",
-		32,
-		32,
-		1,
-		0,
-		//        SDL_BLENDMODE_BLEND);
-		SDL_BLENDMODE_ADD);*/
-
 	/*boss->ps = particle_source_new(12000, 0, 25, 600, 50, vector2d(200, 300),
 		vector2d(150, 5), vector2d(0, 20), vector2d(0, 1), vector2d(0.2, 0.2), vector2d(0.1, 0.1),
 		gfc_color(1, 1, 1, 255), gfc_color(0, 0, 0, -0.1), gfc_color(1, 1, 1, 0.1),
 		"images/oil.png", 8, 8, 1, 3, 41, 0.1, 0.05, SDL_BLENDMODE_ADD, PART_MODE_B, 0.01, 0.001, 0.2, 0.4, 360, 0.0005, 0.2, 0.3);*/
-	boss->pe = NULL;
+	boss->ps = NULL;
 	ent->draw = boss1_draw;
 
 	return ent;
@@ -272,6 +244,13 @@ void boss1_update(Entity *self)
 				boss->head2_cycle = -1;
 				boss->chase_head = 2;
 				boss->subents[0] = NULL;
+				if (boss->subents[3] != NULL)
+				{
+					boss->ps = particle_source_new(15000, 0, 5, 600, 50, boss->subents[1]->position,
+						vector2d(20, 20), vector2d(0, 20), vector2d(0, 1), vector2d(0.2, 0.2), vector2d(0.1, 0.1),
+						gfc_color(1, 1, 1, 254), gfc_color(0.01, 0.01, 0.01, -0.04), gfc_color(1, 1, 1, 1),
+						"images/oil.png", 8, 8, 1, 3, 41, 0.1, 0.05, SDL_BLENDMODE_ADD, PART_MODE_B, 0.01, 0, 0.1, 0, 10, 0.01, 0, 3);
+				}
 			}
 			else
 			{
@@ -333,6 +312,13 @@ void boss1_update(Entity *self)
 				boss->head1_cycle = -1;
 				boss->chase_head = 1;
 				boss->subents[2] = NULL;
+				if (boss->subents[0] != NULL)
+				{
+					boss->ps = particle_source_new(15000, 0, 5, 600, 50, boss->subents[3]->position,
+						vector2d(20, 20), vector2d(0, 20), vector2d(0, 1), vector2d(0.2, 0.2), vector2d(0.1, 0.1),
+						gfc_color(1, 1, 1, 254), gfc_color(0.01, 0.01, 0.01, -0.04), gfc_color(1, 1, 1, 1),
+						"images/oil.png", 8, 8, 1, 3, 41, 0.1, 0.05, SDL_BLENDMODE_ADD, PART_MODE_B, 0.01, 0, 0.1, 0, 10, 0.01, 0, 3);
+				}
 			}
 			else
 			{
@@ -432,15 +418,18 @@ void boss1_update(Entity *self)
 
 	boss1_updateHitboxes(self);
 
-	if (boss->pe != NULL)
-	{
-
-		//gf2d_particle_emitter_update(boss->pe);
-		//gf2d_particle_new_default(boss->pe, 20);
-	}
-
 	if (boss->ps != NULL)
 	{
+		if (boss->subents[0] == NULL)
+		{
+			mov = vector2d(boss->subents[1]->position.x + boss->subents[1]->sprite->frame_w * boss->subents[1]->scale.x / 2, boss->subents[1]->position.y + boss->subents[1]->sprite->frame_h * boss->subents[1]->scale.y / 2);
+			vector2d_copy(boss->ps->position, mov);
+		}
+		else if (boss->subents[2] == NULL)
+		{
+			mov = vector2d(boss->subents[3]->position.x + boss->subents[3]->sprite->frame_w * boss->subents[3]->scale.x / 2, boss->subents[3]->position.y + boss->subents[3]->sprite->frame_h * boss->subents[3]->scale.y / 2);
+			vector2d_copy(boss->ps->position, mov);
+		}
 		particle_source_update(boss->ps);
 	}
 }
@@ -465,6 +454,10 @@ void boss1_draw(Entity *self)
 	if (self->sprite == NULL)
 	{
 		return; //Nothing to draw
+	}
+	if (boss->ps != NULL)
+	{
+		particle_source_draw(boss->ps);
 	}
 	if (self->scale.x != 0 || self->scale.y != 0)
 	{
@@ -491,10 +484,6 @@ void boss1_draw(Entity *self)
 			NULL,
 			(Uint32)self->frame);
 	}
-	if (boss->pe != NULL)
-	{
-		//gf2d_particle_emitter_draw(boss->pe);
-	}
 	if (boss->ps != NULL)
 	{
 		particle_source_draw(boss->ps);
@@ -511,10 +500,6 @@ void boss1_free(Entity *self)
 	if (boss == NULL)
 	{
 		return;
-	}
-	if (boss->pe != NULL)
-	{
-		//gf2d_particle_emitter_free(boss->pe);
 	}
 	if (boss->ps != NULL)
 	{

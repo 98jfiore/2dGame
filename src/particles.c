@@ -229,6 +229,7 @@ void particle_data_reset(ParticleData *pd)
 	vector2d_copy(pd->position, pd->start_pos);
 	vector2d_copy(pd->velocity, pd->velocity_initial);
 	gfc_color_copy(pd->color, pd->base_color);
+	pd->center = vector2d(pd->base->x, pd->base->y);
 	if (pd->modeFlag & PART_MODE_A)
 	{
 		ma = (Particle_modeA *)pd->mode;
@@ -240,13 +241,15 @@ void particle_data_reset(ParticleData *pd)
 		mb = (Particle_modeB *)pd->mode;
 		mb->angle = mb->angle_init;
 		mb->radius = mb->radius_init;
+		pd->position.x = pd->center.x + cosf(mb->angle) * mb->radius;
+		pd->position.y = pd->center.y + sinf(mb->angle) * mb->radius * 1;
 	}
 	pd->ttl = pd->ttl_initial;
 }
 
 void particle_data_update(ParticleData *pd)
 {
-	float n;
+	float n, new_alpha;
 	float dt = 1.0 / 25;
 	if (pd == NULL) return;
 	if (pd->loaded == 0) return;
@@ -316,11 +319,12 @@ void particle_data_update(ParticleData *pd)
 		mb->angle += mb->degreesPerSecond;// *dt;
 		mb->radius += mb->radius_change;// *dt;
 
-		pd->position.x = pd->base->x + cosf(mb->angle) * mb->radius;
-		pd->position.y = pd->base->y + sinf(mb->angle) * mb->radius * 1;
+		pd->position.x = pd->center.x + cosf(mb->angle) * mb->radius;
+		pd->position.y = pd->center.y + sinf(mb->angle) * mb->radius * 1;
 	}
 
-	pd->color.a += pd->colorVector.a * dt;
+	new_alpha = pd->color.a + pd->colorVector.a * dt;
+	pd->color.a = max(0, min(255, new_alpha));
 	pd->color.b += pd->colorVector.b * dt;
 	pd->color.g += pd->colorVector.g * dt;
 	pd->color.r += pd->colorVector.r * dt;
@@ -386,6 +390,7 @@ ParticleData *particle_data_new(
 	p->ttl = ttl;
 	p->ttl_initial = ttl;
 	vector2d_copy(p->position, position);
+	vector2d_copy(p->center, position);
 	vector2d_copy(p->start_pos, position);
 	vector2d_copy(p->velocity, velocity);
 	vector2d_copy(p->acceleration, acceleration);
@@ -422,8 +427,8 @@ ParticleData *particle_data_new(
 		mb->angle_init = modeData_a;
 		mb->radius_init = modeData_c;
 		p->mode = mb;
-		p->position.x = p->base->x + cosf(mb->angle) * mb->radius;
-		p->position.y = p->base->y + sinf(mb->angle) * mb->radius * 1;
+		p->position.x = p->center.x + cosf(mb->angle) * mb->radius;
+		p->position.y = p->center.y + sinf(mb->angle) * mb->radius * 1;
 	}
 	p->modeFlag = particlemode;
 	p->loaded = 1;

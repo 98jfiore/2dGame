@@ -10,6 +10,8 @@
 #include "gf2d_text.h"
 #include "gf2d_shape.h"
 
+//CODE INSPIRATION FROM: https://github.com/scarsty/SDL2-particles, https://nintervik.github.io/2D-Particle-System/#62-todo-2---lets-introduce-the-pool
+
 enum particleMode {
 	PART_MODE_A = 1,
 	PART_MODE_B = 2,
@@ -27,6 +29,7 @@ typedef struct ParticleData_S
 	Vector2D velocity_initial;      /**<movement velocity of the particle*/
 	Vector2D acceleration;  /**<movement acceleration of the particle*/
 	Vector2D *base;
+	Vector2D center;
 	Color color;            /**<rendering color of the particle*/
 	Color base_color;            /**<rendering color of the particle*/
 	Color colorVector;      /**<rate of change for color over time*/

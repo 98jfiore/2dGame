@@ -87,6 +87,48 @@
 			"wait" : 40
 		},
 		{
+			"action" : "start_bgmusic",
+			"music_file" : "music/genericRoom.mp3",
+			"wait" : 70
+		},
+		{
+			"action" : "dialogue",
+			"speaker" : "Clark",
+			"sprite" : {
+				"file": "images/clark_speaking.png",
+				"sprite_w" : 240,
+				"sprite_h" : 500,
+				"sprite_fpl" : 1,
+				"sprite_num" : 0,
+				"sprite_frameRate" : 0,
+				"frame_count" : 1,
+				"sprite_scale" : 0
+			},
+			"lines" : [
+				"What is this stuff?  Oil??",
+				"Gross it's all over me!"
+			],
+			"wait" : 40
+		},
+		{
+			"action" : "dialogue",
+			"speaker" : "Clark",
+			"sprite" : {
+				"file": "images/clark_speaking.png",
+				"sprite_w" : 240,
+				"sprite_h" : 500,
+				"sprite_fpl" : 1,
+				"sprite_num" : 0,
+				"sprite_frameRate" : 0,
+				"frame_count" : 1,
+				"sprite_scale" : 0
+			},
+			"lines" : [
+				"I don't suppose this place has a shower up ahead either"
+			],
+			"wait" : 40
+		},
+		{
 			"action" : "nothing",
 			"wait" : 70
 		},

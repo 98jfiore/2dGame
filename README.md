@@ -57,7 +57,7 @@ After picking up the bomb, right click to drop it.
 2. Steady Frame Rate of Animation: No frame slowdowns in the game.
 3. Audio Implementation: Background music that changes and some sound effects can be heard.
 4. Menu System: Move around menus with wasd and select options with enter or clicks.
-5. Research Component: Particles activated partway through boss.  Particle system made more efficient and can handle many more than initailly described.  There is also a radial option for particles now.
+5. Research Component: Particles activated partway through boss.  Particle system made more efficient and can handle many more than initailly described.  There is also a radial option for particles now and particles can emit from a moving source.
 6. Seamless Level Transitions: Can find them throughout the game.
 7. First few levels: Level up to boss fight is created.
 8. All Assets should agree: Almost all assets made by me, if they don't agree that's due to my lack of skills not lack of thought.
