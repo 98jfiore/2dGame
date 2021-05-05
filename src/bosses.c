@@ -219,12 +219,11 @@ Entity *boss1_spawn(Vector2D position)
 		//        SDL_BLENDMODE_BLEND);
 		SDL_BLENDMODE_ADD);*/
 
-	/*boss->ps = particle_source_new(8000, 0, 3, 1000, 20, vector2d(200, 300),
+	/*boss->ps = particle_source_new(12000, 0, 25, 600, 50, vector2d(200, 300),
 		vector2d(150, 5), vector2d(0, 20), vector2d(0, 1), vector2d(0.2, 0.2), vector2d(0.1, 0.1),
-		gfc_color(120, 120, 120, 255), gfc_color(0, 0, 0, 0), gfc_color(0.1, 0.1, 0.1, 0.1),
-		"images/oil.png", 8, 8, 1, 3, 41, 0.1, 0.05, SDL_BLENDMODE_BLEND, PART_MODE_A, -20, 5, 0, 0);*/
+		gfc_color(1, 1, 1, 255), gfc_color(0, 0, 0, -0.1), gfc_color(1, 1, 1, 0.1),
+		"images/oil.png", 8, 8, 1, 3, 41, 0.1, 0.05, SDL_BLENDMODE_ADD, PART_MODE_B, 0.01, 0.001, 0.2, 0.4, 360, 0.0005, 0.2, 0.3);*/
 	boss->pe = NULL;
-	boss->ps = NULL;
 	ent->draw = boss1_draw;
 
 	return ent;

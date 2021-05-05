@@ -83,7 +83,11 @@ ParticleSource *particle_source_new(
 	float		modedata_a,
 	float		modedata_b,
 	float		modedata_c,
-	float		modedata_d)
+	float		modedata_d,
+	float		mda_var,
+	float		mdb_var,
+	float		mdc_var,
+	float		mdd_var)
 {
 	ParticleSource *ps;
 
@@ -96,6 +100,7 @@ ParticleSource *particle_source_new(
 	ps->ttl = ttl;
 	ps->ttlVariance = ttlVariance;
 	vector2d_copy(ps->position, position);
+	vector2d_copy(ps->location, position);
 	vector2d_copy(ps->positionVariance, positionVariance);
 	vector2d_copy(ps->velocity, velocity);
 	vector2d_copy(ps->velocityVariance, velocityVariance);
@@ -117,6 +122,10 @@ ParticleSource *particle_source_new(
 	ps->modedata_b = modedata_b;
 	ps->modedata_c = modedata_c;
 	ps->modedata_d = modedata_d;
+	ps->mda_var = mda_var;
+	ps->mdb_var = mdb_var;
+	ps->mdc_var = mdc_var;
+	ps->mdd_var = mdd_var;
 
 	//CREATE startParticles NUMBER OF PARTICLES
 	particle_source_create_n_particles(ps, startParticles);
@@ -127,12 +136,12 @@ void particle_source_create_n_particles(ParticleSource *ps, Uint32 n)
 {
 	Uint32 RANDSEED;
 	ParticleData *pd;
-
 	int i;
 	Uint32 ttl;
-	float size, size_change;
+	float size, size_change, mda, mdb, mdc, mdd;
 	Vector2D pos, vel, acc;
 	Color color;
+
 	for (i = 0; i < ps->maxPart; ++i)
 	{
 		if (n <= 0) break;
@@ -161,9 +170,13 @@ void particle_source_create_n_particles(ParticleSource *ps, Uint32 n)
 		color.a = ps->color.a + ps->colorVariance.a * seeded_rand(RANDSEED);
 		size = ps->size + ps->sizeVariance * seeded_rand(RANDSEED);
 		size_change = ps->size_change + ps->size_changeVariance * seeded_rand(RANDSEED);
+		mda = ps->modedata_a + ps->mda_var * seeded_rand(RANDSEED);
+		mdb = ps->modedata_b + ps->mdb_var * seeded_rand(RANDSEED);
+		mdc = ps->modedata_c + ps->mdc_var * seeded_rand(RANDSEED);
+		mdd = ps->modedata_d + ps->mdd_var * seeded_rand(RANDSEED);
 
 		pd = particle_data_new(ps,ttl, pos, vel, acc, color, ps->colorVector, size, size_change, 
-			ps->blend_mode, ps->modeFlag, ps->sprite, ps->modedata_a, ps->modedata_b, ps->modedata_c, ps->modedata_d);
+			ps->blend_mode, ps->modeFlag, ps->sprite, &ps->position, mda, mdb, mdc, mdd);
 		if (pd == NULL) break;
 	}
 }
@@ -215,6 +228,7 @@ void particle_data_reset(ParticleData *pd)
 	pd->loaded = 1;
 	vector2d_copy(pd->position, pd->start_pos);
 	vector2d_copy(pd->velocity, pd->velocity_initial);
+	gfc_color_copy(pd->color, pd->base_color);
 	if (pd->modeFlag & PART_MODE_A)
 	{
 		ma = (Particle_modeA *)pd->mode;
@@ -299,11 +313,11 @@ void particle_data_update(ParticleData *pd)
 	else if(pd->modeFlag & PART_MODE_B)
 	{
 		mb = (Particle_modeB *)pd->mode;
-		mb->angle += mb->degreesPerSecond * dt;
-		mb->radius += mb->radius_change * dt;
+		mb->angle += mb->degreesPerSecond;// *dt;
+		mb->radius += mb->radius_change;// *dt;
 
-		pd->position.x = -cosf(mb->angle) * mb->radius;
-		pd->position.y = -sinf(mb->angle) * mb->radius * 1;
+		pd->position.x = pd->base->x + cosf(mb->angle) * mb->radius;
+		pd->position.y = pd->base->y + sinf(mb->angle) * mb->radius * 1;
 	}
 
 	pd->color.a += pd->colorVector.a * dt;
@@ -351,6 +365,7 @@ ParticleData *particle_data_new(
 	SDL_BlendMode blendmode,
 	Uint8		particlemode,
 	Sprite		*sprite,
+	Vector2D	*base,
 	float		modeData_a,
 	float		modeData_b,
 	float		modeData_c,
@@ -381,8 +396,10 @@ ParticleData *particle_data_new(
 	p->size = size;
 	p->size_change = size_change;
 	gfc_color_copy(p->color, color);
+	gfc_color_copy(p->base_color, color);
 	gfc_color_copy(p->colorVector, colorVector);
 	p->blend_mode = blendmode;
+	p->base = base;
 
 	if (particlemode & PART_MODE_A)
 	{
@@ -405,6 +422,8 @@ ParticleData *particle_data_new(
 		mb->angle_init = modeData_a;
 		mb->radius_init = modeData_c;
 		p->mode = mb;
+		p->position.x = p->base->x + cosf(mb->angle) * mb->radius;
+		p->position.y = p->base->y + sinf(mb->angle) * mb->radius * 1;
 	}
 	p->modeFlag = particlemode;
 	p->loaded = 1;

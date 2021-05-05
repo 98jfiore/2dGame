@@ -26,7 +26,9 @@ typedef struct ParticleData_S
 	Vector2D velocity;      /**<movement velocity of the particle*/
 	Vector2D velocity_initial;      /**<movement velocity of the particle*/
 	Vector2D acceleration;  /**<movement acceleration of the particle*/
+	Vector2D *base;
 	Color color;            /**<rendering color of the particle*/
+	Color base_color;            /**<rendering color of the particle*/
 	Color colorVector;      /**<rate of change for color over time*/
 	Sprite *sprite;
 	float size;				/**<size of the particle*/
@@ -39,6 +41,7 @@ typedef struct ParticleData_S
 
 typedef struct ParticleSource_S
 {
+	Vector2D location;
 	Uint32	numPart;
 	Uint32	maxPart;
 	int		emissionRate;
@@ -48,6 +51,10 @@ typedef struct ParticleSource_S
 	float		modedata_b;
 	float		modedata_c;
 	float		modedata_d;
+	float		mda_var;
+	float		mdb_var;
+	float		mdc_var;
+	float		mdd_var;
 	Uint32      ttl;
 	Uint32      ttlVariance;
 	Vector2D    position;
@@ -148,7 +155,11 @@ ParticleSource *particle_source_new(
 	float		modedata_a,
 	float		modedata_b,
 	float		modedata_c,
-	float		modedata_d);
+	float		modedata_d,
+	float		mda_var,
+	float		mdb_var,
+	float		mdc_var,
+	float		mdd_var);
 
 /**
 * @brief Get a seeded, random number
@@ -212,6 +223,7 @@ ParticleData *particle_data_new(
 	SDL_BlendMode blendmode,
 	Uint8		particlemode,
 	Sprite		*sprite,
+	Vector2D	*base,
 	float		modeData_a,
 	float		modeData_b,
 	float		modeData_c,
