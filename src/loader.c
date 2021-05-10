@@ -29,6 +29,7 @@ static Level *thisLevel = { NULL };
 static char *playerFile = "saves/save.json";
 static char *saveFile = "";
 static int levelEditCode = 0;
+static int levelEditSpecification = 0;
 static int levelEditEnemyCode = -1;
 
 Level *level_load(const char *filename)
@@ -1447,6 +1448,10 @@ MenuComponent *menu_component_create_no_text(const char *spriteFile, int sprite_
 	{
 		comp->action = menu_change_edit_code;
 	}
+	else if (strcmp(action, "change_spec") == 0)
+	{
+		comp->action = menu_change_edit_spec;
+	}
 	else if (strcmp(action, "change_enemy_code") == 0)
 	{
 		comp->action = menu_change_enemy_edit_code;
@@ -1489,6 +1494,12 @@ void menu_change_edit_code(MenuComponent *self)
 	levelEditEnemyCode = -1;
 }
 
+void menu_change_edit_spec(MenuComponent *self)
+{
+	levelEditSpecification = atoi(self->action_specification);
+	slog("%i", levelEditSpecification);
+}
+
 void menu_change_enemy_edit_code(MenuComponent *self)
 {
 	levelEditEnemyCode = atoi(self->action_specification);
@@ -1504,6 +1515,7 @@ void add_to_level(int code, Vector2D pos)
 	Uint32 xpos, ypos;
 	Vector2D position;
 	Sound *sound;
+	char *dir;
 
 	xpos = (Uint32)pos.x;
 	ypos = (Uint32)pos.y;
@@ -1517,7 +1529,22 @@ void add_to_level(int code, Vector2D pos)
 	}
 	else
 	{
-		add_enemy_customLevel(levelEditEnemyCode, xpos, ypos);
+		switch (levelEditSpecification)
+		{
+			case 0:
+				dir = "north";
+				break;
+			case 1:
+				dir = "east";
+				break;
+			case 2:
+				dir = "south";
+				break;
+			default:
+				dir = "west";
+				break;
+		}
+		add_enemy_customLevel(levelEditEnemyCode, xpos, ypos, dir);
 		position = vector2d(xpos * thisLevel->tileSet->frame_w * thisLevel->scaleAmount, ypos * thisLevel->tileSet->frame_h * thisLevel->scaleAmount);
 
 		if (levelEditEnemyCode == 0)

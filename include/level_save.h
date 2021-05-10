@@ -27,7 +27,8 @@ void clear_enemies_js();
 * @param enemyCode The code identifying the type of enemy
 * @param xpos The x position of the enemy
 * @param ypos The y position of the enemy
+* @param dir The start direction of the enemy
 */
-void add_enemy_customLevel(int enemyCode, int xpos, int ypos);
+void add_enemy_customLevel(int enemyCode, int xpos, int ypos, const char *dir);
 
 #endif

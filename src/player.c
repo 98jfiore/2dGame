@@ -57,7 +57,7 @@ Entity *player_spawn(Vector2D position)
 	player->inventory = NULL;
 	player->attack = NULL;
 
-	player->attackWait = 0;
+	player->attackWait = 20;
 	player->specialWait = 0;
 
 	player->attack_sound = gfc_sound_load("music/swish_4.mp3", 0.75, 2);

@@ -83,7 +83,7 @@ void clear_enemies_js()
 
 
 
-void add_enemy_customLevel(int enemyCode, int xpos, int ypos)
+void add_enemy_customLevel(int enemyCode, int xpos, int ypos, const char *dir)
 {
 	SJson *enemy;
 
@@ -96,7 +96,7 @@ void add_enemy_customLevel(int enemyCode, int xpos, int ypos)
 	
 	sj_object_insert(enemy, "x", sj_new_int(xpos));
 	sj_object_insert(enemy, "y", sj_new_int(ypos));
-	sj_object_insert(enemy, "startDir", sj_new_str("north"));
+	sj_object_insert(enemy, "startDir", sj_new_str(dir));
 	if (enemyCode == 0)
 	{
 		sj_object_insert(enemy, "type", sj_new_str("robot"));

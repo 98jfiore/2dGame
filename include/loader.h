@@ -239,6 +239,12 @@ void menu_add_to_level(MenuComponent *self);
 void menu_change_edit_code(MenuComponent *self);
 
 /**
+* @brief Change the edit specification used for level editing
+* @param self The menu component calling the function
+*/
+void menu_change_edit_spec(MenuComponent *self);
+
+/**
 * @brief Change the enemy edit code used for level editing
 * @param self The menu component calling the function
 */
