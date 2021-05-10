@@ -94,6 +94,7 @@ Level *level_loadWithPlayer(const char *filename, Entity *player, char *nextPlay
 	SJson *json, *leveljs, *isplayerjs;
 	const char *string;
 	SJson *objjs, *positionjs;
+	Player *p;
 	int objx, objy;
 
 	level = level_jsonload(filename);
@@ -141,6 +142,11 @@ Level *level_loadWithPlayer(const char *filename, Entity *player, char *nextPlay
 		player->position = vector2d(objx * level->tileSet->frame_w * level->scaleAmount, objy * level->tileSet->frame_h * level->scaleAmount);
 		player->hitbox->x = player->position.x;
 		player->hitbox->y = player->position.y;
+		p = (Player *)player->data;
+		if (p != NULL)
+		{
+			p->attackWait = 20;
+		}
 	}
 	else
 	{

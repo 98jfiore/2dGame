@@ -527,6 +527,7 @@ void load_player(Entity *ent, char *fileName)
 	
 	player->health = health;
 	player->maxhealth = maxHealth;
+	player->attackWait = 20;
 
 	load_player_inventory(ent, baseJson);
 	saveFile = fileName;
