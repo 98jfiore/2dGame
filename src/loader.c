@@ -234,7 +234,7 @@ Level *level_jsonload(const char *filename)
 	string = sj_get_string_value(sj_object_get_value(leveljs, "music"));
 	if (string)
 	{
-		music = gfc_sound_load(string, 1, -1);
+		music = gfc_sound_load(string, 0.5, -1);
 		if (music == NULL)
 		{
 			slog("Music file could not be loaded");

@@ -246,7 +246,7 @@ void boss1_update(Entity *self)
 				boss->subents[0] = NULL;
 				if (boss->subents[3] != NULL)
 				{
-					boss->ps = particle_source_new(15000, 0, 5, 600, 50, boss->subents[1]->position,
+					boss->ps = particle_source_new(10000, 0, 5, 600, 50, boss->subents[1]->position,
 						vector2d(20, 20), vector2d(0, 20), vector2d(0, 1), vector2d(0.2, 0.2), vector2d(0.1, 0.1),
 						gfc_color(1, 1, 1, 254), gfc_color(0.01, 0.01, 0.01, -0.04), gfc_color(1, 1, 1, 1),
 						"images/oil.png", 8, 8, 1, 3, 41, 0.1, 0.05, SDL_BLENDMODE_ADD, PART_MODE_B, 0.01, 0, 0.1, 0, 10, 0.01, 0, 3);
