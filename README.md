@@ -28,3 +28,8 @@ Once each submodule has been made you can go into the base project src folder an
 `make`
 
 You should now have a `gf2d` binary within the root of your git repository. Executing this will start your game.
+
+
+# Knockback Game
+
+The main game on this repo is the knockback game, it can be found on the branch `knockback_game`.  Specificaitons for the game can also be found there.
